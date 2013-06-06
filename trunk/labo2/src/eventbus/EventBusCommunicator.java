@@ -26,6 +26,9 @@ import java.util.List;
 import events.IEvent;
 
 public class EventBusCommunicator extends Thread implements IEventBusCommunicator {
+	
+	private int clientId;
+	
 	//Tampon d'événements à envoyer.
 	private List<IEvent> lstEventsToSend = new ArrayList<IEvent>();
 	private ObjectOutputStream oos;
@@ -64,10 +67,15 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 		try {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
+			// Read the client's ID
+			clientId = (Integer) ois.readObject();
 			readStream = new ReadEventFromStream(ois, iebt);
 		}
 		catch(IOException ioe) {
 			ioe.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -98,5 +106,19 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 	
 	public void sendToListener(IEvent ie) {
 		lstEventsToSend.add(ie);
+	}
+	
+	public int getClientId() {
+		return clientId;
+	}
+
+	@Override
+	public int compareTo(IEventBusCommunicator ievc) {
+		if (clientId < ievc.getClientId())
+			return -1;
+		else if (clientId > ievc.getClientId())
+			return 1;
+		else
+			return 0;
 	}
 }

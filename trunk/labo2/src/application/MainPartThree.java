@@ -34,7 +34,7 @@ public class MainPartThree {
 		List<Class> listenedEvents = new ArrayList<Class>();
 		listenedEvents.add(IPartThreeEvent.class);
 		listenedEvents.add(IEventSynchronized.class);
-		EventBusConnector bus = new EventBusConnector(listenedEvents, ip, 12045);
+		EventBusConnector bus = new EventBusConnector(2, listenedEvents, ip, 12045);
 		UIMainWindow window = new UIMainWindow(bus, "App Trois", "Reussi!", 1);
 		bus.addObserver(window);
 		
