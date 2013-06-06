@@ -11,6 +11,7 @@ d'événements aux Communicators qui sont enregistrés.
 package eventbus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import events.IEvent;
@@ -32,8 +33,12 @@ public class EventBusThread extends Thread implements IEventBusThread {
 				synchronized(eventsToSend) {
 					if (eventsToSend.size() > 0) {
 						System.out.println("Envoie de l'événement " + eventsToSend.get(0).toString());
-						for(IEventBusCommunicator ievc : lstComm)
+						// Sort the communicators by their client ID to make sure we're sending in the right order
+						Collections.sort(lstComm);
+						for(IEventBusCommunicator ievc : lstComm) {
 							ievc.sendToListener(eventsToSend.get(0));
+							System.out.println("Send to communicator for client " + ievc.getClientId());
+						}
 						eventsToSend.remove(0);
 					}
 				}

@@ -38,12 +38,14 @@ public class EventBusConnector extends Thread implements IEventBusConnector {
 	private ReadEventFromStream readStream;
 	
 	@SuppressWarnings("unchecked")
-	public EventBusConnector(List<Class> listenedEvents, String ip, int port) {
+	public EventBusConnector(int id, List<Class> listenedEvents, String ip, int port) {
 		this.listenedEvents = listenedEvents;
 
 		try {
 			s = new Socket(ip, port);
 			oos = new ObjectOutputStream(s.getOutputStream());
+			// Send our ID to the event bus
+			oos.writeObject(id);
 			ois = new ObjectInputStream(s.getInputStream());
 			readStream = new ReadEventFromStream(ois, this);
 		}
