@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import events.IEvent;
+import events.IEventSynchronized;
 
 public class EventBusThread extends Thread implements IEventBusThread {
 	private List<IEventBusCommunicator> lstComm = new ArrayList<IEventBusCommunicator>();
@@ -36,7 +37,12 @@ public class EventBusThread extends Thread implements IEventBusThread {
 						// Sort the communicators by their client ID to make sure we're sending in the right order
 						Collections.sort(lstComm);
 						for(IEventBusCommunicator ievc : lstComm) {
-							ievc.sendToListener(eventsToSend.get(0));
+							IEvent event = eventsToSend.get(0);
+							if (event instanceof IEventSynchronized) {
+								ievc.sendSyncro(event);
+							} else {
+								ievc.sendToListener(event);
+							}
 							System.out.println("Send to communicator for client " + ievc.getClientId());
 						}
 						eventsToSend.remove(0);

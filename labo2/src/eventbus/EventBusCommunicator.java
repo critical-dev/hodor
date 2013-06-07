@@ -121,4 +121,14 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 		else
 			return 0;
 	}
+
+	@Override
+	public void sendSyncro(IEvent event) {
+		try {
+			oos.writeObject(event);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
