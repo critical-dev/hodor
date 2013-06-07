@@ -53,9 +53,10 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 				try {
 					IEvent event = (IEvent)ois.readObject();
 					System.out.println("Nouvelle événement dans le bus: " + event.toString());
-					if (event instanceof IEventAck)
+					if (event instanceof IEventAck) {
 						ackPending = false;
-					else 
+						System.out.println(clientId + " Set ackPending to false");
+					} else 
 						eventBus.addEvent(event);	
 				}
 				catch(Exception e) {
@@ -112,12 +113,24 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 	
 	public void sendToListener(IEvent ie) {
 		// Must wait for ACK if event is synchro
-		if (ie instanceof IEventSynchronized)
+		if (ie instanceof IEventSynchronized) {
 			ackPending = true;
+			System.out.println("Will wait for ack for event " + ie.toString());
+		}
 		lstEventsToSend.add(ie);
 		// Busy-wait until ACK arrives
-		if (ie instanceof IEventSynchronized)
-			while (ackPending);
+		if (ie instanceof IEventSynchronized) {
+			while (ackPending) {
+				System.out.println("Spinning on ackPending...");
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			System.out.println("Received ack for event " + ie.toString());
+		}
 	}
 	
 	public int getClientId() {
