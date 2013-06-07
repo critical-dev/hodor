@@ -30,7 +30,7 @@ import events.IEventSynchronized;
 public class EventBusCommunicator extends Thread implements IEventBusCommunicator {
 	
 	private int clientId;
-	private boolean ackPending;
+	private volatile boolean ackPending;
 	
 	//Tampon d'événements à envoyer.
 	private List<IEvent> lstEventsToSend = new ArrayList<IEvent>();
@@ -113,24 +113,12 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 	
 	public void sendToListener(IEvent ie) {
 		// Must wait for ACK if event is synchro
-		if (ie instanceof IEventSynchronized) {
+		if (ie instanceof IEventSynchronized)
 			ackPending = true;
-			System.out.println("Will wait for ack for event " + ie.toString());
-		}
 		lstEventsToSend.add(ie);
 		// Busy-wait until ACK arrives
-		if (ie instanceof IEventSynchronized) {
-			while (ackPending) {
-				System.out.println("Spinning on ackPending...");
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			System.out.println("Received ack for event " + ie.toString());
-		}
+		if (ie instanceof IEventSynchronized)
+			while (ackPending);
 	}
 	
 	public int getClientId() {
