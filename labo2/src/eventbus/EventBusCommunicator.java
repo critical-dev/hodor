@@ -24,10 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import events.IEvent;
+import events.IEventAck;
+import events.IEventSynchronized;
 
 public class EventBusCommunicator extends Thread implements IEventBusCommunicator {
 	
 	private int clientId;
+	private boolean ackPending;
 	
 	//Tampon d'événements à envoyer.
 	private List<IEvent> lstEventsToSend = new ArrayList<IEvent>();
@@ -50,7 +53,10 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 				try {
 					IEvent event = (IEvent)ois.readObject();
 					System.out.println("Nouvelle événement dans le bus: " + event.toString());
-					eventBus.addEvent(event);	
+					if (event instanceof IEventAck)
+						ackPending = false;
+					else 
+						eventBus.addEvent(event);	
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -105,7 +111,13 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 	}
 	
 	public void sendToListener(IEvent ie) {
+		// Must wait for ACK if event is synchro
+		if (ie instanceof IEventSynchronized)
+			ackPending = true;
 		lstEventsToSend.add(ie);
+		// Busy-wait until ACK arrives
+		if (ie instanceof IEventSynchronized)
+			while (ackPending);
 	}
 	
 	public int getClientId() {
@@ -120,15 +132,5 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 			return 1;
 		else
 			return 0;
-	}
-
-	@Override
-	public void sendSyncro(IEvent event) {
-		try {
-			oos.writeObject(event);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

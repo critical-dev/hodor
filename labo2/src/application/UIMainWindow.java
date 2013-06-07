@@ -38,9 +38,10 @@ public class UIMainWindow extends JFrame implements IObserver {
 
 	private static final long serialVersionUID = 17889303454552887L;
 	
+	private IEventBusConnector eventBusConn;
 	private int delay; //Temps artificiel de délai de traitement des événements
 	private String syncText; //Texte à afficher lors de l'événement synchronisé
-	
+
 	private JList lstResultatEvent;
 	private DefaultListModel model;
 	private JScrollPane scrollPane;
@@ -49,6 +50,7 @@ public class UIMainWindow extends JFrame implements IObserver {
 	//Ne devrait pas être modifié.
 	public UIMainWindow(IEventBusConnector eventBusConn, String name, String syncText, int delay) {
 		super();
+		this.eventBusConn = eventBusConn;
 		this.delay = delay;
 		this.syncText = syncText;
 		setSize(450,480);
@@ -117,6 +119,7 @@ public class UIMainWindow extends JFrame implements IObserver {
 		
 		if(event instanceof IEventSynchronized) {
 			model.addElement(syncText);
+			eventBusConn.callEvent(new EventAck(null));
 		}
 		else {
 			model.addElement(event.toString() + " - " + event.getMessage());
