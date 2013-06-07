@@ -120,6 +120,7 @@ public class UIMainWindow extends JFrame implements IObserver {
 		if(event instanceof IEventSynchronized) {
 			model.addElement(syncText);
 			eventBusConn.callEvent(new EventAck(null));
+			System.out.println("Sent ack for event " + event.toString());
 		}
 		else {
 			model.addElement(event.toString() + " - " + event.getMessage());
