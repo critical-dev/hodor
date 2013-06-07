@@ -14,5 +14,4 @@ import events.IEvent;
 public interface IEventBusCommunicator extends Comparable<IEventBusCommunicator> {
 	public void sendToListener(IEvent ie);
 	public int getClientId();
-	public void sendSyncro(IEvent event);
 }

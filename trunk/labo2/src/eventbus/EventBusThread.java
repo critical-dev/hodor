@@ -38,11 +38,7 @@ public class EventBusThread extends Thread implements IEventBusThread {
 						Collections.sort(lstComm);
 						for(IEventBusCommunicator ievc : lstComm) {
 							IEvent event = eventsToSend.get(0);
-							if (event instanceof IEventSynchronized) {
-								ievc.sendSyncro(event);
-							} else {
 								ievc.sendToListener(event);
-							}
 							System.out.println("Send to communicator for client " + ievc.getClientId());
 						}
 						eventsToSend.remove(0);
