@@ -3,6 +3,11 @@
 	Session :         Été 2010
 	Groupe :          01
 	Projet :          Laboratoire #2
+	Étudiants : Artom Lifshitz 
+				Chrystophe Chabert
+	Code(s) perm. : LIFA29108505
+					CHAC12098902
+	Date dernière modif: 2013-06-11
 	Date création :   2010-05-21
 ******************************************************
 Classe qui gère la transmission et la réception
@@ -13,6 +18,13 @@ La classe est en constante attente de nouveaux événements
 au Communicator lui envoie un événement, le Communicator
 envoie l'événement aux Applications à l'aide d'un second
 Thread.
+
+La methode run() du ReadEventFromStream a été modifiée
+pour gérer les évènements de type EventAck différemment.
+
+La methode sendToListener() quant à elle attend désormais
+d'avoir reçu un accusé de réception avant d'envoyer au 
+prochain client si c'était un évènement synchronisé.
 ******************************************************/ 
 package eventbus;
 
@@ -53,6 +65,7 @@ public class EventBusCommunicator extends Thread implements IEventBusCommunicato
 				try {
 					IEvent event = (IEvent)ois.readObject();
 					System.out.println("Nouvelle événement dans le bus: " + event.toString());
+					//Gestion des Ack recus des clients
 					if (event instanceof IEventAck) {
 						ackPending = false;
 						System.out.println(clientId + " Set ackPending to false");

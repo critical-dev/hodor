@@ -3,6 +3,11 @@
 	Session :         Été 2010
 	Groupe :          01
 	Projet :          Laboratoire #2
+	Étudiants : Artom Lifshitz 
+				Chrystophe Chabert
+	Code(s) perm. : LIFA29108505
+					CHAC12098902
+	Date dernière modif: 2013-06-11
 	Date création :   2010-05-21
 ******************************************************
 Thread qui achemine les événements contenus sur le bus
@@ -35,6 +40,7 @@ public class EventBusThread extends Thread implements IEventBusThread {
 					if (eventsToSend.size() > 0) {
 						System.out.println("Envoie de l'événement " + eventsToSend.get(0).toString());
 						// Sort the communicators by their client ID to make sure we're sending in the right order
+						// on classe les instances de IEventBusCommunicator par ordre de numero de client
 						Collections.sort(lstComm);
 						for(IEventBusCommunicator ievc : lstComm) {
 							IEvent event = eventsToSend.get(0);
