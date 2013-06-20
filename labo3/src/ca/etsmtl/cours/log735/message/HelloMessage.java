@@ -1,9 +1,12 @@
 package ca.etsmtl.cours.log735.message;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class HelloMessage {
+public class HelloMessage implements Serializable {
 
+	private static final long serialVersionUID = 4463552101886024435L;
+	
 	private UUID branchId;
 	private int initialMoney;
 	
