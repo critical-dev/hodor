@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.UUID;
 
-import ca.etsmtl.cours.log735.branch.Branch;
+import ca.etsmtl.cours.log735.lab3.branch.Branch;
 
 
 public class BranchUpdaterThread extends Thread{
