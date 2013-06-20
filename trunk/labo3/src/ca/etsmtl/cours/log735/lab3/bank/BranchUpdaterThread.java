@@ -42,6 +42,11 @@ public class BranchUpdaterThread extends Thread{
 				//retrieve the uuid from the HelloMessage
 				newBranchUUIDToAdd = ((HelloMessage) newBranchMessage).getBranchId();
 				//add to list of current branches
+				/**
+				 * BANQUE-01 : 
+				 * La Banque doit accepter la connexion réseau d’une Succursale et 
+				 * l’intégrer à sa liste de Succursales.
+				 * */
 				currentBranches.put(newBranchUUIDToAdd, newBranchInetAddress);
 				System.out.println("Adding new branch UUID : " + newBranchUUIDToAdd);
 				//notify the newly added branch first.
