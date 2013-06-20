@@ -40,7 +40,7 @@ public class BranchUpdaterThread extends Thread{
 			//then we notify that client of all the current clients.
 			if(newBranchMessage instanceof HelloMessage){
 				//retrieve the uuid from the HelloMessage
-				newBranchUUIDToAdd = ((HelloMessage) newBranchMessage).getUuid();
+				newBranchUUIDToAdd = ((HelloMessage) newBranchMessage).getBranchId();
 				//add to list of current branches
 				currentBranches.put(newBranchUUIDToAdd, newBranchInetAddress);
 				System.out.println("Adding new branch UUID : " + newBranchUUIDToAdd);
