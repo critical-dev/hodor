@@ -14,9 +14,15 @@ import java.util.UUID;
  * */
 public class Bank extends Thread{
 	
+	/**
+	 * Liste des succursales connues de la banque
+	 * */
 	private HashMap<UUID, InetAddress> currentBranches;
 	private ServerSocket bankSocket;
 	
+	/**
+	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
+	 * */
 	public static final int PORT = 4242;
 	
 	public Bank(){
@@ -46,5 +52,12 @@ public class Bank extends Thread{
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * Demarrer le processus..
+	 * */
+	public static void main(String[] args) {
+		new Bank().start();
 	}
 }
