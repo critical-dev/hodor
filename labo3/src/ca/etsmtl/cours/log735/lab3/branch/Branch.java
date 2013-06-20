@@ -1,7 +1,6 @@
 package ca.etsmtl.cours.log735.lab3.branch;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -28,12 +27,13 @@ public class Branch {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String argv[]) {
+
+	public void refreshBranchList(HashMap<UUID, InetAddress> branchList) {
+		// TODO Auto-generated method stub
 		
 	}
 
-	public void refreshBranchList(HashMap<UUID, InetAddress> branchList) {
+	public void captureState() {
 		// TODO Auto-generated method stub
 		
 	}
