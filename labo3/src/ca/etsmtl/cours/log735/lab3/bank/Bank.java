@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Observable;
 import java.util.UUID;
 
 /**
@@ -12,13 +13,14 @@ import java.util.UUID;
  * Classe en charge de recevoir les connexions de succursales et
  * notifier celles-ci de l'ajout d'une nouvelle succursale sur le réseau.
  * */
-public class Bank extends Thread{
+public class Bank extends Observable{
 	
 	/**
 	 * Liste des succursales connues de la banque
 	 * */
 	private HashMap<UUID, InetAddress> currentBranches;
 	private ServerSocket bankSocket;
+	private BankListener bankListener;
 	
 	/**
 	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
@@ -32,32 +34,44 @@ public class Bank extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		bankListener = new BankListener();
 	}
 	
-	@Override
-	public void run(){
-		System.out.println("Bank is listening on port : " + PORT + " .. ");
-		while(true){
-			if(bankSocket != null){
-				try {
-					Socket newBranch = bankSocket.accept();
-					System.out.println("New connexion received !");
-					new BranchUpdaterThread(newBranch, currentBranches).start();
-				} catch (IOException e) {
-					e.printStackTrace();
+	public void start(){
+		bankListener.start();
+	}
+	
+	public BankListener getBankListener() {
+		return bankListener;
+	}
+
+	class BankListener extends Thread{
+				
+		@Override
+		public void run(){
+			System.out.println("Bank is listening on port : " + PORT + " .. ");
+			while(true){
+				if(bankSocket != null){
+					try {
+						Socket newBranch = bankSocket.accept();
+						System.out.println("New connexion received !");
+						new BranchUpdaterThread(newBranch, currentBranches).start();
+						setChanged();
+						notifyObservers();
+						clearChanged();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			else{
-				System.err.println("Bank socket is null, aborting.");
-				break;
+				else{
+					System.err.println("Bank socket is null, aborting.");
+					break;
+				}
 			}
 		}
 	}
-	
-	/**
-	 * Demarrer le processus..
-	 * */
-	public static void main(String[] args) {
-		new Bank().start();
+
+	public HashMap<UUID, InetAddress> getCurrentBranches() {
+		return currentBranches;
 	}
 }
