@@ -47,6 +47,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		panel.add(toolbar, BorderLayout.NORTH);
 		operationsLog = new JTextArea();
 		panel.add(operationsLog, BorderLayout.CENTER);
+		this.setTitle(appName);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setContentPane(panel);
 		this.pack();
