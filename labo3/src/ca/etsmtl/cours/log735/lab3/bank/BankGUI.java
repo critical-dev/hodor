@@ -21,6 +21,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/**
+ * 		BankGUI
+ * 
+ * Classe en charge de montrer visuellement les succursales présentement
+ * connectées et connues de la banque. Lorsque le bouton Démarrer est cliqué,
+ * la banque écoute sur le port <code> Bank.PORT </code> pour des connexions.
+ * Cette classe affiche aussi, de façon asynchrone, le montant total d'argent connu
+ * dans le système.
+ * 
+ * */
 public class BankGUI implements Observer, MouseListener{
 	
 	private JFrame bankFrame;
