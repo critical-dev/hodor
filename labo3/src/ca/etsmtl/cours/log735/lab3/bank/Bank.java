@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Class Bank
  * Classe en charge de recevoir les connexions de succursales et
- * notifier celles-ci de l'ajout d'une nouvelle succursale sur le réseau.
+ * notifier celles-ci de l'ajout d'une nouvelle succursale sur le rï¿½seau.
  * */
 public class Bank extends Observable{
 	
@@ -22,12 +22,15 @@ public class Bank extends Observable{
 	private ServerSocket bankSocket;
 	private BankListener bankListener;
 	
+	public static int BANK_TOTAL_MONEY_IN_THE_SYSTEM;
+	
 	/**
 	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
 	 * */
 	public static final int PORT = 4242;
 	
 	public Bank(){
+		BANK_TOTAL_MONEY_IN_THE_SYSTEM = 0;
 		currentBranches = new HashMap<UUID, InetAddress>();
 		try {
 			bankSocket = new ServerSocket(PORT);
