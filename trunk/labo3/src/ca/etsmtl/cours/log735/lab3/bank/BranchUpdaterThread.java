@@ -11,7 +11,12 @@ import java.util.UUID;
 import ca.etsmtl.cours.log735.lab3.branch.Branch;
 import ca.etsmtl.cours.log735.message.HelloMessage;
 
-
+/**
+ * 	Fil d'exécution créé lorsque la banque (Bank) reçoit une nouvelle connexion.
+ * Lit un objet d'un outputstream (instance de la classe HelloMesage et notifie la
+ * succursale des sucursales présentement connues).
+ * 
+ * */
 public class BranchUpdaterThread extends Thread{
 	
 	private Socket client;

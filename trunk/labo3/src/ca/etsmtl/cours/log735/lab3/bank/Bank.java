@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Class Bank
  * Classe en charge de recevoir les connexions de succursales et
- * notifier celles-ci de l'ajout d'une nouvelle succursale sur le r�seau.
+ * notifier celles-ci de l'ajout d'une nouvelle succursale sur le réseau.
  * */
 public class Bank extends Observable{
 	
