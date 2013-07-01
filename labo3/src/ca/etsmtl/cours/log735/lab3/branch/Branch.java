@@ -93,6 +93,7 @@ public class Branch extends Observable {
 			try {
 				channel.writeObject(new TxnMessage(amount));
 				money -= amount;
+				setChanged();
 				notifyObservers("Sent " + amount + "$\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -103,6 +104,7 @@ public class Branch extends Observable {
 
 	public void recvMoney(int amount) {
 		money -= amount;
+		setChanged();
 		notifyObservers("Received " + amount + "$\n");
 	}
 }
