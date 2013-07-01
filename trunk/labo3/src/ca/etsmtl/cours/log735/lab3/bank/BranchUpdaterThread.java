@@ -61,7 +61,7 @@ public class BranchUpdaterThread extends Thread{
 				//notify all other branches
 				for(UUID branchId : currentBranches.keySet()){
 					System.out.println("Notifying other branch .. " + branchId);
-					Socket client = new Socket(currentBranches.get(branchId), Branch.BRANCHES_PORT);
+					Socket client = new Socket(currentBranches.get(branchId), Branch.BANK_PORT);
 					oos = new ObjectOutputStream(client.getOutputStream());
 					oos.writeObject(currentBranches);
 					oos.close();
