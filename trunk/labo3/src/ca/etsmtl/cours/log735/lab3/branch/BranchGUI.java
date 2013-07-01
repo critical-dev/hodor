@@ -1,6 +1,7 @@
 package ca.etsmtl.cours.log735.lab3.branch;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	
 	private Branch branch;
 	
-	JTextArea operationsLog;
+	private JTextArea operationsLog;
 	JTextField bankIpField;
 	JTextField initialMoneyField;
 	JDialog startDialog;
@@ -47,10 +48,12 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		panel.add(toolbar, BorderLayout.NORTH);
 		operationsLog = new JTextArea();
 		panel.add(operationsLog, BorderLayout.CENTER);
+		this.setSize(500, 500);
 		this.setTitle(appName);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setContentPane(panel);
-		this.pack();
+		//this.pack();
+		this.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 4, Toolkit.getDefaultToolkit().getScreenSize().height / 3);
 		this.setVisible(true);
 		init();
 	}
@@ -70,6 +73,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		panel.add(startButton);
 		startDialog.setContentPane(panel);
 		startDialog.pack();
+		startDialog.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 4, Toolkit.getDefaultToolkit().getScreenSize().height / 3);
 		startDialog.setVisible(true);
 	}
 
@@ -103,5 +107,13 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 				JOptionPane.showMessageDialog(this, "Impossible de se connecter à la banque", "Erreur", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+
+	public JTextArea getOperationsLog() {
+		return operationsLog;
+	}
+
+	public void setOperationsLog(JTextArea operationsLog) {
+		this.operationsLog = operationsLog;
 	}
 }
