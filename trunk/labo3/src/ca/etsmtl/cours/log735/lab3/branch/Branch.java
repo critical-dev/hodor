@@ -91,10 +91,10 @@ public class Branch extends Observable {
 			ObjectOutputStream channel = outgoingChannels.get((int) (outgoingChannels.size() * Math.random()));
 			int amount = (int) (money * Math.random());
 			try {
-				channel.writeObject(new TxnMessage(amount));
+				channel.writeObject(new TxnMessage(myId, amount));
 				money -= amount;
 				setChanged();
-				notifyObservers("Sent " + amount + "$\n");
+				notifyObservers("Sent " + amount + " [ " + money + "$]\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -102,9 +102,9 @@ public class Branch extends Observable {
 		}
 	}
 
-	public void recvMoney(int amount) {
+	public void recvMoney(UUID from, int amount) {
 		money -= amount;
 		setChanged();
-		notifyObservers("Received " + amount + "$\n");
+		notifyObservers("Received " + amount + "$ from " + from + " [ " + money + "$]\n");
 	}
 }
