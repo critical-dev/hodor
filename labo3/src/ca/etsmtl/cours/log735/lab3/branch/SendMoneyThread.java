@@ -13,13 +13,15 @@ public class SendMoneyThread extends Thread {
 
 	@Override
 	public void run() {
-		int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
-		try {
-			sleep(delay * 1000);
-			branch.sendMoney();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (true) {
+			int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
+			try {
+				sleep(delay * 1000);
+				branch.sendMoney();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
