@@ -19,6 +19,8 @@ public class Branch extends Observable {
 	public static final int BANK_PORT = 4343;
 	public static final int BRANCHES_PORT = 4444;
 	
+	private boolean isCapturing;
+	
 	private List<UUID> peerIds = new LinkedList<UUID>();
 	private UUID myId = UUID.randomUUID();
 	
@@ -28,6 +30,7 @@ public class Branch extends Observable {
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
 		new BankListenerThread(this).start();
 		new BranchesListenerThread(this).start();
+		isCapturing = false;
 		Socket sock = new Socket(bankIp, Bank.PORT);
 		System.out.println("Branch: Connected to bank.");
 		ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
@@ -47,6 +50,12 @@ public class Branch extends Observable {
 		}
 	}
 
+	/**
+	 * 		captureState
+	 * @goal When invoked, checks whether this branch is capturing its state or not.
+	 * If it already is, sets the isCapturing flag to false and stops the current capture.
+	 * Otherwise, sets the isCapturing flag to true and starts the current capture.
+	 * */
 	public void captureState() {
 		// TODO Auto-generated method stub
 		
@@ -68,5 +77,13 @@ public class Branch extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isCapturing() {
+		return isCapturing;
+	}
+
+	public void setCapturing(boolean isCapturing) {
+		this.isCapturing = isCapturing;
 	}
 }
