@@ -29,10 +29,10 @@ public class Branch extends Observable {
 		new BankListenerThread(this).start();
 		new BranchesListenerThread(this).start();
 		Socket sock = new Socket(bankIp, Bank.PORT);
-		System.out.println("Connected to bank.");
+		System.out.println("Branch: Connected to bank.");
 		ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
 		oos.writeObject(new HelloMessage(myId, initialMoney));
-		System.out.println("Hello sent to bank.");
+		System.out.println("Branch: Hello sent to bank.");
 		oos.close();
 		sock.close();
 	}
@@ -42,7 +42,7 @@ public class Branch extends Observable {
 			if (!peerIds.contains(id) && id.compareTo(myId) != 0) {
 				connect(branchList.get(id));
 				this.peerIds.add(id);
-				System.out.println("Added " + id + " to peer list and connected.");
+				System.out.println("Branch: Added " + id + " to peer list and connected.");
 			}
 		}
 	}

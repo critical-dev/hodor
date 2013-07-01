@@ -20,20 +20,20 @@ public class BankListenerThread extends Thread {
 	public void run() {
 		try {
 			ServerSocket sock = new ServerSocket(Branch.BANK_PORT);
-			System.out.println("Listening for connection from bank...");
+			System.out.println("BankListener: Listening for connection from bank...");
 			while (true) {
 				Socket conn = sock.accept();
-				System.out.println("Bank connected.");
+				System.out.println("BankListener: Bank connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
 				Object input = ois.readObject();
-				System.out.println("Received message from bank.");
+				System.out.println("BankListener: Received message from bank.");
 				if (input instanceof HashMap) {
 					branch.refreshBranchList((HashMap<UUID, InetAddress>) input);
-					System.out.println("Processed branch list update.");
+					System.out.println("BankListener: Processed branch list update.");
 				}
 				ois.close();
 				conn.close();
-				System.out.println("Connection closed.");
+				System.out.println("BankListener: Connection closed.");
 			}
 		} catch (IOException ioe) {
 			// TODO Auto-generated catch block
