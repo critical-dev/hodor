@@ -55,24 +55,17 @@ public class BranchUpdaterThread extends Thread{
 				 * */
 				currentBranches.put(newBranchUUIDToAdd, newBranchInetAddress);
 				System.out.println("Adding new branch UUID : " + newBranchUUIDToAdd + " with initial money : " + ((HelloMessage) newBranchMessage).getInitialMoney());
-				//notify the newly added branch first.
-				oos = new ObjectOutputStream(client.getOutputStream());
-				//pass the whole list
-				oos.writeObject(currentBranches);
-				oos.close();//close the current outputstream
 				client.close();//close the new branch's connexion
+				
 				System.out.println("Notified " + newBranchUUIDToAdd + " of other branches.");
 				//notify all other branches
 				for(UUID branchId : currentBranches.keySet()){
-					//skip the branch we just notified
-					if(branchId != newBranchUUIDToAdd){
-						System.out.println("Notifying other branch .. " + branchId);
-						Socket client = new Socket(currentBranches.get(branchId), Bank.PORT);
-						oos = new ObjectOutputStream(client.getOutputStream());
-						oos.writeObject(currentBranches);
-						oos.close();
-						client.close();
-					}
+					System.out.println("Notifying other branch .. " + branchId);
+					Socket client = new Socket(currentBranches.get(branchId), Branch.BRANCHES_PORT);
+					oos = new ObjectOutputStream(client.getOutputStream());
+					oos.writeObject(currentBranches);
+					oos.close();
+					client.close();
 				}
 			}
 		} catch (IOException e) {

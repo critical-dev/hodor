@@ -29,7 +29,7 @@ public class Bank extends Observable{
 	/**
 	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
 	 * */
-	public static final int PORT = Branch.BANK_PORT;
+	public static final int PORT = 4242;
 	
 	public Bank(){
 		BANK_TOTAL_MONEY_IN_THE_SYSTEM = 0;
