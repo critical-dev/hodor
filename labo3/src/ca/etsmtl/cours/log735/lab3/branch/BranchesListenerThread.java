@@ -28,8 +28,7 @@ public class BranchesListenerThread extends Thread {
 				Socket conn = sock.accept();
 				System.out.println("BranchListener: branch connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
-				branch.addIncomingChannel(ois);
-				System.out.println("BranchListener: Branch input stream added.");
+				new TxnListenerThread(branch, ois).start();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

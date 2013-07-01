@@ -1,7 +1,6 @@
 package ca.etsmtl.cours.log735.lab3.branch;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -13,6 +12,7 @@ import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.bank.Bank;
 import ca.etsmtl.cours.log735.message.HelloMessage;
+import ca.etsmtl.cours.log735.message.TxnMessage;
 
 public class Branch extends Observable {
 	
@@ -21,13 +21,15 @@ public class Branch extends Observable {
 	
 	private boolean isCapturing;
 	
+	private int money;
+	
 	private List<UUID> peerIds = new LinkedList<UUID>();
 	private UUID myId = UUID.randomUUID();
 	
-	private List<ObjectInputStream> incomingChannels = new LinkedList<ObjectInputStream>();
 	private List<ObjectOutputStream> outgoingChannels = new LinkedList<ObjectOutputStream>();
 	
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
+		money = initialMoney;
 		new BankListenerThread(this).start();
 		new BranchesListenerThread(this).start();
 		isCapturing = false;
@@ -38,6 +40,7 @@ public class Branch extends Observable {
 		System.out.println("Branch: Hello sent to bank.");
 		oos.close();
 		sock.close();
+		new SendMoneyThread(this).start();
 	}
 
 	public void refreshBranchList(HashMap<UUID, InetAddress> branchList) {
@@ -60,10 +63,6 @@ public class Branch extends Observable {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void addIncomingChannel(ObjectInputStream ois) {
-		incomingChannels.add(ois);
-	}
 	
 	private void addOutgoingChannel(ObjectOutputStream oos) {
 		outgoingChannels.add(oos);
@@ -85,5 +84,25 @@ public class Branch extends Observable {
 
 	public void setCapturing(boolean isCapturing) {
 		this.isCapturing = isCapturing;
+	}
+
+	public void sendMoney() {
+		if (money > 0) {
+			ObjectOutputStream channel = outgoingChannels.get((int) (outgoingChannels.size() * Math.random()));
+			int amount = (int) (money * Math.random());
+			try {
+				channel.writeObject(new TxnMessage(amount));
+				money -= amount;
+				notifyObservers("Sent " + amount + "$\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void recvMoney(int amount) {
+		money -= amount;
+		notifyObservers("Received " + amount + "$\n");
 	}
 }

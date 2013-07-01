@@ -108,12 +108,4 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 			}
 		}
 	}
-
-	public JTextArea getOperationsLog() {
-		return operationsLog;
-	}
-
-	public void setOperationsLog(JTextArea operationsLog) {
-		this.operationsLog = operationsLog;
-	}
 }
