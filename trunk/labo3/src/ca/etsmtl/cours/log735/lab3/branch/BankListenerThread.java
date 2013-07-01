@@ -11,7 +11,7 @@ import java.util.UUID;
 public class BankListenerThread extends Thread {
 
 	private Branch branch;
-	ServerSocket sock;
+	private ServerSocket sock;
 
 	public BankListenerThread(Branch branch) {
 		this.branch = branch;
