@@ -9,19 +9,25 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class BankListenerThread extends Thread {
-	
+
 	private Branch branch;
+	ServerSocket sock;
 
 	public BankListenerThread(Branch branch) {
 		this.branch = branch;
+		try {
+			sock = new ServerSocket(Branch.BANK_PORT);
+			System.out.println("BankListener: Listening for connection from bank...");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
 	@Override
 	public void run() {
-		try {
-			ServerSocket sock = new ServerSocket(Branch.BANK_PORT);
-			System.out.println("BankListener: Listening for connection from bank...");
-			while (true) {
+		while (true) {
+			try {
 				Socket conn = sock.accept();
 				System.out.println("BankListener: Bank connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
@@ -34,13 +40,13 @@ public class BankListenerThread extends Thread {
 				ois.close();
 				conn.close();
 				System.out.println("BankListener: Connection closed.");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException ioe) {
-			// TODO Auto-generated catch block
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException cnfe) {
-			// TODO Auto-generated catch block
-			cnfe.printStackTrace();
 		}
 	}
 }
