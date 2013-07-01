@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.UUID;
 
+import ca.etsmtl.cours.log735.lab3.branch.Branch;
+
 /**
  * Class Bank
  * Classe en charge de recevoir les connexions de succursales et
@@ -27,7 +29,7 @@ public class Bank extends Observable{
 	/**
 	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
 	 * */
-	public static final int PORT = 4242;
+	public static final int PORT = Branch.BANK_PORT;
 	
 	public Bank(){
 		BANK_TOTAL_MONEY_IN_THE_SYSTEM = 0;
