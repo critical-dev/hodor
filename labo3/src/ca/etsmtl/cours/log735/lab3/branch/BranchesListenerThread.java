@@ -17,13 +17,13 @@ public class BranchesListenerThread extends Thread {
 	public void run() {
 		try {
 			ServerSocket sock = new ServerSocket(Branch.BRANCHES_PORT);
-			System.out.println("Listening for connection from branches...");
+			System.out.println("BranchListener: Listening for connection from branches...");
 			while (true) {
 				Socket conn = sock.accept();
-				System.out.println("Branch connected.");
+				System.out.println("BranchListener: branch connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
 				branch.addIncomingChannel(ois);
-				System.out.println("Branch input stream added.");
+				System.out.println("BranchListener: Branch input stream added.");
 			}
 		} catch (IOException ioe) {
 			// TODO Auto-generated catch block
