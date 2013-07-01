@@ -87,7 +87,7 @@ public class Branch extends Observable {
 	}
 
 	public void sendMoney() {
-		if (money > 0) {
+		if (money > 0 && !outgoingChannels.isEmpty()) {
 			ObjectOutputStream channel = outgoingChannels.get((int) (outgoingChannels.size() * Math.random()));
 			int amount = (int) (money * Math.random());
 			try {
