@@ -39,7 +39,7 @@ public class Branch extends Observable {
 
 	public void refreshBranchList(HashMap<UUID, InetAddress> branchList) {
 		for (UUID id: branchList.keySet()) {
-			if (!this.peerIds.contains(id) && id.compareTo(myId) != 0) {
+			if (!peerIds.contains(id) && id.compareTo(myId) != 0) {
 				connect(branchList.get(id));
 				this.peerIds.add(id);
 				System.out.println("Added " + id + " to peer list and connected.");
