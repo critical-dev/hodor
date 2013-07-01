@@ -70,8 +70,10 @@ public class BranchUpdaterThread extends Thread{
 			}
 		} catch (IOException e) {
 			System.err.println("Server -> IOException occured : " + e.getCause());
+			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			System.err.println("Server is unable to parse input stream object,");
+			e.printStackTrace();
 		} finally{
 			try {
 				ois.close();
