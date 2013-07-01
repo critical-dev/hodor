@@ -20,6 +20,8 @@ public class Branch extends Observable {
 	public static final int BRANCHES_PORT = 4444;
 	
 	private boolean isCapturing;
+	private String capture = "";
+	private int captureMoneyAmount = 0;
 	
 	private int money;
 	
@@ -59,9 +61,28 @@ public class Branch extends Observable {
 	 * If it already is, sets the isCapturing flag to false and stops the current capture.
 	 * Otherwise, sets the isCapturing flag to true and starts the current capture.
 	 * */
-	public void captureState() {
-		// TODO Auto-generated method stub
-		
+	public void captureState(boolean isEmitting) {
+		if(isEmitting){
+			capture = "DEBUT CAPTURE - SUCCURSALE #" + myId + "\n";
+			//enregistrement de son propre etat
+			capture += "Succursale #" + myId + " :" + money;
+			//si on envoie, on emet un message
+			for(int peerIndex = 0; peerIndex < outgoingChannels.size(); peerIndex++){
+				
+			}		
+		}
+		else{
+			capture += "FIN CAPTURE - SUCCURSALE #" + myId + "\n"
+					+ "Somme connue par la banque :" + Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM + "$\n"
+					+ "Somme detectee par la capture :" + captureMoneyAmount + "$\n"
+					+ "ETAT GLOBAL " + (captureMoneyAmount == Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM ? "COHERENT" : "INCOHERENT");
+			//notify observers of last captured state for this branch.
+			setChanged();
+			notifyObservers(capture);
+			clearChanged();
+			//for debugging purposes..
+			System.out.println(capture);
+		}
 	}
 	
 	private void addOutgoingChannel(ObjectOutputStream oos) {
