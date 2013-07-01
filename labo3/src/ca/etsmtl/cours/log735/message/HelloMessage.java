@@ -1,9 +1,8 @@
 package ca.etsmtl.cours.log735.message;
 
-import java.io.Serializable;
 import java.util.UUID;
 
-public class HelloMessage implements Serializable {
+public class HelloMessage extends Message {
 
 	private static final long serialVersionUID = 4463552101886024435L;
 	
