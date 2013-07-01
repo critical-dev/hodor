@@ -21,7 +21,7 @@ public class TxnListenerThread extends Thread {
 			try {
 				Object input = ois.readObject();
 				if (input instanceof TxnMessage) {
-					branch.recvMoney(((TxnMessage) input).getAmount());
+					branch.recvMoney(((TxnMessage) input).getFrom(), ((TxnMessage) input).getAmount());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
