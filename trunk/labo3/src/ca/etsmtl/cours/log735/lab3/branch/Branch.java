@@ -124,7 +124,7 @@ public class Branch extends Observable {
 	}
 
 	public void recvMoney(UUID from, int amount) {
-		money -= amount;
+		money += amount;
 		setChanged();
 		notifyObservers("Received " + amount + "$ from " + from + " [ " + money + "$]\n");
 	}
