@@ -16,9 +16,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.text.DefaultCaret;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -32,6 +34,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	private Branch branch;
 	
 	private JTextArea operationsLog;
+	private JScrollPane operationsLogSP;
 	JTextField bankIpField;
 	JTextField initialMoneyField;
 	JDialog startDialog;
@@ -47,7 +50,8 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		toolbar.add(stateCapture);
 		panel.add(toolbar, BorderLayout.NORTH);
 		operationsLog = new JTextArea();
-		panel.add(operationsLog, BorderLayout.CENTER);
+		operationsLogSP = new JScrollPane(operationsLog);
+		panel.add(operationsLogSP, BorderLayout.CENTER);
 		this.setSize(500, 500);
 		this.setTitle(appName);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -84,6 +88,8 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	@Override
 	public void update(Observable o, Object text) {
 		operationsLog.append((String) text);
+		DefaultCaret caret = (DefaultCaret) operationsLog.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
 
 	@Override
