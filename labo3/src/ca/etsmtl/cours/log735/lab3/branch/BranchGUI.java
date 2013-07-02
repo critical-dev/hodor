@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 
 import net.miginfocom.swing.MigLayout;
@@ -88,8 +89,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	@Override
 	public void update(Observable o, Object text) {
 		operationsLog.append((String) text);
-		DefaultCaret caret = (DefaultCaret) operationsLog.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		operationsLog.setCaretPosition(operationsLog.getText().length()-1);
 	}
 
 	@Override
