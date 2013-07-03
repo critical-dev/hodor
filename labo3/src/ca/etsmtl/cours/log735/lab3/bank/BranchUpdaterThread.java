@@ -10,8 +10,8 @@ import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.branch.Branch;
 import ca.etsmtl.cours.log735.message.HelloMessage;
-import ca.etsmtl.cours.log735.message.TotalMoneyRequestMessage;
-import ca.etsmtl.cours.log735.message.TotalMoneyResponseMessage;
+import ca.etsmtl.cours.log735.message.InitialMoneyRequestMessage;
+import ca.etsmtl.cours.log735.message.InitialMoneyResponseMessage;
 
 /**
  * 	Fil d'exécution créé lorsque la banque (Bank) reçoit une nouvelle connexion.
@@ -66,23 +66,8 @@ public class BranchUpdaterThread extends Thread{
 					Socket client = new Socket(currentBranches.get(branchId), Branch.BANK_PORT);
 					oos = new ObjectOutputStream(client.getOutputStream());
 					oos.writeObject(currentBranches);
-					oos.writeObject(new TotalMoneyResponseMessage(Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM));
 					oos.close();
 					client.close();
-				}
-			}
-			else if(newBranchMessage instanceof TotalMoneyRequestMessage){
-				System.out.println("Bank received request for total money in the system..");
-				for(UUID branchId : currentBranches.keySet()){
-					if(branchId.equals(((TotalMoneyRequestMessage) newBranchMessage).getFrom())){
-						System.out.println("Notifying branch " + branchId + " of total money in the system : " + Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM);
-						Socket client = new Socket(currentBranches.get(branchId), Branch.BANK_PORT);
-						oos = new ObjectOutputStream(client.getOutputStream());
-						oos.writeObject(new TotalMoneyResponseMessage(Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM));
-						oos.close();
-						client.close();
-						break;
-					}
 				}
 			}
 		} catch (IOException e) {
