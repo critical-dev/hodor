@@ -17,21 +17,18 @@ public class BankListenerThread extends Thread {
 
 	public BankListenerThread(Branch branch) {
 		this.branch = branch;
-		/*try {
-			sock = new ServerSocket(Branch.BANK_PORT);
-			System.out.println("BankListener: Listening for connection from bank...");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 
 	@Override
 	public void run() {
 		System.out.println("BankListener: Listening for connection from bank...");
+		try {
+			sock = new ServerSocket(Branch.BANK_PORT);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		while (true) {
 			try {
-				sock = new ServerSocket(Branch.BANK_PORT);
 				Socket conn = sock.accept();
 				System.out.println("BankListener: Bank connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
@@ -40,9 +37,12 @@ public class BankListenerThread extends Thread {
 				if (input instanceof HashMap) {
 					branch.refreshBranchList((HashMap<UUID, InetAddress>) input);
 					System.out.println("BankListener: Processed branch list update.");
+					int updatedMoneyAmount = (Integer) ois.readObject();
+					System.out.println("BankListener: Got Bank updated money amount total.");
+					branch.setBankLastKnownTotalMoneyAmount(updatedMoneyAmount);
 				}
 				else if(input instanceof TotalMoneyResponseMessage){
-					System.out.println("BankListener: Got Bank updated money amount total.");
+					
 					branch.setBankLastKnownTotalMoneyAmount(((TotalMoneyResponseMessage) input).getAmount());
 				}
 				else{

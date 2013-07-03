@@ -205,5 +205,6 @@ public class Branch extends Observable implements Observer{
 	public synchronized void setBankLastKnownTotalMoneyAmount(
 			int bankLastKnownTotalMoneyAmount) {
 		this.bankLastKnownTotalMoneyAmount = bankLastKnownTotalMoneyAmount;
+		System.out.println("New bank money amount set.");
 	}
 }

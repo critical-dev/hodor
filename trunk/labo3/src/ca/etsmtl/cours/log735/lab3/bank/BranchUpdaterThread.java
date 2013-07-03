@@ -66,6 +66,7 @@ public class BranchUpdaterThread extends Thread{
 					Socket client = new Socket(currentBranches.get(branchId), Branch.BANK_PORT);
 					oos = new ObjectOutputStream(client.getOutputStream());
 					oos.writeObject(currentBranches);
+					oos.writeObject(new Integer(Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM));
 					oos.close();
 					client.close();
 				}
