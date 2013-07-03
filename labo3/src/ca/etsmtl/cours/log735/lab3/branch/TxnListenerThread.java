@@ -94,16 +94,21 @@ public class TxnListenerThread extends Thread {
 				}
 				else if (input instanceof InitialMoneyRequestMessage){
 					//get the channel corresponding to the passed in id and reply to it.
+					System.out.println("Got an initial money request message ..");
+					String debug = "Could not find requestor in my list..";
 					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){
 						if(id.equals(((InitialMoneyRequestMessage) input).getFrom())){
 							ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
+							debug = "Sending response to requestor .. ";
 							oos.writeObject(new InitialMoneyResponseMessage(branch.getMyId(), branch.getInitialMoney()));
 							System.out.println("Sent initial money amount to " + id + " [" + branch.getInitialMoney() + "]");
 							break;
 						}
 					}
+					System.out.println(debug);
 				}
 				else if (input instanceof InitialMoneyResponseMessage){
+					System.out.println("Received response to initial money request message .. proceeeding");
 					//if we've received a response to out money request message, add amount to list
 					Integer initialMoneyAmtFromBranch = ((InitialMoneyResponseMessage) input).getAmount();
 					UUID fromBranchId = ((InitialMoneyResponseMessage) input).getFrom();
