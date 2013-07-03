@@ -8,7 +8,7 @@ import java.util.Observable;
 import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.bank.Bank;
-import ca.etsmtl.cours.log735.message.InitialMoneyRequestMessage;
+import ca.etsmtl.cours.log735.message.MoneyAmountRequestMessage;
 import ca.etsmtl.cours.log735.message.TotalMoneyRequestMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
 
@@ -58,12 +58,12 @@ public class CaptureStateThread extends Observable{
 					isAlreadyCapturing = true;
 					//capture d'état initial de soi-meme
 					totalCaptureMoneyAmount = branch.getInitialMoney();
-					captureText = "Succursale #" + branch.getMyId() + " :" + branch.getInitialMoney() + "$\n";
+					captureText = "Succursale #" + branch.getMyId() + " :" + branch.getCurrentMoney() + "$\n";
 					//on recupere les montants initiaux de chaque autre succursale.
 					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){
 						boolean knowInitialMoneyAmt = false;
 						//on regarde voir si on a le montant initial.
-						for(UUID subId : branch.getBranchesInitialMoneyAmtList().keySet()){
+						for(UUID subId : branch.getBranchesMoneyAmtList().keySet()){
 							if(id.equals(subId)){
 								knowInitialMoneyAmt = true;
 								break;
@@ -76,12 +76,12 @@ public class CaptureStateThread extends Observable{
 								if(tmpId.equals(id)){
 									ObjectOutputStream tmpSendOOS = branch.getOutgoingChannelsByUUID().get(tmpId);
 									try {
-										tmpSendOOS.writeObject(new InitialMoneyRequestMessage(branch.getMyId()));
+										tmpSendOOS.writeObject(new MoneyAmountRequestMessage(branch.getMyId()));
 										System.out.println(" .. done ! Waiting for reponse..");
 										boolean keepWaiting = true;
 										while(keepWaiting){
 											//wait for response..
-											if (branch.getBranchesInitialMoneyAmtList().containsKey(id)){
+											if (branch.getBranchesMoneyAmtList().containsKey(id)){
 												keepWaiting = false;
 												System.out.println(" got the response ..");
 												break;
@@ -95,8 +95,8 @@ public class CaptureStateThread extends Observable{
 							}
 						}
 						//sinon on ajoute le montant initial de cette succursale.
-						captureText += "Succursale #" + id + " :" + branch.getBranchesInitialMoneyAmtList().get(id) + "$\n";
-						totalCaptureMoneyAmount += branch.getBranchesInitialMoneyAmtList().get(id);
+						captureText += "Succursale #" + id + " :" + branch.getBranchesMoneyAmtList().get(id) + "$\n";
+						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
 					
 					//demande de la somme d'argent total dans le systeme a la banque une fois
