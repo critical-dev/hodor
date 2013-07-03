@@ -10,13 +10,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.bank.Bank;
 import ca.etsmtl.cours.log735.message.HelloMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
 
-public class Branch extends Observable {
+public class Branch extends Observable implements Observer{
 	
 	public static final int BANK_PORT = 4343;
 	public static final int BRANCHES_PORT = 4444;
@@ -184,5 +185,14 @@ public class Branch extends Observable {
 
 	public void setBankIp(InetAddress bankIp) {
 		this.bankIp = bankIp;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		if(arg0 instanceof CaptureStateThread){
+			//it means we must update the GUI:
+			lastCaptureStateMessage = (String) arg1;
+			enforceDisplayCaptureState();
+		}
 	}
 }
