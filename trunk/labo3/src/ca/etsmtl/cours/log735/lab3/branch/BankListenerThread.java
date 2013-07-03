@@ -43,6 +43,9 @@ public class BankListenerThread extends Thread {
 					System.out.println("BankListener: Got Bank updated money amount total.");
 					branch.setBankLastKnownTotalMoneyAmount(((TotalMoneyResponseMessage) input).getAmount());
 				}
+				else{
+					System.out.println("Unrecognized message sent...");
+				}
 				ois.close();
 				conn.close();
 				System.out.println("BankListener: Connection closed.");
