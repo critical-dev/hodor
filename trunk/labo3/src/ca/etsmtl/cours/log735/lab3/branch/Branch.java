@@ -222,6 +222,7 @@ public class Branch extends Observable implements Observer{
 			//it means we must update the GUI:
 			System.out.println("Updating branch capture message due to CapStateThread finished.");
 			lastCaptureStateMessage = (String) arg1;
+			System.out.println("lastCaptureMessage is " + lastCaptureStateMessage);
 			if(isRequestingCapture){
 				enforceDisplayCaptureState();
 				isRequestingCapture = false;

@@ -115,6 +115,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					tempChannelsText = "";
 					tempCaptureMoneyAmt = 0;
 					for(UUID curBranchId : branch.getIncomingChannelsByUUID().keySet()){
+						System.out.println("Listening to channels..");
 						ObjectInputStream tmpOIS = branch.getIncomingChannelsByUUID().get(curBranchId);
 						//for each object input stream we add a channel watcher thread
 						ChannelWatcherThread channelWatcher = new ChannelWatcherThread(tmpOIS);
@@ -124,6 +125,7 @@ public class CaptureStateThread extends Observable implements Observer{
 							channelWatcher.startWatching();
 						}
 						else{
+							System.out.println("Added " + watchers.size() + " channel watchers.");
 							//si les watchers sont deja ajoutes, on met a jout les canaux
 							tempChannelsText = "";
 							tempCaptureMoneyAmt = 0;
@@ -153,7 +155,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			System.out.println("Final capture for this branch : ");
 			System.out.println(captureRunnerTxnText);
 			setChanged();
-			System.out.println("CaptureStateRunner finished, notifying CapState.");
+			System.out.println("CaptureStateRunner finished, notifying Branch.");
 			notifyObservers(captureRunnerTxnText);
 			clearChanged();
 		}
