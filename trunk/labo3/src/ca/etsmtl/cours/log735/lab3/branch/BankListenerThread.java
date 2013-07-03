@@ -37,7 +37,7 @@ public class BankListenerThread extends Thread {
 				if (input instanceof HashMap) {
 					branch.refreshBranchList((HashMap<UUID, InetAddress>) input);
 					System.out.println("BankListener: Processed branch list update.");
-					int updatedMoneyAmount = (Integer) ois.readObject();
+					int updatedMoneyAmount = ((TotalMoneyResponseMessage) ois.readObject()).getAmount();
 					System.out.println("BankListener: Got Bank updated money amount total.");
 					branch.setBankLastKnownTotalMoneyAmount(updatedMoneyAmount);
 				}
