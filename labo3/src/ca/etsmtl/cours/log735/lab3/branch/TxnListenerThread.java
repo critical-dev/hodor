@@ -96,7 +96,7 @@ public class TxnListenerThread extends Thread {
 							ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
 							debug = "Sending response to requestor .. ";
 							oos.writeObject(new MoneyAmountResponseMessage(branch.getMyId(), branch.getCurrentMoney()));
-							System.out.println("Sent initial money amount to " + id + " [" + branch.getInitialMoney() + "]");
+							System.out.println("Sent money amount to " + id + " [" + branch.getInitialMoney() + "]");
 							break;
 						}
 					}

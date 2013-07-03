@@ -75,7 +75,7 @@ public class BranchUpdaterThread extends Thread{
 				for(UUID branchId : currentBranches.keySet()){
 					if(branchId.equals(((TotalMoneyRequestMessage) newBranchMessage).getFrom())){
 						System.out.println("Notifying branch " + branchId + " of total money in the system : " + Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM);
-						Socket client = new Socket(newBranchInetAddress, Branch.BANK_PORT);
+						Socket client = new Socket(currentBranches.get(branchId), Branch.BANK_PORT);
 						oos = new ObjectOutputStream(client.getOutputStream());
 						oos.writeObject(new TotalMoneyResponseMessage(Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM));
 						oos.close();
