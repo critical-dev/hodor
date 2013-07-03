@@ -65,8 +65,9 @@ public class TxnListenerThread extends Thread {
 					if(branch.getCapStateRequestors().remove(requestorId)) System.out.println("Removed " + requestorId + " from requestors list.");
 					else System.out.println("Failed to remove " + requestorId + " from requestors list.");
 					ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(requestorId);
-					oos.writeObject(new StateMessage(branch.getMyId(), branch.getLastCaptureStateMessage()));
-					System.out.println("Sent StateMessage to requestor " + requestorId);
+					//test
+					oos.writeObject(new StateMessage(branch.getMyId(), branch.getMyCaptureStateThread().getCaptureText()));
+					System.out.println("Sent StateMessage " +branch.getMyCaptureStateThread().getCaptureText() + " to requestor " + requestorId);
 				}
 				else if (input instanceof StateMessage){
 					UUID requestorId = ((StateMessage) input).getFrom();
@@ -74,6 +75,7 @@ public class TxnListenerThread extends Thread {
 					branch.mergeCaptureMessageInfo(((StateMessage) input).getOutput());
 					if(branch.getNbStateAnswersReceived() == branch.getPeerIds().size()){
 						branch.enforceDisplayCaptureState();//show the global state if all answers were received.
+						branch.setNbStateAnswersReceived(0);
 					}
 					else{
 						System.out.println("Branch, received state from : " + requestorId + ", awaiting other states..");
