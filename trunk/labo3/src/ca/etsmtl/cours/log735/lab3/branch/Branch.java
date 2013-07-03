@@ -84,7 +84,7 @@ public class Branch extends Observable {
 	 * */
 	public void enforceDisplayCaptureState() {
 		setChanged();
-		notifyObservers("GLOBAL STATE :\n" + lastCaptureStateMessage);
+		notifyObservers("*************************\nGLOBAL STATE :\n Succursale d'origine de la capture : #" + myId + "\n" + lastCaptureStateMessage + "\n***************************");
 		clearChanged();
 	}
 		

@@ -167,6 +167,14 @@ public class CaptureStateThread extends Observable{
 			captureRunner = new CaptureRunner();
 			captureRunner.start();
 		}
+		else{
+			try {
+				//force a 2 secs sleep to let the capture runner stop.
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public String getCaptureText() {
