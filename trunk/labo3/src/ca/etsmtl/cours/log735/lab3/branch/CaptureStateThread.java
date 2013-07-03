@@ -107,13 +107,17 @@ public class CaptureStateThread extends Observable implements Observer{
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
 					
-					//demande de la somme d'argent total dans le systeme a la banque une fois
-					Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT = 0;
+					//reset de la somme d'argent total connue par la banque
+					branch.setBankLastKnownTotalMoneyAmount(0);
+					//demande de la somme d'argent total dans le systeme a la banque
 					new BankTotalAmountFetcherThread(branch).start();
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					System.out.println("Waiting for bank last known total amount update.");
+					while(branch.getBankLastKnownTotalMoneyAmount() == 0){
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				else{
@@ -146,9 +150,9 @@ public class CaptureStateThread extends Observable implements Observer{
 							}
 						}
 					}
-					tempChannelsText += "Somme connue par la banque : " + Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT + "$\n";
+					tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
-					tempChannelsText += "ETAT GLOBAL " + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
+					tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 				}
 			}//fin while keepCapturing
 			//on ferme les watchers
