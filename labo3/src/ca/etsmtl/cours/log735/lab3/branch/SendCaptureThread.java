@@ -33,8 +33,11 @@ public class SendCaptureThread extends Thread {
 				sleep(delay * 1000);
 				UUID id = branch.getOutgoingChannelsByUUID().keySet().iterator().next();
 				ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
+				System.out.println("I AM " + branch.getMyId());
+				System.out.println("Sending START capture message request to id : " + id);
 				oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
 				sleep(delay / 2); //sleep for about half the time before sending the response request.
+				System.out.println("Sending STOP capture message request to id : " + id);
 				oos.writeObject(new StateSyncStopMessage(branch.getMyId()));//request the previous state capture's response
 			} catch (InterruptedException e) {
 				System.err.println(">> Error occured in sendCaptureThread !");
