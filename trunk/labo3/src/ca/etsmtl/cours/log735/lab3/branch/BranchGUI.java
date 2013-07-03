@@ -36,6 +36,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	
 	private JTextArea operationsLog;
 	private JScrollPane operationsLogSP;
+	private JButton stateCapture;
 	JTextField bankIpField;
 	JTextField initialMoneyField;
 	JDialog startDialog;
@@ -45,7 +46,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		JPanel panel = new JPanel(new BorderLayout());
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
-		JButton stateCapture = new JButton("Capture d'état");
+		stateCapture = new JButton("Capture d'état");
 		stateCapture.setActionCommand(COMMAND_CAPTURE);
 		stateCapture.addActionListener(this);
 		toolbar.add(stateCapture);
@@ -98,7 +99,17 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	public void actionPerformed(ActionEvent action) {
 		String command = action.getActionCommand();
 		if (command.equals(COMMAND_CAPTURE)) {
-			//branch.captureState(true);
+			if(!branch.isRequestingCapture() && stateCapture.isEnabled()){
+				try {
+					stateCapture.setEnabled(false);
+					branch.captureState();
+					stateCapture.setEnabled(true);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		if (command.equals(COMMAND_START)) {
 			try {
