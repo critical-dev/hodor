@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import ca.etsmtl.cours.log735.message.MoneyAmountRequestMessage;
 import ca.etsmtl.cours.log735.message.MoneyAmountResponseMessage;
+import ca.etsmtl.cours.log735.message.StateMessage;
 import ca.etsmtl.cours.log735.message.StateSyncStartMessage;
 import ca.etsmtl.cours.log735.message.StateSyncStopMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
@@ -29,12 +30,10 @@ public class TxnListenerThread extends Thread {
 	   qu’une capture de l’état global est en cours à partir de celle-ci. Le processus doit être transparent et ne 
 	   doit pas affecter significativement la performance du système.
 	 * */
-	private HashMap<UUID, CaptureStateThread> captureStateThreadsByUUIDs;
 
 	public TxnListenerThread(Branch branch, ObjectInputStream ois) {
 		this.branch = branch;
 		this.ois = ois;
-		captureStateThreadsByUUIDs = new HashMap<UUID, CaptureStateThread>();
 	}
 	
 	@Override
@@ -46,69 +45,54 @@ public class TxnListenerThread extends Thread {
 					branch.recvMoney(((TxnMessage) input).getFrom(), ((TxnMessage) input).getAmount());
 				}
 				else if (input instanceof StateSyncStartMessage){
-					//if we receive a state sync message check to see whether
-					//we already has a capture state or not (for the requestor), if we did, set the mode accordingly.
+					//if we receive a state sync start message, add the requestor to the list
+					//of requestor
 					UUID requestorId = ((StateSyncStartMessage) input).getFrom();
-					boolean captureStateThreadExistsForRequestor = false;
-					for(UUID curRequestorId : captureStateThreadsByUUIDs.keySet()){
-						if(requestorId.equals(curRequestorId)){
-							captureStateThreadExistsForRequestor = true;
-							break;
-						}
-					}
-					if(!captureStateThreadExistsForRequestor){
-						//on cree un nouveau thread de capture d'etat qui commence l'enregistrement
-						//des sa construction
-						captureStateThreadsByUUIDs.put(requestorId, new CaptureStateThread(branch));
-					}
-					else{
-						//on set l'etat du fil de capture a vrai a nouveau
-						captureStateThreadsByUUIDs.get(requestorId).setCaptureMode(CaptureStateThread.START_CAPTURE);
+					//only one request per branch supported for now
+					if(!branch.getCapStateRequestors().contains(requestorId) && !requestorId.equals(branch.getMyId())){
+						branch.getCapStateRequestors().add(requestorId);//add the requestor
+						branch.getMyCaptureStateThread().setCaptureMode(CaptureStateThread.START_CAPTURE);
 					}
 				}
 				else if (input instanceof StateSyncStopMessage){
-					//if we received a request to stop the capture, check to see
-					//which capture state thread to stop, depending on the requestor's UUID.
+					//if we received a request to stop the capture, stop the capture
+					//and return to the requestor
 					UUID requestorId = ((StateSyncStopMessage) input).getFrom();
-					boolean captureStateThreadExistsForRequestor = false;
-					for(UUID curRequestorId : captureStateThreadsByUUIDs.keySet()){
-						if(requestorId.equals(curRequestorId)){
-							captureStateThreadExistsForRequestor = true;
-							break;
-						}
-					}
-					if(captureStateThreadExistsForRequestor){
-						//on arrete l'enregistrement et on renvoie au "requestor" notre etat.
-						CaptureStateThread captureThreadToStop = captureStateThreadsByUUIDs.get(requestorId);
-						captureThreadToStop.setCaptureMode(CaptureStateThread.STOP_CAPTURE);
+					branch.getMyCaptureStateThread().setCaptureMode(CaptureStateThread.STOP_CAPTURE);
+					System.out.println("Received Stop Capture Message, stopping capture.");
+					if(branch.getCapStateRequestors().remove(requestorId)) System.out.println("Removed " + requestorId + " from requestors list.");
+					else System.out.println("Failed to remove " + requestorId + " from requestors list.");
+					ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(requestorId);
+					oos.writeObject(new StateMessage(branch.getMyId(), branch.getLastCaptureStateMessage()));
+					System.out.println("Sent StateMessage to requestor " + requestorId);
+				}
+				else if (input instanceof StateMessage){
+					UUID requestorId = ((StateMessage) input).getFrom();
+					branch.setNbStateAnswersReceived(branch.getNbStateAnswersReceived() + 1);
+					branch.mergeCaptureMessageInfo(((StateMessage) input).getOutput());
+					if(branch.getNbStateAnswersReceived() == branch.getPeerIds().size()){
+						branch.enforceDisplayCaptureState();//show the global state if all answers were received.
 					}
 					else{
-						//purement pour des fins de debuggage, si on recoit une requete de fin d'enregistrement
-						//mais qu'on avait jamais commence, on ne fait rien...
+						System.out.println("Branch, received state from : " + requestorId + ", awaiting other states..");
 					}
 				}
 				else if (input instanceof MoneyAmountRequestMessage){
 					//get the channel corresponding to the passed in id and reply to it.
 					System.out.println("Got an initial money request message ..");
-					String debug = "Could not find requestor in my list..";
-					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){
-						if(id.equals(((MoneyAmountRequestMessage) input).getFrom())){
-							ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
-							debug = "Sending response to requestor .. ";
-							oos.writeObject(new MoneyAmountResponseMessage(branch.getMyId(), branch.getCurrentMoney()));
-							System.out.println("Sent money amount to " + id + " [" + branch.getInitialMoney() + "]");
-							break;
-						}
-					}
-					System.out.println(debug);
+					UUID requestorId = ((MoneyAmountRequestMessage) input).getFrom();
+					ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(requestorId);
+					oos.writeObject(new MoneyAmountResponseMessage(branch.getMyId(), branch.getCurrentMoney()));
+					System.out.println("Sent money amount to requestor " + requestorId + " [" + branch.getCurrentMoney() + "]");
+					
 				}
 				else if (input instanceof MoneyAmountResponseMessage){
-					System.out.println("Received response to initial money request message .. proceeeding");
+					System.out.println("Received response to money request message .. updating that branch's money amount");
 					//if we've received a response to out money request message, add amount to list
-					Integer initialMoneyAmtFromBranch = ((MoneyAmountResponseMessage) input).getAmount();
-					UUID fromBranchId = ((MoneyAmountResponseMessage) input).getFrom();
+					Integer moneyAmtFromBranch = ((MoneyAmountResponseMessage) input).getAmount();
+					UUID requestorId = ((MoneyAmountResponseMessage) input).getFrom();
 					//update our list of initial money amounts.
-					branch.getBranchesMoneyAmtList().put(fromBranchId, initialMoneyAmtFromBranch);
+					branch.getBranchesMoneyAmtList().put(requestorId, moneyAmtFromBranch);
 				}
 			} catch (IOException e) {
 				if(e instanceof java.io.OptionalDataException){

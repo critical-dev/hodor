@@ -24,13 +24,15 @@ public class Branch extends Observable implements Observer{
 	
 	private volatile int bankLastKnownTotalMoneyAmount = 0;
 	
-	private boolean isAlreadyCapturing;
+	private boolean isRequestingCapture;
+	private String lastCaptureStateMessageHeader = "";
 	private String lastCaptureStateMessage = "";
 	
 	private int initialMoney;
 	private int currentMoney;
 	
 	private List<UUID> peerIds = new LinkedList<UUID>();
+	private int nbStateAnswersReceived = 0;
 	private UUID myId = UUID.randomUUID();
 
 	private InetAddress bankIp;
@@ -40,11 +42,15 @@ public class Branch extends Observable implements Observer{
 	private HashMap<UUID, ObjectOutputStream> outgoingChannelsByUUID;
 	private HashMap<UUID, ObjectInputStream> incomingChannelsByUUID;
 	private HashMap<UUID, Integer> branchesMoneyAmtList;
+	private CaptureStateThread myCaptureStateThread;
+	private List<UUID> capStateRequestors;
 	
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
 		this.initialMoney = initialMoney;
 		this.currentMoney = this.initialMoney;
 		this.bankIp = bankIp;
+		myCaptureStateThread = new CaptureStateThread(this);
+		capStateRequestors = new ArrayList<UUID>();
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
 		branchesMoneyAmtList = new HashMap<UUID, Integer>();
@@ -54,7 +60,7 @@ public class Branch extends Observable implements Observer{
 		//other in-branch treatment can be performed.
 		new BankListenerThread(this).start();
 		new BranchesListenerThread(this).start();
-		isAlreadyCapturing = false;
+		isRequestingCapture = false;
 		Socket sock = new Socket(bankIp, Bank.PORT);
 		System.out.println("Branch: Connected to bank.");
 		ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
@@ -85,7 +91,7 @@ public class Branch extends Observable implements Observer{
 	 * */
 	public void enforceDisplayCaptureState() {
 		setChanged();
-		notifyObservers("*************************\nGLOBAL STATE :\n Succursale d'origine de la capture : #" + myId + "\n" + lastCaptureStateMessage + "\n*************************\n");
+		notifyObservers(lastCaptureStateMessageHeader + lastCaptureStateMessage + "\n*************************\n");
 		clearChanged();
 	}
 		
@@ -106,12 +112,12 @@ public class Branch extends Observable implements Observer{
 		}
 	}
 
-	public boolean isCapturing() {
-		return isAlreadyCapturing;
+	public boolean isRequestingCapture() {
+		return isRequestingCapture;
 	}
 
-	public void setCapturing(boolean isCapturing) {
-		this.isAlreadyCapturing = isCapturing;
+	public void setRequestingCapture(boolean isRequestingCapture) {
+		this.isRequestingCapture = isRequestingCapture;
 	}
 	
 	public void sendMoney() {
@@ -183,6 +189,10 @@ public class Branch extends Observable implements Observer{
 		return bankIp;
 	}
 
+	public List<UUID> getPeerIds() {
+		return peerIds;
+	}
+
 	public void setBankIp(InetAddress bankIp) {
 		this.bankIp = bankIp;
 	}
@@ -192,10 +202,17 @@ public class Branch extends Observable implements Observer{
 		System.out.println("Branch notified");
 		if(arg0 instanceof CaptureStateThread){
 			//it means we must update the GUI:
-			System.out.println("Changing message.");
+			System.out.println("Updating branch capture message due to CapStateThread finished.");
 			lastCaptureStateMessage = (String) arg1;
-			enforceDisplayCaptureState();
+			if(isRequestingCapture){
+				enforceDisplayCaptureState();
+				isRequestingCapture = false;
+			}
 		}
+	}
+	
+	public void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
+		this.lastCaptureStateMessage += otherBranchCaptureMessage;
 	}
 
 	public synchronized int getBankLastKnownTotalMoneyAmount() {
@@ -206,5 +223,39 @@ public class Branch extends Observable implements Observer{
 			int bankLastKnownTotalMoneyAmount) {
 		this.bankLastKnownTotalMoneyAmount = bankLastKnownTotalMoneyAmount;
 		System.out.println("New bank money amount set.");
+	}
+
+	public CaptureStateThread getMyCaptureStateThread() {
+		return myCaptureStateThread;
+	}
+
+	public void setMyCaptureStateThread(CaptureStateThread myCaptureStateThread) {
+		this.myCaptureStateThread = myCaptureStateThread;
+	}
+
+	public List<UUID> getCapStateRequestors() {
+		return capStateRequestors;
+	}
+
+	public void setCapStateRequestors(List<UUID> capStateRequestors) {
+		this.capStateRequestors = capStateRequestors;
+	}
+
+	public int getNbStateAnswersReceived() {
+		return nbStateAnswersReceived;
+	}
+
+	public void setNbStateAnswersReceived(int nbStateAnswersReceived) {
+		this.nbStateAnswersReceived = nbStateAnswersReceived;
+	}
+
+	public String getLastCaptureStateMessageHeader() {
+		return lastCaptureStateMessageHeader;
+	}
+
+	public void setLastCaptureStateMessageHeader(
+			String lastCaptureStateMessageHeader) {
+		this.lastCaptureStateMessageHeader = "*************************\nGLOBAL STATE :\n Succursale d'origine de la capture : #" + myId + "\n";
+		this.lastCaptureStateMessageHeader += lastCaptureStateMessageHeader + "\n";
 	}
 }
