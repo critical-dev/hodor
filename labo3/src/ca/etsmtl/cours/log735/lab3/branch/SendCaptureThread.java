@@ -34,7 +34,7 @@ public class SendCaptureThread extends Thread {
 			if(System.getProperty("os.name").toLowerCase().contains("windows 7")){
 				int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 				try {
-					branch.setBankLastKnownTotalMoneyAmount(0);
+					branch.setBankLastKnownTotalMoneyAmount(branch.getInitialMoney());
 					//we request a capture but first we need the updated bank total
 					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){						
 						ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
