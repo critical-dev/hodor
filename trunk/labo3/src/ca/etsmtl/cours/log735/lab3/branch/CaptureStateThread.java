@@ -60,8 +60,8 @@ public class CaptureStateThread extends Observable implements Observer{
 		@Override
 		public void run(){
 			System.out.println("Debut de l'enregistrement..");
-			new BankTotalAmountFetcherThread(branch).start();
-			System.out.println("Asked bank for last known total amount update.");
+			//new BankTotalAmountFetcherThread(branch).start();
+			//System.out.println("Asked bank for last known total amount update.");
 			while(keepCapturing){
 				if(!isAlreadyCapturing){
 					System.out.println("Enregistrement des etats globaux initiaux");
