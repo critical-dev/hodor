@@ -189,8 +189,10 @@ public class Branch extends Observable implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		System.out.println("Branch notified");
 		if(arg0 instanceof CaptureStateThread){
 			//it means we must update the GUI:
+			System.out.println("Changing message.");
 			lastCaptureStateMessage = (String) arg1;
 			enforceDisplayCaptureState();
 		}
