@@ -26,7 +26,8 @@ public class SendCaptureThread extends Thread {
 	@Override
 	public void run() {
 		//while (true) {
-		if(System.getProperty("os.name").toLowerCase().equals("windows")){
+		System.out.println();
+		if(System.getProperty("os.name").toLowerCase().contains("windows")){
 			int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 			try {
 				sleep(delay * 1000);
