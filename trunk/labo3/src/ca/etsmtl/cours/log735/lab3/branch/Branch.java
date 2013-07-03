@@ -22,7 +22,7 @@ public class Branch extends Observable implements Observer{
 	public static final int BANK_PORT = 4343;
 	public static final int BRANCHES_PORT = 4444;
 	
-	private int bankLastKnownTotalMoneyAmount = 0;
+	private volatile int bankLastKnownTotalMoneyAmount = 0;
 	
 	private boolean isAlreadyCapturing;
 	private String lastCaptureStateMessage = "";
@@ -198,11 +198,11 @@ public class Branch extends Observable implements Observer{
 		}
 	}
 
-	public int getBankLastKnownTotalMoneyAmount() {
+	public synchronized int getBankLastKnownTotalMoneyAmount() {
 		return bankLastKnownTotalMoneyAmount;
 	}
 
-	public void setBankLastKnownTotalMoneyAmount(
+	public synchronized void setBankLastKnownTotalMoneyAmount(
 			int bankLastKnownTotalMoneyAmount) {
 		this.bankLastKnownTotalMoneyAmount = bankLastKnownTotalMoneyAmount;
 	}
