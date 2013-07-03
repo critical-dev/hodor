@@ -26,10 +26,11 @@ public class SendCaptureThread extends Thread {
 	@Override
 	public void run() {
 		//while (true) {
+		if(System.getProperty("os.name").toLowerCase().equals("windows")){
 			int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 			try {
 				sleep(delay * 1000);
-				UUID id = peerIDs.get((int) (peerIDs.size() * Math.random()));
+				UUID id = branch.getOutgoingChannelsByUUID().keySet().iterator().next();
 				ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
 				oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
 				sleep(delay / 2); //sleep for about half the time before sending the response request.
@@ -42,5 +43,6 @@ public class SendCaptureThread extends Thread {
 				e.printStackTrace();
 			}
 		//}
+		}
 	}
 }
