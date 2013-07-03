@@ -68,9 +68,11 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 		JPanel panel = new JPanel(new MigLayout());
 		panel.add(new JLabel("Adresse IP de la banque"));
 		bankIpField = new JTextField(30);
+		bankIpField.setText("192.168.2.17");
 		panel.add(bankIpField, "wrap");
 		panel.add(new JLabel("Montant initial"));
 		initialMoneyField = new JTextField(30);
+		initialMoneyField.setText("1111");
 		panel.add(initialMoneyField, "wrap");
 		JButton startButton = new JButton("Démarrer");
 		startButton.setActionCommand(COMMAND_START);
