@@ -114,6 +114,9 @@ public class TxnListenerThread extends Thread {
 				if(e instanceof java.io.OptionalDataException){
 					System.err.println("OptionalDataException occurred .. " + e.getLocalizedMessage());
 				}
+				else if(e instanceof java.net.SocketException){
+					System.err.println("Java Socket exception occured, aborting..");break;
+				}			
 				else{
 					e.printStackTrace();
 				}
