@@ -25,6 +25,7 @@ public class Branch extends Observable {
 	private String lastCaptureStateMessage = "";
 	
 	private int initialMoney;
+	private int currentMoney;
 	
 	private List<UUID> peerIds = new LinkedList<UUID>();
 	private UUID myId = UUID.randomUUID();
@@ -37,6 +38,7 @@ public class Branch extends Observable {
 	
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
 		this.initialMoney = initialMoney;
+		this.currentMoney = this.initialMoney;
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
 		branchesInitialMoneyAmtList = new HashMap<UUID, Integer>();
@@ -107,14 +109,14 @@ public class Branch extends Observable {
 	}
 	
 	public void sendMoney() {
-		if (initialMoney > 0 && !outgoingChannels.isEmpty()) {
+		if (currentMoney > 0 && !outgoingChannels.isEmpty()) {
 			ObjectOutputStream channel = outgoingChannels.get((int) (outgoingChannels.size() * Math.random()));
-			int amount = (int) (initialMoney * Math.random());
+			int amount = (int) (currentMoney * Math.random());
 			try {
 				channel.writeObject(new TxnMessage(myId, amount));
-				initialMoney -= amount;
+				currentMoney -= amount;
 				setChanged();
-				notifyObservers("Sent " + amount + " [ " + initialMoney + "$]\n");
+				notifyObservers("Sent " + amount + " [ " + currentMoney + "$]\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -123,9 +125,9 @@ public class Branch extends Observable {
 	}
 
 	public void recvMoney(UUID from, int amount) {
-		initialMoney += amount;
+		currentMoney += amount;
 		setChanged();
-		notifyObservers("Received " + amount + "$ from " + from + " [ " + initialMoney + "$]\n");
+		notifyObservers("Received " + amount + "$ from " + from + " [ " + currentMoney + "$]\n");
 	}
 
 	public UUID getMyId() {
