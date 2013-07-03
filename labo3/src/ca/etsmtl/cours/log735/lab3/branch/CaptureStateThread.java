@@ -16,7 +16,6 @@ import ca.etsmtl.cours.log735.message.TxnMessage;
  * */
 public class CaptureStateThread extends Observable{
 	
-	private volatile String captureText;
 	private volatile String tempChannelsText;
 	private volatile int totalCaptureMoneyAmount;
 	private volatile int tempCaptureMoneyAmt;
@@ -31,7 +30,6 @@ public class CaptureStateThread extends Observable{
 		keepCapturing = true;
 		totalCaptureMoneyAmount = 0;
 		tempCaptureMoneyAmt = 0;
-		captureText = "";
 		captureRunner = new CaptureRunner();
 		captureRunner.start();
 	}
@@ -43,6 +41,7 @@ public class CaptureStateThread extends Observable{
 	class CaptureRunner extends Thread{
 
 		private volatile boolean isAlreadyCapturing;
+		private String captureText = "";
 		
 		public CaptureRunner(){
 			isAlreadyCapturing = false;
@@ -128,7 +127,11 @@ public class CaptureStateThread extends Observable{
 			captureText += tempChannelsText;
 			System.out.println("Final capture for this branch : ");
 			System.out.println(captureText);
-		}		
+		}
+		
+		public String getCaptureText(){
+			return captureText;
+		}
 	}
 	
 	/**
@@ -153,6 +156,6 @@ public class CaptureStateThread extends Observable{
 	}
 
 	public String getCaptureText() {
-		return captureText;
+		return captureRunner.getCaptureText();
 	}
 }

@@ -36,7 +36,7 @@ public class SendCaptureThread extends Thread {
 				System.out.println("I AM " + branch.getMyId());
 				System.out.println("Sending START capture message request to id : " + id);
 				oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
-				sleep(delay / 2); //sleep for about half the time before sending the response request.
+				sleep(6000); //sleep again
 				System.out.println("Sending STOP capture message request to id : " + id);
 				oos.writeObject(new StateSyncStopMessage(branch.getMyId()));//request the previous state capture's response
 			} catch (InterruptedException e) {
