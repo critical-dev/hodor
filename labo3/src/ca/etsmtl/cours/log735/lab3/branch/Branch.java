@@ -79,7 +79,7 @@ public class Branch extends Observable {
 	 * */
 	public void enforceDisplayCaptureState() {
 		setChanged();
-		notifyObservers(lastCaptureStateMessage);
+		notifyObservers("GLOBAL STATE :\n" + lastCaptureStateMessage);
 		clearChanged();
 	}
 		
