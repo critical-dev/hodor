@@ -34,14 +34,18 @@ public class SendCaptureThread extends Thread {
 				int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 				try {
 					sleep(delay * 1000);
-					UUID id = branch.getOutgoingChannelsByUUID().keySet().iterator().next();
-					ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
-					//System.out.println("I AM " + branch.getMyId());
-					System.out.println("Sending START capture message request to id : " + id);
-					oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
-					sleep(6000); //sleep again
-					System.out.println("Sending STOP capture message request to id : " + id);
-					oos.writeObject(new StateSyncStopMessage(branch.getMyId()));//request the previous state capture's response
+					//we request a capture
+					branch.setRequestingCapture(true);
+					System.out.println(branch.getMyId() + " initiating a global capture.");
+					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){						
+						ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
+						//System.out.println("I AM " + branch.getMyId());
+						System.out.println("Sending START capture message request to id : " + id);
+						oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
+						sleep(6000); //sleep again
+						System.out.println("Sending STOP capture message request to id : " + id);
+						oos.writeObject(new StateSyncStopMessage(branch.getMyId()));//request the previous state capture's response
+					}
 				} catch (InterruptedException e) {
 					System.err.println(">> Error occured in sendCaptureThread !");
 					e.printStackTrace();

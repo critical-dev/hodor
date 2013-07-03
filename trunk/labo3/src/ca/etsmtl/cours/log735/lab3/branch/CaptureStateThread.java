@@ -37,7 +37,7 @@ public class CaptureStateThread extends Observable implements Observer{
 		tempCaptureMoneyAmt = 0;
 		channelTransactions = new HashMap<ObjectInputStream, Integer>();
 		captureRunner = new CaptureRunner(this);
-		captureRunner.start();
+		//captureRunner.start();
 	}
 	
 	/*
@@ -47,7 +47,7 @@ public class CaptureStateThread extends Observable implements Observer{
 	class CaptureRunner extends Thread{
 
 		private volatile boolean isAlreadyCapturing;
-		private String captureText = "";
+		private String captureRunnerTxnText = "";
 		private CaptureStateThread internalRef;
 		private ArrayList<ChannelWatcherThread> watchers;
 		
@@ -66,7 +66,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					isAlreadyCapturing = true;
 					//capture d'état initial de soi-meme
 					totalCaptureMoneyAmount = branch.getInitialMoney();
-					captureText = "Succursale #" + branch.getMyId() + " :" + branch.getCurrentMoney() + "$\n";
+					captureRunnerTxnText = "Succursale #" + branch.getMyId() + " :" + branch.getCurrentMoney() + "$\n";
 					//on recupere les montants initiaux de chaque autre succursale.
 					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){
 						boolean knowInitialMoneyAmt = false;
@@ -103,7 +103,8 @@ public class CaptureStateThread extends Observable implements Observer{
 							}
 						}
 						//sinon on ajoute le montant initial de cette succursale.
-						captureText += "Succursale #" + id + " :" + branch.getBranchesMoneyAmtList().get(id) + "$\n";
+						captureRunnerTxnText += "Succursale #" + id + " :" + branch.getBranchesMoneyAmtList().get(id) + "$\n";
+						branch.setLastCaptureStateMessageHeader(captureRunnerTxnText);
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
 				}
@@ -148,12 +149,12 @@ public class CaptureStateThread extends Observable implements Observer{
 				watchers.get(i).stopWatching();
 			}
 			//une fois la capture terminee, on assemble le tout ensemble.
-			captureText += tempChannelsText;
+			captureRunnerTxnText = tempChannelsText;
 			System.out.println("Final capture for this branch : ");
-			System.out.println(captureText);
+			System.out.println(captureRunnerTxnText);
 			setChanged();
 			System.out.println("CaptureStateRunner finished, notifying CapState.");
-			notifyObservers(captureText);
+			notifyObservers(captureRunnerTxnText);
 			clearChanged();
 		}
 		
@@ -168,7 +169,7 @@ public class CaptureStateThread extends Observable implements Observer{
 		}
 		
 		public String getCaptureText(){
-			return captureText;
+			return captureRunnerTxnText;
 		}
 	}
 	
