@@ -81,11 +81,6 @@ public class TxnListenerThread extends Thread {
 						//on arrete l'enregistrement et on renvoie au "requestor" notre etat.
 						CaptureStateThread captureThreadToStop = captureStateThreadsByUUIDs.get(requestorId);
 						captureThreadToStop.setCaptureMode(CaptureStateThread.STOP_CAPTURE);
-						//on recupere le texte final du fil de capture et on indique que la branche doit etre
-						//mise-a-jour.
-						branch.setLastCaptureStateMessage(captureThreadToStop.getCaptureText());
-						//on force le gui a afficher le message de capture.
-						branch.enforceDisplayCaptureState();
 					}
 					else{
 						//purement pour des fins de debuggage, si on recoit une requete de fin d'enregistrement
