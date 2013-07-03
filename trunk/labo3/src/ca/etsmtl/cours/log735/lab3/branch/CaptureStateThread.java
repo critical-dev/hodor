@@ -50,8 +50,10 @@ public class CaptureStateThread extends Observable{
 		
 		@Override
 		public void run(){
+			System.out.println("Debut de l'enregistrement..");
 			while(keepCapturing){
 				if(!isAlreadyCapturing){
+					System.out.println("Enregistrement des etats globaux initiaux");
 					isAlreadyCapturing = true;
 					//capture d'état initial de soi-meme
 					totalCaptureMoneyAmount = branch.getInitialMoney();
@@ -73,7 +75,7 @@ public class CaptureStateThread extends Observable{
 								if(tmpId.equals(id)){
 									ObjectOutputStream tmpSendOOS = branch.getOutgoingChannelsByUUID().get(tmpId);
 									try {
-										tmpSendOOS.writeObject(new InitialMoneyRequestMessage(branch.getMyId()));
+										tmpSendOOS.writeObject(new InitialMoneyRequestMessage(tmpId));
 										System.out.println(" .. done ! Waiting for reponse..");
 										boolean keepWaiting = true;
 										while(keepWaiting){
@@ -83,7 +85,6 @@ public class CaptureStateThread extends Observable{
 												System.out.println(" got the response ..");
 												break;
 											}
-											else System.out.print(".");
 										}
 									} catch (IOException e) {
 										e.printStackTrace();
