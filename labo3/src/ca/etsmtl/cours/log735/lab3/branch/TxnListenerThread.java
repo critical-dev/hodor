@@ -111,8 +111,12 @@ public class TxnListenerThread extends Thread {
 					branch.getBranchesMoneyAmtList().put(fromBranchId, initialMoneyAmtFromBranch);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				if(e instanceof java.io.OptionalDataException){
+					System.err.println("OptionalDataException occurred .. " + e.getLocalizedMessage());
+				}
+				else{
+					e.printStackTrace();
+				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
