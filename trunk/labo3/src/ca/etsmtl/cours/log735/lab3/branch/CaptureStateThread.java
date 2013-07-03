@@ -109,7 +109,6 @@ public class CaptureStateThread extends Observable implements Observer{
 					}//fin for pour toutes les succursales
 				}
 				else{
-					System.out.println("Went in");
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.

@@ -108,8 +108,8 @@ public class Branch extends Observable implements Observer{
 			addOutgoingChannel(oos);
 			System.out.println("Adding new oos");
 			outgoingChannelsByUUID.put(id,oos);
-			System.out.println("Adding new ois");
 			incomingChannelsByUUID.put(id, new ObjectInputStream(sock.getInputStream()));
+			System.out.println("Adding new ois [total:" + incomingChannelsByUUID.size() + "]");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -233,6 +233,9 @@ public class Branch extends Observable implements Observer{
 	}
 	
 	public void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
+		if(lastCaptureStateMessage.contains("Somme")){
+			otherBranchCaptureMessage.substring(0, otherBranchCaptureMessage.indexOf("Somme") != -1 ? otherBranchCaptureMessage.indexOf("Somme") : otherBranchCaptureMessage.length()-1);
+		}
 		this.lastCaptureStateMessage += otherBranchCaptureMessage;
 	}
 
