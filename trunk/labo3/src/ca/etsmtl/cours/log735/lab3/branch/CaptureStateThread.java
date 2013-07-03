@@ -112,13 +112,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					//demande de la somme d'argent total dans le systeme a la banque
 					new BankTotalAmountFetcherThread(branch).start();
 					System.out.println("Waiting for bank last known total amount update.");
-					while(branch.getBankLastKnownTotalMoneyAmount() == 0){
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
+					checkTotalAmount();
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
@@ -168,6 +162,16 @@ public class CaptureStateThread extends Observable implements Observer{
 			System.out.println("CaptureStateRunner finished, notifying CapState.");
 			notifyObservers(captureText);
 			clearChanged();
+		}
+		
+		private synchronized void checkTotalAmount(){
+			while(branch.getBankLastKnownTotalMoneyAmount() == 0){
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		public String getCaptureText(){
