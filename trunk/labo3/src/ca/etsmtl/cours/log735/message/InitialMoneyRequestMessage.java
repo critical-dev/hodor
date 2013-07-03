@@ -2,7 +2,7 @@ package ca.etsmtl.cours.log735.message;
 
 import java.util.UUID;
 
-public class TotalMoneyRequestMessage extends Message{
+public class InitialMoneyRequestMessage extends Message{
 	
 	/**
 	 * 
@@ -10,7 +10,7 @@ public class TotalMoneyRequestMessage extends Message{
 	private static final long serialVersionUID = -3852882976154252485L;
 	private UUID fromId;
 	
-	public TotalMoneyRequestMessage(UUID fromId){
+	public InitialMoneyRequestMessage(UUID fromId){
 		this.fromId = fromId;
 	}
 	

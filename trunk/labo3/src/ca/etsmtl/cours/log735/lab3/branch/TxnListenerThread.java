@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.UUID;
 
+import ca.etsmtl.cours.log735.message.InitialMoneyRequestMessage;
+import ca.etsmtl.cours.log735.message.InitialMoneyResponseMessage;
 import ca.etsmtl.cours.log735.message.MoneyAmountRequestMessage;
 import ca.etsmtl.cours.log735.message.MoneyAmountResponseMessage;
 import ca.etsmtl.cours.log735.message.StateMessage;
@@ -76,6 +78,23 @@ public class TxnListenerThread extends Thread {
 					else{
 						System.out.println("Branch, received state from : " + requestorId + ", awaiting other states..");
 					}
+				}
+				else if (input instanceof InitialMoneyRequestMessage){
+					//get the channel corresponding to the passed in id and reply to it.
+					System.out.println("Got an initial money request message ..");
+					UUID requestorId = ((InitialMoneyRequestMessage) input).getFrom();
+					ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(requestorId);
+					oos.writeObject(new InitialMoneyResponseMessage(branch.getMyId(), branch.getInitialMoney()));
+					System.out.println("Sent INITIAL money amount to requestor " + requestorId + " [" + branch.getInitialMoney() + "]");
+					
+				}
+				else if (input instanceof InitialMoneyResponseMessage){
+					System.out.println("Received response to INITIAL money request message .. updating total bank amount");
+					//if we've received a response to out money request message, add amount to list
+					Integer moneyAmtFromBranch = ((InitialMoneyResponseMessage) input).getAmount();
+					UUID requestorId = ((InitialMoneyResponseMessage) input).getFrom();
+					//update our list of initial money amounts.
+					branch.setBankLastKnownTotalMoneyAmount(branch.getBankLastKnownTotalMoneyAmount() + moneyAmtFromBranch);
 				}
 				else if (input instanceof MoneyAmountRequestMessage){
 					//get the channel corresponding to the passed in id and reply to it.
