@@ -79,7 +79,7 @@ public class CaptureStateThread extends Observable implements Observer{
 						}
 						//si on ne l'a pas on va le chercher.
 						if(!knowInitialMoneyAmt){
-							System.out.print("Attempting to request initial money amount to branch.. " + id);
+							System.out.print("Attempting to request money amount to branch.. " + id);
 							for(UUID tmpId : branch.getOutgoingChannelsByUUID().keySet()){
 								if(tmpId.equals(id)){
 									ObjectOutputStream tmpSendOOS = branch.getOutgoingChannelsByUUID().get(tmpId);
@@ -141,6 +141,7 @@ public class CaptureStateThread extends Observable implements Observer{
 							}
 						}
 					}
+					System.out.println("Before loop");
 					while(Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == 0){
 						//if we haven't updated yet, wait just a bit..
 						try {
@@ -149,6 +150,7 @@ public class CaptureStateThread extends Observable implements Observer{
 							e.printStackTrace();
 						}
 					}
+					System.out.println("After loop");
 					tempChannelsText += "Somme connue par la banque : " + Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
 					tempChannelsText += "ETAT GLOBAL " + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
