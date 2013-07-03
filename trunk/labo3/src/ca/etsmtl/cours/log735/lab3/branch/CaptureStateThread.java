@@ -60,6 +60,8 @@ public class CaptureStateThread extends Observable implements Observer{
 		@Override
 		public void run(){
 			System.out.println("Debut de l'enregistrement..");
+			new BankTotalAmountFetcherThread(branch).start();
+			System.out.println("Asked bank for last known total amount update.");
 			while(keepCapturing){
 				if(!isAlreadyCapturing){
 					System.out.println("Enregistrement des etats globaux initiaux");
@@ -106,13 +108,6 @@ public class CaptureStateThread extends Observable implements Observer{
 						captureText += "Succursale #" + id + " :" + branch.getBranchesMoneyAmtList().get(id) + "$\n";
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
-					
-					//reset de la somme d'argent total connue par la banque
-					branch.setBankLastKnownTotalMoneyAmount(0);
-					//demande de la somme d'argent total dans le systeme a la banque
-					new BankTotalAmountFetcherThread(branch).start();
-					System.out.println("Waiting for bank last known total amount update.");
-					checkTotalAmount();
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
