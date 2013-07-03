@@ -75,7 +75,7 @@ public class CaptureStateThread extends Observable{
 								if(tmpId.equals(id)){
 									ObjectOutputStream tmpSendOOS = branch.getOutgoingChannelsByUUID().get(tmpId);
 									try {
-										tmpSendOOS.writeObject(new InitialMoneyRequestMessage(tmpId));
+										tmpSendOOS.writeObject(new InitialMoneyRequestMessage(branch.getMyId()));
 										System.out.println(" .. done ! Waiting for reponse..");
 										boolean keepWaiting = true;
 										while(keepWaiting){
