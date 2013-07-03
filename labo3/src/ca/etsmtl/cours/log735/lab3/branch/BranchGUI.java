@@ -96,7 +96,7 @@ public class BranchGUI extends JFrame implements Observer, ActionListener {
 	public void actionPerformed(ActionEvent action) {
 		String command = action.getActionCommand();
 		if (command.equals(COMMAND_CAPTURE)) {
-			branch.captureState(true);
+			//branch.captureState(true);
 		}
 		if (command.equals(COMMAND_START)) {
 			try {

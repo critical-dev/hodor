@@ -25,6 +25,7 @@ public class Bank extends Observable{
 	private BankListener bankListener;
 	
 	public static int BANK_TOTAL_MONEY_IN_THE_SYSTEM;
+	public static int BANK_TOTAL_NB_CLIENTS;
 	
 	/**
 	 * Port utilise par la banque pour ecouter ET se connecter aux succursales.
@@ -33,6 +34,7 @@ public class Bank extends Observable{
 	
 	public Bank(){
 		BANK_TOTAL_MONEY_IN_THE_SYSTEM = 0;
+		BANK_TOTAL_NB_CLIENTS = 0;
 		currentBranches = new HashMap<UUID, InetAddress>();
 		try {
 			bankSocket = new ServerSocket(PORT);
@@ -60,6 +62,7 @@ public class Bank extends Observable{
 					try {
 						Socket newBranch = bankSocket.accept();
 						System.out.println("New connexion received !");
+						Bank.BANK_TOTAL_NB_CLIENTS++;
 						new BranchUpdaterThread(newBranch, currentBranches).start();
 						setChanged();
 						notifyObservers();
