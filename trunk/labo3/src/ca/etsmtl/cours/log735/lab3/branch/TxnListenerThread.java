@@ -69,7 +69,7 @@ public class TxnListenerThread extends Thread {
 				else if (input instanceof StateSyncStopMessage){
 					//if we received a request to stop the capture, check to see
 					//which capture state thread to stop, depending on the requestor's UUID.
-					UUID requestorId = ((StateSyncStartMessage) input).getFrom();
+					UUID requestorId = ((StateSyncStopMessage) input).getFrom();
 					boolean captureStateThreadExistsForRequestor = false;
 					for(UUID curRequestorId : captureStateThreadsByUUIDs.keySet()){
 						if(requestorId.equals(curRequestorId)){
