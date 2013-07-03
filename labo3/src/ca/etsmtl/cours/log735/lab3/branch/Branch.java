@@ -106,7 +106,9 @@ public class Branch extends Observable implements Observer{
 			Socket sock = new Socket(peer, Branch.BRANCHES_PORT);
 			ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
 			addOutgoingChannel(oos);
+			System.out.println("Adding new oos");
 			outgoingChannelsByUUID.put(id,oos);
+			System.out.println("Adding new ois");
 			incomingChannelsByUUID.put(id, new ObjectInputStream(sock.getInputStream()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
