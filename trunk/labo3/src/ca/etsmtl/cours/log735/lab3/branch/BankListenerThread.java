@@ -40,6 +40,7 @@ public class BankListenerThread extends Thread {
 					System.out.println("BankListener: Processed branch list update.");
 				}
 				else if(input instanceof TotalMoneyResponseMessage){
+					System.out.println("BankListener: Got Bank updated money amount total.");
 					Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT = ((TotalMoneyResponseMessage) input).getAmount();
 				}
 				ois.close();

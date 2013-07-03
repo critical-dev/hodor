@@ -110,6 +110,11 @@ public class CaptureStateThread extends Observable implements Observer{
 					//demande de la somme d'argent total dans le systeme a la banque une fois
 					Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT = 0;
 					new BankTotalAmountFetcherThread(branch).start();
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
@@ -141,16 +146,6 @@ public class CaptureStateThread extends Observable implements Observer{
 							}
 						}
 					}
-					System.out.println("Before loop");
-					while(Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == 0){
-						//if we haven't updated yet, wait just a bit..
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					System.out.println("After loop");
 					tempChannelsText += "Somme connue par la banque : " + Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
 					tempChannelsText += "ETAT GLOBAL " + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
