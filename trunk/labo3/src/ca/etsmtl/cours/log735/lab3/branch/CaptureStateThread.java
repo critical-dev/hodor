@@ -132,7 +132,7 @@ public class CaptureStateThread extends Observable implements Observer{
 							//update temp capture transaction amount if we have new transaction values
 							for(ObjectInputStream ois : channelTransactions.keySet()){
 								for(UUID bId : branch.getIncomingChannelsByUUID().keySet()){
-									if(branch.getIncomingChannelsByUUID().get(bId) == ois){
+									if(branch.getIncomingChannelsByUUID().get(bId).equals(ois)){
 										tempChannelsText += "Canal S" + branch.getMyId() + " - S" + bId + ": " + channelTransactions.get(ois) + "$\n";
 									}
 								}
