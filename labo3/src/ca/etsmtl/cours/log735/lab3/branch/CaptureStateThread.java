@@ -188,6 +188,9 @@ public class CaptureStateThread extends Observable implements Observer{
 	public void setCaptureMode(boolean mode){
 		keepCapturing = mode;
 		if(keepCapturing){
+			System.out.println("Resetting capture state thread for " + branch.getMyId());
+			totalCaptureMoneyAmount = 0;
+			tempCaptureMoneyAmt = 0;
 			channelTransactions = new HashMap<ObjectInputStream, Integer>();
 			captureRunner = new CaptureRunner(this);
 			captureRunner.start();

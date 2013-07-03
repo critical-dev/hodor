@@ -18,19 +18,18 @@ public class SendCaptureThread extends Thread {
 	private Branch branch;
 	
 	public SendCaptureThread(Branch branch) {
-		this.branch = branch;
+		this.branch = branch;		
+	}
+
+	@Override
+	public void run() {
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}//initial sleep time, just to make sure we have enough clients..
-	}
-
-	@Override
-	public void run() {
 		while (true) {
-			System.out.println();
 			if(System.getProperty("os.name").toLowerCase().contains("windows 7")){
 				int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 				try {
