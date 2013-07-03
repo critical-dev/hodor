@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.UUID;
 
+import ca.etsmtl.cours.log735.message.TotalMoneyResponseMessage;
+
 public class BankListenerThread extends Thread {
 
 	private Branch branch;
@@ -36,6 +38,9 @@ public class BankListenerThread extends Thread {
 				if (input instanceof HashMap) {
 					branch.refreshBranchList((HashMap<UUID, InetAddress>) input);
 					System.out.println("BankListener: Processed branch list update.");
+				}
+				else if(input instanceof TotalMoneyResponseMessage){
+					Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT = ((TotalMoneyResponseMessage) input).getAmount();
 				}
 				ois.close();
 				conn.close();
