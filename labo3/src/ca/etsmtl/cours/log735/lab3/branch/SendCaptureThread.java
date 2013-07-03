@@ -30,7 +30,7 @@ public class SendCaptureThread extends Thread {
 			e.printStackTrace();
 		}//initial sleep time, just to make sure we have enough clients..
 		while (true) {
-			if(System.getProperty("os.name").toLowerCase().contains("windows 7")){
+			//if(System.getProperty("os.name").toLowerCase().contains("windows 7")){
 				int delay = (int) (DELAY_MIN + (DELAY_MAX - DELAY_MIN) * Math.random());
 				try {
 					sleep(delay * 1000);
@@ -49,7 +49,7 @@ public class SendCaptureThread extends Thread {
 					System.err.println(">> Error occured in sendCaptureThread !");
 					e.printStackTrace();
 				}
-			}
+			//}
 		}
 	}
 }
