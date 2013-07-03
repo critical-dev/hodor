@@ -15,6 +15,8 @@ import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.bank.Bank;
 import ca.etsmtl.cours.log735.message.HelloMessage;
+import ca.etsmtl.cours.log735.message.StateSyncStartMessage;
+import ca.etsmtl.cours.log735.message.StateSyncStopMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
 
 public class Branch extends Observable implements Observer{
@@ -110,6 +112,22 @@ public class Branch extends Observable implements Observer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void captureState() throws IOException, InterruptedException{
+		setRequestingCapture(true);
+		System.out.println(getMyId() + " initiating a global capture.");
+		getMyCaptureStateThread().setCaptureMode(CaptureStateThread.START_CAPTURE);
+		for(UUID id : getOutgoingChannelsByUUID().keySet()){						
+			ObjectOutputStream oos = getOutgoingChannelsByUUID().get(id);
+			//System.out.println("I AM " + branch.getMyId());
+			System.out.println("Sending START capture message request to id : " + id);
+			oos.writeObject(new StateSyncStartMessage(getMyId()));//request a state capture
+			Thread.sleep(6000); //sleep again
+			System.out.println("Sending STOP capture message request to id : " + id);
+			oos.writeObject(new StateSyncStopMessage(getMyId()));//request the previous state capture's response
+		}
+		getMyCaptureStateThread().setCaptureMode(CaptureStateThread.STOP_CAPTURE);
 	}
 
 	public boolean isRequestingCapture() {

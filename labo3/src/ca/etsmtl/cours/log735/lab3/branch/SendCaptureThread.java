@@ -43,17 +43,8 @@ public class SendCaptureThread extends Thread {
 						oos.writeObject(new InitialMoneyRequestMessage(branch.getMyId()));
 					}
 					sleep(delay * 1000);
-					branch.setRequestingCapture(true);
-					System.out.println(branch.getMyId() + " initiating a global capture.");
-					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){						
-						ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
-						//System.out.println("I AM " + branch.getMyId());
-						System.out.println("Sending START capture message request to id : " + id);
-						oos.writeObject(new StateSyncStartMessage(branch.getMyId()));//request a state capture
-						sleep(6000); //sleep again
-						System.out.println("Sending STOP capture message request to id : " + id);
-						oos.writeObject(new StateSyncStopMessage(branch.getMyId()));//request the previous state capture's response
-					}
+					branch.captureState();
+					
 				} catch (InterruptedException e) {
 					System.err.println(">> Error occured in sendCaptureThread !");
 					e.printStackTrace();
