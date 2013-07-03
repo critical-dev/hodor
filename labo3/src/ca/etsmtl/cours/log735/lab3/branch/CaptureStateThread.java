@@ -151,7 +151,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					}
 					tempChannelsText += "Somme connue par la banque : " + Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
-					tempChannelsText += "ETAT GLOBAL " + (Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
+					tempChannelsText += "ETAT GLOBAL " + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 				}
 			}//fin while keepCapturing
 			//on ferme les watchers
@@ -164,6 +164,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			System.out.println("Final capture for this branch : ");
 			System.out.println(captureText);
 			setChanged();
+			System.out.println("CaptureStateRunner finished, notifying CapState.");
 			notifyObservers(captureText);
 			clearChanged();
 		}
@@ -201,6 +202,7 @@ public class CaptureStateThread extends Observable implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		System.out.println("CapState notified");
 		if(arg0 instanceof ChannelWatcherThread){
 			//we are being notified that there are incoming transactions for the channel.
 			if(keepCapturing){

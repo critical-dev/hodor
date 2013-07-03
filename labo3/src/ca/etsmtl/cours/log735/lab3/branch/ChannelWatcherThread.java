@@ -42,11 +42,13 @@ public class ChannelWatcherThread extends Observable{
 	
 	public void startWatching(){
 		if(!internalWatcher.isAlive() && internalWatcher!=null){
+			System.out.println("ChannelWatcher started.");
 			internalWatcher.start();
 		}
 	}
 	
 	public void stopWatching(){
+		System.out.println("ChannelWatcher stopping.");
 		keepWatchingChannel = false;
 	}
 	
