@@ -17,19 +17,21 @@ public class BankListenerThread extends Thread {
 
 	public BankListenerThread(Branch branch) {
 		this.branch = branch;
-		try {
+		/*try {
 			sock = new ServerSocket(Branch.BANK_PORT);
 			System.out.println("BankListener: Listening for connection from bank...");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override
 	public void run() {
+		System.out.println("BankListener: Listening for connection from bank...");
 		while (true) {
 			try {
+				sock = new ServerSocket(Branch.BANK_PORT);
 				Socket conn = sock.accept();
 				System.out.println("BankListener: Bank connected.");
 				ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
