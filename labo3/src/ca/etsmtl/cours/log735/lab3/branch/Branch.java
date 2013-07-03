@@ -21,6 +21,8 @@ public class Branch extends Observable {
 	public static final int BANK_PORT = 4343;
 	public static final int BRANCHES_PORT = 4444;
 	
+	public static int BANK_LAST_KNOWN_TOTAL_AMOUNT = 0;
+	
 	private boolean isAlreadyCapturing;
 	private String lastCaptureStateMessage = "";
 	
@@ -29,9 +31,11 @@ public class Branch extends Observable {
 	
 	private List<UUID> peerIds = new LinkedList<UUID>();
 	private UUID myId = UUID.randomUUID();
+
+	private InetAddress bankIp;
 	
+	//for other branches
 	private List<ObjectOutputStream> outgoingChannels = new LinkedList<ObjectOutputStream>();
-	
 	private HashMap<UUID, ObjectOutputStream> outgoingChannelsByUUID;
 	private HashMap<UUID, ObjectInputStream> incomingChannelsByUUID;
 	private HashMap<UUID, Integer> branchesInitialMoneyAmtList;
@@ -39,6 +43,7 @@ public class Branch extends Observable {
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
 		this.initialMoney = initialMoney;
 		this.currentMoney = this.initialMoney;
+		this.bankIp = bankIp;
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
 		branchesInitialMoneyAmtList = new HashMap<UUID, Integer>();
@@ -165,5 +170,15 @@ public class Branch extends Observable {
 
 	public void setLastCaptureStateMessage(String lastCaptureStateMessage) {
 		this.lastCaptureStateMessage = lastCaptureStateMessage;
+	}
+	
+	//needed to request total money amount to bank
+
+	public InetAddress getBankIp() {
+		return bankIp;
+	}
+
+	public void setBankIp(InetAddress bankIp) {
+		this.bankIp = bankIp;
 	}
 }

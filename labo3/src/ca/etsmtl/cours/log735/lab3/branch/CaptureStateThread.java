@@ -3,11 +3,13 @@ package ca.etsmtl.cours.log735.lab3.branch;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.Observable;
 import java.util.UUID;
 
 import ca.etsmtl.cours.log735.lab3.bank.Bank;
 import ca.etsmtl.cours.log735.message.InitialMoneyRequestMessage;
+import ca.etsmtl.cours.log735.message.TotalMoneyRequestMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
 
 /**
@@ -96,6 +98,10 @@ public class CaptureStateThread extends Observable{
 						captureText += "Succursale #" + id + " :" + branch.getBranchesInitialMoneyAmtList().get(id) + "$\n";
 						totalCaptureMoneyAmount += branch.getBranchesInitialMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
+					
+					//demande de la somme d'argent total dans le systeme a la banque une fois
+					Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT = 0;
+					new GetBankTotalAmountThread().start();
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
@@ -118,7 +124,15 @@ public class CaptureStateThread extends Observable{
 							System.err.println(">> Expected error : " + e.getMessage());
 						}
 					}
-					tempChannelsText += "Somme connue par la banque : " + Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM + "$\n";
+					while(Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT == 0){
+						//if we haven't updated yet, wait a bit..
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					tempChannelsText += "Somme connue par la banque : " + Branch.BANK_LAST_KNOWN_TOTAL_AMOUNT + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
 					tempChannelsText += "ETAT GLOBAL " + (Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (Bank.BANK_TOTAL_MONEY_IN_THE_SYSTEM - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 				}
@@ -157,5 +171,23 @@ public class CaptureStateThread extends Observable{
 
 	public String getCaptureText() {
 		return captureRunner.getCaptureText();
+	}
+	
+	class GetBankTotalAmountThread extends Thread{
+		public GetBankTotalAmountThread(){};
+		@Override
+		public void run(){
+			try {
+				Socket client = new Socket(branch.getBankIp(), Bank.PORT);
+				ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+				System.out.println("Sent request to get bank total money amount.");
+				oos.writeObject(new TotalMoneyRequestMessage(branch.getMyId()));
+				oos.close();
+				client.close();
+			} catch (IOException e) {
+				System.err.println(">> Error occured when requesting total money amount to bank.");
+				e.printStackTrace();
+			}
+		}
 	}
 }
