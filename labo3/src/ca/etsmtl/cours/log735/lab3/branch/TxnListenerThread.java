@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.UUID;
 
-import ca.etsmtl.cours.log735.message.InitialMoneyRequestMessage;
-import ca.etsmtl.cours.log735.message.InitialMoneyResponseMessage;
+import ca.etsmtl.cours.log735.message.MoneyAmountRequestMessage;
+import ca.etsmtl.cours.log735.message.MoneyAmountResponseMessage;
 import ca.etsmtl.cours.log735.message.StateSyncStartMessage;
 import ca.etsmtl.cours.log735.message.StateSyncStopMessage;
 import ca.etsmtl.cours.log735.message.TxnMessage;
@@ -92,28 +92,28 @@ public class TxnListenerThread extends Thread {
 						//mais qu'on avait jamais commence, on ne fait rien...
 					}
 				}
-				else if (input instanceof InitialMoneyRequestMessage){
+				else if (input instanceof MoneyAmountRequestMessage){
 					//get the channel corresponding to the passed in id and reply to it.
 					System.out.println("Got an initial money request message ..");
 					String debug = "Could not find requestor in my list..";
 					for(UUID id : branch.getOutgoingChannelsByUUID().keySet()){
-						if(id.equals(((InitialMoneyRequestMessage) input).getFrom())){
+						if(id.equals(((MoneyAmountRequestMessage) input).getFrom())){
 							ObjectOutputStream oos = branch.getOutgoingChannelsByUUID().get(id);
 							debug = "Sending response to requestor .. ";
-							oos.writeObject(new InitialMoneyResponseMessage(branch.getMyId(), branch.getInitialMoney()));
+							oos.writeObject(new MoneyAmountResponseMessage(branch.getMyId(), branch.getCurrentMoney()));
 							System.out.println("Sent initial money amount to " + id + " [" + branch.getInitialMoney() + "]");
 							break;
 						}
 					}
 					System.out.println(debug);
 				}
-				else if (input instanceof InitialMoneyResponseMessage){
+				else if (input instanceof MoneyAmountResponseMessage){
 					System.out.println("Received response to initial money request message .. proceeeding");
 					//if we've received a response to out money request message, add amount to list
-					Integer initialMoneyAmtFromBranch = ((InitialMoneyResponseMessage) input).getAmount();
-					UUID fromBranchId = ((InitialMoneyResponseMessage) input).getFrom();
+					Integer initialMoneyAmtFromBranch = ((MoneyAmountResponseMessage) input).getAmount();
+					UUID fromBranchId = ((MoneyAmountResponseMessage) input).getFrom();
 					//update our list of initial money amounts.
-					branch.getBranchesInitialMoneyAmtList().put(fromBranchId, initialMoneyAmtFromBranch);
+					branch.getBranchesMoneyAmtList().put(fromBranchId, initialMoneyAmtFromBranch);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

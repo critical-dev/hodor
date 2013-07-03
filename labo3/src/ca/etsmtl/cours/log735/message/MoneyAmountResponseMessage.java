@@ -2,7 +2,7 @@ package ca.etsmtl.cours.log735.message;
 
 import java.util.UUID;
 
-public class InitialMoneyResponseMessage extends Message{
+public class MoneyAmountResponseMessage extends Message{
 	
 	
 	
@@ -14,7 +14,7 @@ public class InitialMoneyResponseMessage extends Message{
 	private UUID from;
 	private int amount;
 
-	public InitialMoneyResponseMessage(UUID from, int amount) {
+	public MoneyAmountResponseMessage(UUID from, int amount) {
 		this.from = from;
 		this.amount = amount;
 	}

@@ -38,7 +38,7 @@ public class Branch extends Observable {
 	private List<ObjectOutputStream> outgoingChannels = new LinkedList<ObjectOutputStream>();
 	private HashMap<UUID, ObjectOutputStream> outgoingChannelsByUUID;
 	private HashMap<UUID, ObjectInputStream> incomingChannelsByUUID;
-	private HashMap<UUID, Integer> branchesInitialMoneyAmtList;
+	private HashMap<UUID, Integer> branchesMoneyAmtList;
 	
 	public Branch(int initialMoney, InetAddress bankIp) throws IOException {
 		this.initialMoney = initialMoney;
@@ -46,7 +46,7 @@ public class Branch extends Observable {
 		this.bankIp = bankIp;
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
-		branchesInitialMoneyAmtList = new HashMap<UUID, Integer>();
+		branchesMoneyAmtList = new HashMap<UUID, Integer>();
 		
 		//this order is very important, keep the bank listener thread first
 		//it basically enforces that branches are mutually connected before any
@@ -84,7 +84,7 @@ public class Branch extends Observable {
 	 * */
 	public void enforceDisplayCaptureState() {
 		setChanged();
-		notifyObservers("*************************\nGLOBAL STATE :\n Succursale d'origine de la capture : #" + myId + "\n" + lastCaptureStateMessage + "\n***************************");
+		notifyObservers("*************************\nGLOBAL STATE :\n Succursale d'origine de la capture : #" + myId + "\n" + lastCaptureStateMessage + "\n*************************\n");
 		clearChanged();
 	}
 		
@@ -143,13 +143,17 @@ public class Branch extends Observable {
 		return initialMoney;
 	}
 
-	public HashMap<UUID, Integer> getBranchesInitialMoneyAmtList() {
-		return branchesInitialMoneyAmtList;
+	public int getCurrentMoney() {
+		return currentMoney;
 	}
 
-	public void setBranchesInitialMoneyAmtList(
+	public HashMap<UUID, Integer> getBranchesMoneyAmtList() {
+		return branchesMoneyAmtList;
+	}
+
+	public void setBranchesMoneyAmtList(
 			HashMap<UUID, Integer> branchesInitialMoneyAmtList) {
-		this.branchesInitialMoneyAmtList = branchesInitialMoneyAmtList;
+		this.branchesMoneyAmtList = branchesInitialMoneyAmtList;
 	}
 
 	public List<ObjectOutputStream> getOutgoingChannels() {
