@@ -147,6 +147,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					for(int i = 0; i < transactionsOfIds.size(); i++){
 						for(UUID id : transactionsOfIds.get(i).keySet()){
 							System.out.println("Updating transaction channels..");
+							System.out.println("Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n");
 							//only one each time
 							tempChannelsText += "Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
 							tempCaptureMoneyAmt += transactionsOfIds.get(i).get(id);
