@@ -162,6 +162,7 @@ public class Branch extends Observable implements Observer{
 		currentMoney += amount;
 		HashMap<UUID, Integer> transaction = new HashMap<UUID, Integer>();
 		transaction.put(from, new Integer(amount));
+		System.out.println("Added transaction");
 		transactions.put(System.currentTimeMillis(), transaction);
 		setChanged();
 		notifyObservers("Received " + amount + "$ from " + from + " [ " + currentMoney + "$]\n");
