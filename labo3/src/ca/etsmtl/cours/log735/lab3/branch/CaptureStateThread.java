@@ -160,11 +160,6 @@ public class CaptureStateThread extends Observable implements Observer{
 					tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 					
 					System.out.println(tempChannelsText);
-					try {
-						sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
 			}//fin while keepCapturing
 			
