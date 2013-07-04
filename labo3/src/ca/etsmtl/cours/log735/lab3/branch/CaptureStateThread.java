@@ -25,7 +25,7 @@ public class CaptureStateThread extends Observable implements Observer{
 	private volatile Branch branch;
 	private volatile boolean keepCapturing;
 	private CaptureRunner captureRunner;
-	private HashMap<ObjectInputStream, String> channelTransactions;//to keep track of the transactions.
+	//private HashMap<ObjectInputStream, String> channelTransactions;//to keep track of the transactions.
 	private List<UUID> idsToTrack;
 	private List<HashMap<UUID, Integer>> transactionsOfIds;
 	
@@ -39,7 +39,7 @@ public class CaptureStateThread extends Observable implements Observer{
 		keepCapturing = true;
 		totalCaptureMoneyAmount = 0;
 		tempCaptureMoneyAmt = 0;
-		channelTransactions = new HashMap<ObjectInputStream, String>();
+		//channelTransactions = new HashMap<ObjectInputStream, String>();
 		captureRunner = new CaptureRunner(this);
 		//captureRunner.start();
 	}
@@ -197,7 +197,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			tempCaptureMoneyAmt = 0;
 			idsToTrack = new ArrayList<UUID>();
 			transactionsOfIds = new ArrayList<HashMap<UUID,Integer>>();
-			channelTransactions = new HashMap<ObjectInputStream, String>();
+			//channelTransactions = new HashMap<ObjectInputStream, String>();
 			captureRunner = new CaptureRunner(this);
 			captureRunner.start();
 		}

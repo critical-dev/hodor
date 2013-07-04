@@ -110,8 +110,8 @@ public class Branch extends Observable implements Observer{
 			System.out.println("Adding new oos");
 			outgoingChannelsByUUID.put(id,oos);
 			ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
-			incomingChannelsByUUID.put(id,ois);
-			System.out.println("Adding new ois [total:" + incomingChannelsByUUID.size() + "]");
+			//incomingChannelsByUUID.put(id,ois);
+			//System.out.println("Adding new ois [total:" + incomingChannelsByUUID.size() + "]");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,9 +196,9 @@ public class Branch extends Observable implements Observer{
 		return outgoingChannelsByUUID;
 	}
 
-	public HashMap<UUID, ObjectInputStream> getIncomingChannelsByUUID() {
+	/*public HashMap<UUID, ObjectInputStream> getIncomingChannelsByUUID() {
 		return incomingChannelsByUUID;
-	}
+	}*/
 
 	public String getLastCaptureStateMessage() {
 		return lastCaptureStateMessage;
