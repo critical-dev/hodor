@@ -27,8 +27,8 @@ public class Branch extends Observable implements Observer{
 	private volatile int bankLastKnownTotalMoneyAmount = 0;
 	
 	private boolean isRequestingCapture;
-	private String lastCaptureStateMessageHeader = "";
-	private String lastCaptureStateMessage = "";
+	private volatile String lastCaptureStateMessageHeader = "";
+	private volatile String lastCaptureStateMessage = "";
 	
 	private int initialMoney;
 	private int currentMoney;
