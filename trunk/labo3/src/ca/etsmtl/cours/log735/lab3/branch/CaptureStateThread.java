@@ -113,14 +113,14 @@ public class CaptureStateThread extends Observable implements Observer{
 						branch.setLastCaptureStateMessageHeader(captureRunnerTxnText);
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
-					tempChannelsText = "";
-					tempCaptureMoneyAmt = 0;
+					
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
-					
+					tempChannelsText = "";
+					tempCaptureMoneyAmt = 0;
 					//System.out.println("Number transactions : " + branch.getTransactions().size());
 					for(Long txnTime : branch.getTransactions().keySet()){
 						if(txnTime > currentTime){
@@ -147,7 +147,6 @@ public class CaptureStateThread extends Observable implements Observer{
 					for(int i = 0; i < transactionsOfIds.size(); i++){
 						for(UUID id : transactionsOfIds.get(i).keySet()){
 							System.out.println("Updating transaction channels..");
-							System.out.println("Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n");
 							//only one each time
 							tempChannelsText += "Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
 							tempCaptureMoneyAmt += transactionsOfIds.get(i).get(id);
@@ -159,8 +158,13 @@ public class CaptureStateThread extends Observable implements Observer{
 					tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
 					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
 					tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
-				
 					
+					System.out.println(tempChannelsText);
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}//fin while keepCapturing
 			
