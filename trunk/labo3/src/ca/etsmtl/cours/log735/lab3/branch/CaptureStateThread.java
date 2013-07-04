@@ -113,54 +113,54 @@ public class CaptureStateThread extends Observable implements Observer{
 						branch.setLastCaptureStateMessageHeader(captureRunnerTxnText);
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
-					
+					tempChannelsText = "";
+					tempCaptureMoneyAmt = 0;
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
-					System.out.println("inside else");
-					tempChannelsText = "";
-					tempCaptureMoneyAmt = 0;
-					//System.out.println("Number transactions : " + branch.getTransactions().size());
-					for(Long txnTime : branch.getTransactions().keySet()){
-						if(txnTime > currentTime){
-							HashMap<UUID, Integer> transaction = branch.getTransactions().get(txnTime);
-							//only one element but easier this way:
-							for(UUID id : transaction.keySet()){
-								if(!idsToTrack.contains(id)){
-									idsToTrack.add(id);
-									transactionsOfIds.add(transaction);
-									//get all transactions for the capture time
-								}
-								else{
-									for(int i = 0; i < transactionsOfIds.size(); i++){
-										if(transactionsOfIds.get(i).containsKey(id)){
-											transactionsOfIds.remove(i);
-											break;
+					if(tempChannelsText.isEmpty() && tempCaptureMoneyAmt == 0){
+						//System.out.println("Number transactions : " + branch.getTransactions().size());
+						for(Long txnTime : branch.getTransactions().keySet()){
+							if(txnTime > currentTime){
+								HashMap<UUID, Integer> transaction = branch.getTransactions().get(txnTime);
+								//only one element but easier this way:
+								for(UUID id : transaction.keySet()){
+									if(!idsToTrack.contains(id)){
+										idsToTrack.add(id);
+										transactionsOfIds.add(transaction);
+										//get all transactions for the capture time
+									}
+									else{
+										for(int i = 0; i < transactionsOfIds.size(); i++){
+											if(transactionsOfIds.get(i).containsKey(id)){
+												transactionsOfIds.remove(i);
+												break;
+											}
 										}
 									}
 								}
 							}
 						}
-					}
-					
-					for(int i = 0; i < transactionsOfIds.size(); i++){
-						for(UUID id : transactionsOfIds.get(i).keySet()){
-							System.out.println("Updating transaction channels..");
-							//only one each time
-							tempChannelsText += "Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
-							tempCaptureMoneyAmt += transactionsOfIds.get(i).get(id);
+						
+						for(int i = 0; i < transactionsOfIds.size(); i++){
+							for(UUID id : transactionsOfIds.get(i).keySet()){
+								System.out.println("Updating transaction channels..");
+								//only one each time
+								tempChannelsText += "Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
+								tempCaptureMoneyAmt += transactionsOfIds.get(i).get(id);
+							}
 						}
+	
+						//tempCaptureMoneyAmt += Integer.parseInt(channelTransactions.get(ois).split("##")[1]);//we get the transaction value associated to that stream
+				
+						tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
+						tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
+						tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
+						
+						System.out.println(tempChannelsText);
 					}
-
-					//tempCaptureMoneyAmt += Integer.parseInt(channelTransactions.get(ois).split("##")[1]);//we get the transaction value associated to that stream
-			
-					tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
-					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
-					tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
-					
-					System.out.println(tempChannelsText);
 				}
 			}//fin while keepCapturing
 			
