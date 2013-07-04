@@ -241,7 +241,7 @@ public class Branch extends Observable implements Observer{
 		}
 	}
 	
-	public void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
+	public synchronized void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
 		if(otherBranchCaptureMessage.contains("Canal")){
 			if(!lastCaptureStateMessage.contains("Somme")){
 				this.lastCaptureStateMessage += otherBranchCaptureMessage;
