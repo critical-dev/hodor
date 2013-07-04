@@ -115,12 +115,11 @@ public class TxnListenerThread extends Thread {
 					//update our list of initial money amounts.
 					branch.getBranchesMoneyAmtList().put(requestorId, moneyAmtFromBranch);
 				}
-			} catch (IOException e) {
-				if(e instanceof java.io.OptionalDataException){
-					System.err.println("OptionalDataException occurred .. " + e.getLocalizedMessage());
-					e.printStackTrace();
-				}
-				else if(e instanceof java.net.SocketException){
+			} catch (java.io.OptionalDataException e){
+			
+			}
+			catch (IOException e) {
+				if(e instanceof java.net.SocketException){
 					System.err.println("Java Socket exception occured, aborting..");break;
 				}			
 				else{
