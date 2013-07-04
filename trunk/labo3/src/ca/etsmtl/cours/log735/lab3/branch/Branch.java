@@ -94,6 +94,9 @@ public class Branch extends Observable implements Observer{
 	 * */
 	public void enforceDisplayCaptureState() {
 		setChanged();
+		if(!lastCaptureStateMessage.contains("Canal")){
+			lastCaptureStateMessage += "[No data in channels during capture.]";
+		}
 		notifyObservers(lastCaptureStateMessageHeader + lastCaptureStateMessage + "\n*************************\n");
 		clearChanged();
 	}
@@ -229,7 +232,7 @@ public class Branch extends Observable implements Observer{
 		if(arg0 instanceof CaptureStateThread){
 			//it means we must update the GUI:
 			System.out.println("Updating branch capture message due to CapStateThread finished.");
-			lastCaptureStateMessage = (String) arg1;
+			mergeCaptureMessageInfo((String)arg1);
 			System.out.println("lastCaptureMessage is " + lastCaptureStateMessage);
 			if(isRequestingCapture){
 				enforceDisplayCaptureState();
@@ -239,10 +242,13 @@ public class Branch extends Observable implements Observer{
 	}
 	
 	public void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
-		if(lastCaptureStateMessage.contains("Somme")){
-			otherBranchCaptureMessage.substring(0, otherBranchCaptureMessage.indexOf("Somme") != -1 ? otherBranchCaptureMessage.indexOf("Somme") : otherBranchCaptureMessage.length()-1);
+		if(otherBranchCaptureMessage.contains("Canal")){
+			otherBranchCaptureMessage = otherBranchCaptureMessage.substring(otherBranchCaptureMessage.indexOf("Canal"), otherBranchCaptureMessage.indexOf("$",otherBranchCaptureMessage.indexOf("Canal")));
+			this.lastCaptureStateMessage += otherBranchCaptureMessage;
 		}
-		this.lastCaptureStateMessage += otherBranchCaptureMessage;
+		else if(!lastCaptureStateMessage.contains("Somme")){
+			this.lastCaptureStateMessage += otherBranchCaptureMessage;
+		}
 	}
 
 	public synchronized int getBankLastKnownTotalMoneyAmount() {
