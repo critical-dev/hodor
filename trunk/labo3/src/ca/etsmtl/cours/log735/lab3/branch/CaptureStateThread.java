@@ -161,7 +161,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					
 					System.out.println(tempChannelsText);
 					try {
-						Thread.sleep(5000);
+						sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
