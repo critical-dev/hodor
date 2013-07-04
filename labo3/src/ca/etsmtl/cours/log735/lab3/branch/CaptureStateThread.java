@@ -120,7 +120,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					//le message de fin d'ecoute.
 					tempChannelsText = "";
 					tempCaptureMoneyAmt = 0;
-					
+					System.out.println("Number transactions : " + branch.getTransactions().size());
 					for(Long txnTime : branch.getTransactions().keySet()){
 						if(txnTime > currentTime){
 							HashMap<UUID, Integer> transaction = branch.getTransactions().get(txnTime);
