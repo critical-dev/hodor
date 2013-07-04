@@ -28,7 +28,7 @@ public class Branch extends Observable implements Observer{
 	
 	private boolean isRequestingCapture;
 	private volatile String lastCaptureStateMessageHeader = "";
-	private volatile String lastCaptureStateMessage = "";
+	private String lastCaptureStateMessage = "";
 	
 	private int initialMoney;
 	private int currentMoney;
