@@ -44,7 +44,7 @@ public class Branch extends Observable implements Observer{
 	private HashMap<UUID, ObjectOutputStream> outgoingChannelsByUUID;
 	private HashMap<UUID, ObjectInputStream> incomingChannelsByUUID;
 	private HashMap<UUID, Integer> branchesMoneyAmtList;
-	private HashMap<Long, HashMap<UUID, Integer>> transactions;
+	private volatile HashMap<Long, HashMap<UUID, Integer>> transactions;
 	private CaptureStateThread myCaptureStateThread;
 	private List<UUID> capStateRequestors;
 	
@@ -255,7 +255,7 @@ public class Branch extends Observable implements Observer{
 		System.out.println("New bank money amount set.");
 	}
 
-	public HashMap<Long, HashMap<UUID, Integer>> getTransactions() {
+	public synchronized HashMap<Long, HashMap<UUID, Integer>> getTransactions() {
 		return transactions;
 	}
 
