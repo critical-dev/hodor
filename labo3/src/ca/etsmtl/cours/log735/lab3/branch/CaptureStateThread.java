@@ -120,7 +120,10 @@ public class CaptureStateThread extends Observable implements Observer{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
-					System.out.print("..in loop..");
+					if(tempChannelsText.isEmpty()){
+						//sans ce bout de code, ça ne foncitonne pas..
+						System.out.println();
+					}
 					if(tempChannelsText.isEmpty() && tempCaptureMoneyAmt == 0){
 						//System.out.println("Number transactions : " + branch.getTransactions().size());
 						for(Long txnTime : branch.getTransactions().keySet()){
@@ -149,14 +152,14 @@ public class CaptureStateThread extends Observable implements Observer{
 							for(UUID id : transactionsOfIds.get(i).keySet()){
 								System.out.println("Updating transaction channels..");
 								//only one each time
-								tempChannelsText += "Canal S" + branch.getMyId() + " - S" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
+								tempChannelsText += "Canal S#" + branch.getMyId() + " - S#" + id + ": " + transactionsOfIds.get(i).get(id) + "$\n";
 								tempCaptureMoneyAmt += transactionsOfIds.get(i).get(id);
 							}
 						}
 	
 						//tempCaptureMoneyAmt += Integer.parseInt(channelTransactions.get(ois).split("##")[1]);//we get the transaction value associated to that stream
 				
-						tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
+						tempChannelsText += "\nSomme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
 						tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
 						tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 						
