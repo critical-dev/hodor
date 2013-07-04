@@ -51,7 +51,7 @@ public class Branch extends Observable implements Observer{
 		this.initialMoney = initialMoney;
 		this.currentMoney = this.initialMoney;
 		this.bankIp = bankIp;
-		myCaptureStateThread = new CaptureStateThread(this);
+		myCaptureStateThread = new CaptureStateThread(this,null);
 		capStateRequestors = new ArrayList<UUID>();
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
@@ -120,6 +120,7 @@ public class Branch extends Observable implements Observer{
 	public void captureState() throws IOException, InterruptedException{
 		setRequestingCapture(true);
 		System.out.println(getMyId() + " initiating a global capture.");
+		getMyCaptureStateThread().setStreamToWatch(null);
 		getMyCaptureStateThread().setCaptureMode(CaptureStateThread.START_CAPTURE);
 		for(UUID id : getOutgoingChannelsByUUID().keySet()){						
 			ObjectOutputStream oos = getOutgoingChannelsByUUID().get(id);
