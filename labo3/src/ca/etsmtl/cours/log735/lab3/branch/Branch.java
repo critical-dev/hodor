@@ -108,7 +108,8 @@ public class Branch extends Observable implements Observer{
 			addOutgoingChannel(oos);
 			System.out.println("Adding new oos");
 			outgoingChannelsByUUID.put(id,oos);
-			incomingChannelsByUUID.put(id, new ObjectInputStream(sock.getInputStream()));
+			ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
+			incomingChannelsByUUID.put(id,ois);
 			System.out.println("Adding new ois [total:" + incomingChannelsByUUID.size() + "]");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
