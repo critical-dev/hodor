@@ -168,7 +168,7 @@ public class Branch extends Observable implements Observer{
 		notifyObservers("Received " + amount + "$ from " + from + " [ " + currentMoney + "$]\n");
 	}
 
-	public UUID getMyId() {
+	public synchronized UUID getMyId() {
 		return myId;
 	}
 
@@ -180,7 +180,7 @@ public class Branch extends Observable implements Observer{
 		return currentMoney;
 	}
 
-	public HashMap<UUID, Integer> getBranchesMoneyAmtList() {
+	public synchronized HashMap<UUID, Integer> getBranchesMoneyAmtList() {
 		return branchesMoneyAmtList;
 	}
 
@@ -189,11 +189,11 @@ public class Branch extends Observable implements Observer{
 		this.branchesMoneyAmtList = branchesInitialMoneyAmtList;
 	}
 
-	public List<ObjectOutputStream> getOutgoingChannels() {
+	public synchronized List<ObjectOutputStream> getOutgoingChannels() {
 		return outgoingChannels;
 	}
 
-	public HashMap<UUID, ObjectOutputStream> getOutgoingChannelsByUUID() {
+	public synchronized HashMap<UUID, ObjectOutputStream> getOutgoingChannelsByUUID() {
 		return outgoingChannelsByUUID;
 	}
 
