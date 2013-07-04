@@ -26,8 +26,8 @@ public class CaptureStateThread extends Observable implements Observer{
 	private volatile boolean keepCapturing;
 	private CaptureRunner captureRunner;
 	//private HashMap<ObjectInputStream, String> channelTransactions;//to keep track of the transactions.
-	private List<UUID> idsToTrack;
-	private List<HashMap<UUID, Integer>> transactionsOfIds;
+	private volatile List<UUID> idsToTrack;
+	private volatile List<HashMap<UUID, Integer>> transactionsOfIds;
 	
 	public static final boolean START_CAPTURE = true, STOP_CAPTURE = false;
 	
@@ -119,6 +119,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
+					System.out.println("inside else");
 					tempChannelsText = "";
 					tempCaptureMoneyAmt = 0;
 					//System.out.println("Number transactions : " + branch.getTransactions().size());
