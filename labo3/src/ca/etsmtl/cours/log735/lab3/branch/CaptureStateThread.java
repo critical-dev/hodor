@@ -120,9 +120,10 @@ public class CaptureStateThread extends Observable implements Observer{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
+
+					//sans ce bout de code, ça ne foncitonne pas..
+					System.out.println();
 					if(tempChannelsText.isEmpty()){
-						//sans ce bout de code, ça ne foncitonne pas..
-						System.out.println();
 					}
 					if(tempChannelsText.isEmpty() && tempCaptureMoneyAmt == 0){
 						//System.out.println("Number transactions : " + branch.getTransactions().size());
