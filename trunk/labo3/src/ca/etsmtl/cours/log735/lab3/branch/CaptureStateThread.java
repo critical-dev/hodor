@@ -25,17 +25,19 @@ public class CaptureStateThread extends Observable implements Observer{
 	private volatile Branch branch;
 	private volatile boolean keepCapturing;
 	private CaptureRunner captureRunner;
-	private HashMap<ObjectInputStream, Integer> channelTransactions;//to keep track of the transactions.
+	private HashMap<ObjectInputStream, String> channelTransactions;//to keep track of the transactions.
+	private ObjectInputStream streamToWatch;
 	
 	public static final boolean START_CAPTURE = true, STOP_CAPTURE = false;
 	
-	public CaptureStateThread(Branch branch){
+	public CaptureStateThread(Branch branch, ObjectInputStream streamToWatch){
 		this.branch = branch;
+		this.streamToWatch = streamToWatch;
 		addObserver(branch);
 		keepCapturing = true;
 		totalCaptureMoneyAmount = 0;
 		tempCaptureMoneyAmt = 0;
-		channelTransactions = new HashMap<ObjectInputStream, Integer>();
+		channelTransactions = new HashMap<ObjectInputStream, String>();
 		captureRunner = new CaptureRunner(this);
 		//captureRunner.start();
 	}
@@ -114,35 +116,42 @@ public class CaptureStateThread extends Observable implements Observer{
 					//le message de fin d'ecoute.
 					tempChannelsText = "";
 					tempCaptureMoneyAmt = 0;
-					for(UUID curBranchId : branch.getIncomingChannelsByUUID().keySet()){
-						System.out.println("Listening to channels..");
-						ObjectInputStream tmpOIS = branch.getIncomingChannelsByUUID().get(curBranchId);
-						//for each object input stream we add a channel watcher thread
-						ChannelWatcherThread channelWatcher = new ChannelWatcherThread(tmpOIS);
-						if(!watchers.contains(channelWatcher)){
-							watchers.add(channelWatcher);
-							channelWatcher.addObserver(internalRef);
-							channelWatcher.startWatching();
-						}
-						else{
-							System.out.println("Added " + watchers.size() + " channel watchers.");
-							//si les watchers sont deja ajoutes, on met a jout les canaux
-							tempChannelsText = "";
-							tempCaptureMoneyAmt = 0;
-							//update temp capture transaction amount if we have new transaction values
-							for(ObjectInputStream ois : channelTransactions.keySet()){
-								for(UUID bId : branch.getIncomingChannelsByUUID().keySet()){
-									if(branch.getIncomingChannelsByUUID().get(bId).equals(ois)){
-										tempChannelsText += "Canal S" + branch.getMyId() + " - S" + bId + ": " + channelTransactions.get(ois) + "$\n";
+					if(streamToWatch!=null){
+						for(UUID curBranchId : branch.getIncomingChannelsByUUID().keySet()){
+							System.out.println("Listening to channels..");
+							//ObjectInputStream tmpOIS = branch.getIncomingChannelsByUUID().get(curBranchId);
+							//for each object input stream we add a channel watcher thread
+							//ChannelWatcherThread channelWatcher = new ChannelWatcherThread(tmpOIS);
+							ChannelWatcherThread channelWatcher = new ChannelWatcherThread(streamToWatch);
+							if(!watchers.contains(channelWatcher)){
+								watchers.add(channelWatcher);
+								channelWatcher.addObserver(internalRef);
+								channelWatcher.startWatching();
+							}
+							else{
+								System.out.println("Added " + watchers.size() + " channel watchers.");
+								//si les watchers sont deja ajoutes, on met a jout les canaux
+								tempChannelsText = "";
+								tempCaptureMoneyAmt = 0;
+								//update temp capture transaction amount if we have new transaction values
+								for(ObjectInputStream ois : channelTransactions.keySet()){
+									/*for(UUID bId : branch.getIncomingChannelsByUUID().keySet()){
+										if(branch.getIncomingChannelsByUUID().get(bId).equals(ois)){
+											tempChannelsText += "Canal S" + branch.getMyId() + " - S" + bId + ": " + channelTransactions.get(ois) + "$\n";
+										}
+									}*/
+									if(streamToWatch.equals(ois)){
+										tempChannelsText += "Canal S" + branch.getMyId() + " - S" + channelTransactions.get(ois).split("##")[0] + ": " + channelTransactions.get(ois) + "$\n";
 									}
+									tempCaptureMoneyAmt += Integer.parseInt(channelTransactions.get(ois).split("##")[1]);//we get the transaction value associated to that stream
 								}
-								tempCaptureMoneyAmt += channelTransactions.get(ois);//we get the transaction value associated to that stream
 							}
 						}
+						tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
+						tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
+						tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
 					}
-					tempChannelsText += "Somme connue par la banque : " + branch.getBankLastKnownTotalMoneyAmount() + "$\n";
-					tempChannelsText += "Somme detectee par la capture : " + (totalCaptureMoneyAmount + tempCaptureMoneyAmt) + "$\n";
-					tempChannelsText += "ETAT GLOBAL " + (branch.getBankLastKnownTotalMoneyAmount() == (totalCaptureMoneyAmount + tempCaptureMoneyAmt) ? "COHERENT":"INCOHERENT (delta :" + (branch.getBankLastKnownTotalMoneyAmount() - (totalCaptureMoneyAmount + tempCaptureMoneyAmt)) + ")") + "\n";
+					
 				}
 			}//fin while keepCapturing
 			//on ferme les watchers
@@ -194,7 +203,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			System.out.println("Resetting capture state thread for " + branch.getMyId());
 			totalCaptureMoneyAmount = 0;
 			tempCaptureMoneyAmt = 0;
-			channelTransactions = new HashMap<ObjectInputStream, Integer>();
+			channelTransactions = new HashMap<ObjectInputStream, String>();
 			captureRunner = new CaptureRunner(this);
 			captureRunner.start();
 		}
@@ -212,12 +221,20 @@ public class CaptureStateThread extends Observable implements Observer{
 			if(keepCapturing){
 				//if we're still suppose to update our stuff
 				System.out.println("Received an updated transaction amount for a channel and still capturing, updating.");
-				channelTransactions.put(((ChannelWatcherThread) arg0).getOIS(), ((TxnMessage) arg1).getAmount());
+				channelTransactions.put(((ChannelWatcherThread) arg0).getOIS(), ((TxnMessage) arg1).getFrom()+ "#" + ((TxnMessage) arg1).getAmount());
 			}
 			else{
 				System.out.println("Received an updated transaction amount but stopped capturing, ignoring..");
 			}
 		}
+	}
+
+	public ObjectInputStream getStreamToWatch() {
+		return streamToWatch;
+	}
+
+	public void setStreamToWatch(ObjectInputStream streamToWatch) {
+		this.streamToWatch = streamToWatch;
 	}
 	
 	

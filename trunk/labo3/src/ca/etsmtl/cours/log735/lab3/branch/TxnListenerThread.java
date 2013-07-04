@@ -53,6 +53,7 @@ public class TxnListenerThread extends Thread {
 					//only one request per branch supported for now
 					if(!branch.getCapStateRequestors().contains(requestorId) && !requestorId.equals(branch.getMyId())){
 						branch.getCapStateRequestors().add(requestorId);//add the requestor
+						if(branch.getMyCaptureStateThread().getStreamToWatch() == null)branch.getMyCaptureStateThread().setStreamToWatch(ois);
 						branch.getMyCaptureStateThread().setCaptureMode(CaptureStateThread.START_CAPTURE);
 					}
 				}
@@ -61,6 +62,7 @@ public class TxnListenerThread extends Thread {
 					//and return to the requestor
 					UUID requestorId = ((StateSyncStopMessage) input).getFrom();
 					branch.getMyCaptureStateThread().setCaptureMode(CaptureStateThread.STOP_CAPTURE);
+					branch.getMyCaptureStateThread().setStreamToWatch(null);
 					System.out.println("Received Stop Capture Message, stopping capture.");
 					if(branch.getCapStateRequestors().remove(requestorId)) System.out.println("Removed " + requestorId + " from requestors list.");
 					else System.out.println("Failed to remove " + requestorId + " from requestors list.");
