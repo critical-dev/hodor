@@ -113,13 +113,14 @@ public class CaptureStateThread extends Observable implements Observer{
 						branch.setLastCaptureStateMessageHeader(captureRunnerTxnText);
 						totalCaptureMoneyAmount += branch.getBranchesMoneyAmtList().get(id);
 					}//fin for pour toutes les succursales
+					tempChannelsText = "";
+					tempCaptureMoneyAmt = 0;
 				}
 				else{
 					//une fois les etats initiaux enregistres, on enregistre les canaux
 					//mais on enregistre dans une variable temporaire, le temps de recevoir
 					//le message de fin d'ecoute.
-					tempChannelsText = "";
-					tempCaptureMoneyAmt = 0;
+					
 					//System.out.println("Number transactions : " + branch.getTransactions().size());
 					for(Long txnTime : branch.getTransactions().keySet()){
 						if(txnTime > currentTime){
