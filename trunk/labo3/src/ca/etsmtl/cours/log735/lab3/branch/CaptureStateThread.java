@@ -53,13 +53,13 @@ public class CaptureStateThread extends Observable implements Observer{
 		private volatile boolean isAlreadyCapturing;
 		private String captureRunnerTxnText = "";
 		private CaptureStateThread internalRef;
-		private ArrayList<ChannelWatcherThread> watchers;
+		//private ArrayList<ChannelWatcherThread> watchers;
 		private Long currentTime;
 		
 		public CaptureRunner(CaptureStateThread internalRef){
 			isAlreadyCapturing = false;
 			this.internalRef = internalRef;//only used for channel watcher
-			watchers = new ArrayList<ChannelWatcherThread>();
+			//watchers = new ArrayList<ChannelWatcherThread>();
 			currentTime = System.currentTimeMillis();
 		}
 		
@@ -160,11 +160,7 @@ public class CaptureStateThread extends Observable implements Observer{
 					
 				}
 			}//fin while keepCapturing
-			//on ferme les watchers
-			System.out.println("Closing channel watchers...");
-			for(int i = 0; i < watchers.size(); i++){
-				watchers.get(i).stopWatching();
-			}
+			
 			//une fois la capture terminee, on assemble le tout ensemble.
 			captureRunnerTxnText = tempChannelsText;
 			System.out.println("Final capture for this branch : ");
@@ -174,17 +170,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			notifyObservers(captureRunnerTxnText);
 			clearChanged();
 		}
-		
-		private synchronized void checkTotalAmount(){
-			while(branch.getBankLastKnownTotalMoneyAmount() == 0){
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
+				
 		public String getCaptureText(){
 			return captureRunnerTxnText;
 		}
@@ -224,7 +210,7 @@ public class CaptureStateThread extends Observable implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		System.out.println("CapState notified");
-		if(arg0 instanceof ChannelWatcherThread){
+		/*if(arg0 instanceof ChannelWatcherThread){
 			//we are being notified that there are incoming transactions for the channel.
 			if(keepCapturing){
 				//if we're still suppose to update our stuff
@@ -234,7 +220,7 @@ public class CaptureStateThread extends Observable implements Observer{
 			else{
 				System.out.println("Received an updated transaction amount but stopped capturing, ignoring..");
 			}
-		}
+		}*/
 	}
 	
 	
