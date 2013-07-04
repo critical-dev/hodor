@@ -44,6 +44,7 @@ public class Branch extends Observable implements Observer{
 	private HashMap<UUID, ObjectOutputStream> outgoingChannelsByUUID;
 	private HashMap<UUID, ObjectInputStream> incomingChannelsByUUID;
 	private HashMap<UUID, Integer> branchesMoneyAmtList;
+	private HashMap<Long, HashMap<UUID, Integer>> transactions;
 	private CaptureStateThread myCaptureStateThread;
 	private List<UUID> capStateRequestors;
 	
@@ -51,12 +52,12 @@ public class Branch extends Observable implements Observer{
 		this.initialMoney = initialMoney;
 		this.currentMoney = this.initialMoney;
 		this.bankIp = bankIp;
-		myCaptureStateThread = new CaptureStateThread(this,null);
+		myCaptureStateThread = new CaptureStateThread(this);
 		capStateRequestors = new ArrayList<UUID>();
 		outgoingChannelsByUUID = new HashMap<UUID, ObjectOutputStream>();
 		incomingChannelsByUUID = new HashMap<UUID, ObjectInputStream>();
 		branchesMoneyAmtList = new HashMap<UUID, Integer>();
-		
+		transactions = new HashMap<Long, HashMap<UUID,Integer>>();
 		//this order is very important, keep the bank listener thread first
 		//it basically enforces that branches are mutually connected before any
 		//other in-branch treatment can be performed.
@@ -120,7 +121,6 @@ public class Branch extends Observable implements Observer{
 	public void captureState() throws IOException, InterruptedException{
 		setRequestingCapture(true);
 		System.out.println(getMyId() + " initiating a global capture.");
-		getMyCaptureStateThread().setStreamToWatch(null);
 		getMyCaptureStateThread().setCaptureMode(CaptureStateThread.START_CAPTURE);
 		for(UUID id : getOutgoingChannelsByUUID().keySet()){						
 			ObjectOutputStream oos = getOutgoingChannelsByUUID().get(id);
@@ -160,6 +160,9 @@ public class Branch extends Observable implements Observer{
 
 	public void recvMoney(UUID from, int amount) {
 		currentMoney += amount;
+		HashMap<UUID, Integer> transaction = new HashMap<UUID, Integer>();
+		transaction.put(from, new Integer(amount));
+		transactions.put(System.currentTimeMillis(), transaction);
 		setChanged();
 		notifyObservers("Received " + amount + "$ from " + from + " [ " + currentMoney + "$]\n");
 	}
@@ -249,6 +252,14 @@ public class Branch extends Observable implements Observer{
 			int bankLastKnownTotalMoneyAmount) {
 		this.bankLastKnownTotalMoneyAmount = bankLastKnownTotalMoneyAmount;
 		System.out.println("New bank money amount set.");
+	}
+
+	public HashMap<Long, HashMap<UUID, Integer>> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(HashMap<Long, HashMap<UUID, Integer>> transactions) {
+		this.transactions = transactions;
 	}
 
 	public CaptureStateThread getMyCaptureStateThread() {
