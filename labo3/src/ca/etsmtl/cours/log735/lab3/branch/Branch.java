@@ -92,7 +92,7 @@ public class Branch extends Observable implements Observer{
 	 * If it already is, sets the isCapturing flag to false and stops the current capture.
 	 * Otherwise, sets the isCapturing flag to true and starts the current capture.
 	 * */
-	public synchronized void enforceDisplayCaptureState() {
+	public void enforceDisplayCaptureState() {
 		setChanged();
 		if(!lastCaptureStateMessage.contains("Canal")){
 			lastCaptureStateMessage += "[No data in channels during capture.]";
@@ -241,7 +241,7 @@ public class Branch extends Observable implements Observer{
 		}
 	}
 	
-	public synchronized void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
+	public void mergeCaptureMessageInfo(String otherBranchCaptureMessage){
 		if(otherBranchCaptureMessage.contains("Canal")){
 			if(!lastCaptureStateMessage.contains("Somme")){
 				this.lastCaptureStateMessage += otherBranchCaptureMessage;
