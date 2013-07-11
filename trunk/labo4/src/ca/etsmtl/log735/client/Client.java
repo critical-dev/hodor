@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Vector;
 
-import ca.etsmtl.ca.log735.messages.LoginMessage;
+import ca.etsmtl.ca.log735.messages.Login;
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
 
@@ -48,7 +48,7 @@ public class Client extends Observable {
 			ois = new ObjectInputStream(socket.getInputStream());
 			new ClientThread(this, ois).start();
 			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(new LoginMessage(username, password));
+			oos.writeObject(new Login(username, password));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

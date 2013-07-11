@@ -3,7 +3,7 @@ package ca.etsmtl.log735.client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import ca.etsmtl.ca.log735.messages.ClientMessage;
+import ca.etsmtl.ca.log735.messages.Response;
 
 public class ClientThread extends Thread {
 	
@@ -19,8 +19,8 @@ public class ClientThread extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				ClientMessage message = (ClientMessage) ois.readObject();
-				message.process(client);
+				Response resp = (Response) ois.readObject();
+				resp.process(client);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

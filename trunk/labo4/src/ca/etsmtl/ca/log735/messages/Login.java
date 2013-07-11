@@ -2,11 +2,16 @@ package ca.etsmtl.ca.log735.messages;
 
 import ca.etsmtl.log735.server.Server;
 
-public class LoginMessage extends ServerMessage {
+/**
+ * A login request.
+ * @author artom
+ *
+ */
+public class Login extends Request {
 	
 	private String username, password;
 	
-	public LoginMessage(String username, String password) {
+	public Login(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
