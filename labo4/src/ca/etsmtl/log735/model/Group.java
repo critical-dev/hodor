@@ -14,6 +14,15 @@ public class Group {
 	 */
 	private Vector<String> userlist;
 	
+	
+	/**
+	 * Constructs a new Group with the given list of usernames.
+	 * @param userlist
+	 */
+	public Group(Vector<String> userlist) {
+		this.userlist = userlist;
+	}
+
 	/**
 	 * Returns the list of usernames in the Group.
 	 * @return The list of usernames in the Group.
