@@ -5,7 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import ca.etsmtl.log735.model.Client;
+import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Room;
 
 public class RoomPanel extends GroupPanel {

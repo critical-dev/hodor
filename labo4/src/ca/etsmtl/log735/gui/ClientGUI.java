@@ -6,7 +6,7 @@ import java.util.Observer;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import ca.etsmtl.log735.model.Client;
+import ca.etsmtl.log735.client.Client;
 
 public class ClientGUI extends JFrame implements Observer {
 
@@ -24,7 +24,7 @@ public class ClientGUI extends JFrame implements Observer {
 		tabbedPane.addTab("Home", new HomePanel(client));
 		setContentPane(tabbedPane);
 		ConfigDialog configDialog = new ConfigDialog(this, client);
-		// configDialog.setVisible(true);
+		configDialog.setVisible(true);
 		pack();
 		setVisible(true);
 	}

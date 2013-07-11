@@ -14,7 +14,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import ca.etsmtl.log735.model.Client;
+import ca.etsmtl.log735.client.Client;
 
 public class ConfigDialog extends JDialog implements ActionListener {
 
