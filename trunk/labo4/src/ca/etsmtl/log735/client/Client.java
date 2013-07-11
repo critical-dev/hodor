@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Vector;
 
-import ca.etsmtl.ca.log735.messages.Login;
+import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
 
@@ -42,17 +42,12 @@ public class Client extends Observable {
 		
 	}
 
-	public void start() {
-		try {
-			Socket socket = new Socket(serverIp, serverPort);
-			ois = new ObjectInputStream(socket.getInputStream());
-			new ClientThread(this, ois).start();
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(new Login(username, password));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void start() throws IOException {
+		Socket socket = new Socket(serverIp, serverPort);
+		ois = new ObjectInputStream(socket.getInputStream());
+		new ClientThread(this, ois).start();
+		oos = new ObjectOutputStream(socket.getOutputStream());
+		oos.writeObject(new LoginRequest(username, password));
 	}
 
 	public Vector<Room> getRoomList() {
