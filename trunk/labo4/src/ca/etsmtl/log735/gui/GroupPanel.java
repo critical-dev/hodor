@@ -11,20 +11,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import ca.etsmtl.log735.model.Client;
-import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Group;
 
 public class GroupPanel extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 1343800150279499040L;
 	
-	private Conversation conversation;
+	private Group group;
 	private Client client;
 	private JTextArea inputArea = new JTextArea(5, 40);
 
 	public GroupPanel(Group group, Client client) {
 		super(new BorderLayout());
-		this.conversation = group;
+		this.group = group;
 		this.client = client;
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.add(inputArea);
@@ -38,6 +37,6 @@ public class GroupPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		client.sendMessage(conversation, inputArea.getText());
+		client.sendMessage(group, inputArea.getText());
 	}
 }
