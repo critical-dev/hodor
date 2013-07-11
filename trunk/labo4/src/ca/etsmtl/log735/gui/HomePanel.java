@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 
-import ca.etsmtl.log735.model.Client;
+import ca.etsmtl.log735.client.Client;
 
 public class HomePanel extends JPanel implements ActionListener {
 

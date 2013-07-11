@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import ca.etsmtl.log735.model.Client;
+import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Group;
 
 public class GroupPanel extends JPanel implements ActionListener {
