@@ -23,10 +23,9 @@ public class ClientGUI extends JFrame implements Observer {
 		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Home", new HomePanel(client));
 		setContentPane(tabbedPane);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		ConfigDialog configDialog = new ConfigDialog(this, client);
 		configDialog.setVisible(true);
-		pack();
-		setVisible(true);
 	}
 	
 	public static void main(String[] args) {

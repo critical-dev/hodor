@@ -1,14 +1,17 @@
 package ca.etsmtl.log735.gui;
 
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -31,7 +34,7 @@ public class ConfigDialog extends JDialog implements ActionListener {
 	private JTextField portField = new JTextField(String.valueOf(DEFAULT_PORT), 20);
 	
 	public ConfigDialog(Frame owner, Client client) {
-		super(owner, true);
+		super(owner, "Configuration", Dialog.ModalityType.APPLICATION_MODAL);
 		this.client = client;
 		JPanel content = new JPanel(new MigLayout());
 		content.add(new JLabel("Username"));
@@ -52,18 +55,29 @@ public class ConfigDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		try {
-			client.setUsername(usernameField.getText());
-			client.setPassword(new String(passwordField.getPassword()));
+			if (!usernameField.getText().isEmpty()) {
+				client.setUsername(usernameField.getText());
+			} else {
+				JOptionPane.showMessageDialog(this, "Username cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String password = new String(passwordField.getPassword());
+			if (!password.isEmpty()) {
+				client.setPassword(password);
+			} else {
+				JOptionPane.showMessageDialog(this, "Password cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			client.setServerIp(InetAddress.getByName(serverField.getText()));
 			client.setServerPort(Integer.parseInt(portField.getText()));
 			client.start();
 			setVisible(false);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
