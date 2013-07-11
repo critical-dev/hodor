@@ -2,7 +2,7 @@ package ca.etsmtl.log735.model;
 
 import java.util.Vector;
 
-public class Group extends Conversation {
+public class Group {
 	
 	private Vector<String> userlist;
 	

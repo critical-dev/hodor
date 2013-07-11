@@ -27,7 +27,7 @@ public class Client extends Observable {
 		this.serverPort = port;
 	}
 
-	public void sendMessage(Conversation conversation, String text) {
+	public void sendMessage(Group group, String text) {
 		// TODO Auto-generated method stub
 		
 	}
