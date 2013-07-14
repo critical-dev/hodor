@@ -1,5 +1,6 @@
 package ca.etsmtl.log735.model;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -17,6 +18,8 @@ public class Room {
 	 * The list of usernames in the Room.
 	 */
 	private Vector<String> userlist;
+	
+	private ArrayList<String> conversation;
 
 	
 	/**
@@ -50,5 +53,13 @@ public class Room {
 	 */
 	public String toString() {
 		return name;
+	}
+
+	public ArrayList<String> getConversation() {
+		return conversation;
+	}
+
+	public void setConversation(ArrayList<String> conversation) {
+		this.conversation = conversation;
 	}
 }

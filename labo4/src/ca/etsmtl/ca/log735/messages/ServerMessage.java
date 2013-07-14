@@ -13,5 +13,5 @@ public abstract class ServerMessage {
 	 * Process the message server-side.
 	 * @param server The server object of the receiving server.
 	 */
-	public abstract void process(Server server);
+	public abstract boolean process(Server server);
 }
