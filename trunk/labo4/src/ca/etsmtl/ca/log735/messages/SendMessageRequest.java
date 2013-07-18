@@ -3,8 +3,6 @@ package ca.etsmtl.ca.log735.messages;
 import java.io.IOException;
 
 import ca.etsmtl.log735.model.Conversation;
-import ca.etsmtl.log735.model.Group;
-import ca.etsmtl.log735.model.Room;
 import ca.etsmtl.log735.server.Server;
 
 /**
@@ -37,6 +35,7 @@ public class SendMessageRequest extends ServerMessage {
 				}
 			}
 		}
+		else System.out.println("Received null conversaiton, nothing to do here.");
 		return true;
 	}
 	
