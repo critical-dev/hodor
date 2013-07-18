@@ -19,9 +19,6 @@ public class Room {
 	 */
 	private Vector<String> userlist;
 	
-	private ArrayList<String> conversation;
-
-	
 	/**
 	 * Returns the list of usernames in the Group.
 	 * @return The list of usernames in the Group.
@@ -53,13 +50,5 @@ public class Room {
 	 */
 	public String toString() {
 		return name;
-	}
-
-	public ArrayList<String> getConversation() {
-		return conversation;
-	}
-
-	public void setConversation(ArrayList<String> conversation) {
-		this.conversation = conversation;
 	}
 }

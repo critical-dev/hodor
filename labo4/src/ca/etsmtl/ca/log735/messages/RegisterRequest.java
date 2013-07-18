@@ -19,6 +19,12 @@ public class RegisterRequest extends ServerMessage {
 	
 	private String username, password, passwordConf;
 	
+	/**
+	 * Requests registration
+	 * @param username The username
+	 * @param password The password
+	 * @param passwordConf The password confirmation
+	 */
 	public RegisterRequest(String username, String password, String passwordConf) {
 		this.username = username.toLowerCase();
 		this.password = password;

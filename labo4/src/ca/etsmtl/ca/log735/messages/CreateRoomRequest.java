@@ -1,7 +1,5 @@
 package ca.etsmtl.ca.log735.messages;
 
-import java.util.ArrayList;
-
 import ca.etsmtl.log735.model.Room;
 import ca.etsmtl.log735.server.Server;
 
