@@ -7,7 +7,7 @@ import java.util.Vector;
  * @author artom
  *
  */
-public class Group {
+public class Group implements Conversation{
 	
 	/**
 	 * The list of usernames in the Group.

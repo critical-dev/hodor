@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
@@ -45,6 +46,8 @@ public class Server {
 	}
 	
 	public Server(){
+		
+		// init stuff
 		clientOutputStreams = new HashMap<String, ObjectOutputStream>();
 		clientInputStreams = new HashMap<String, ObjectInputStream>();
 		usersWithPasswords = new HashMap<String, String>();
@@ -52,7 +55,11 @@ public class Server {
 		authenticatedIps = new HashMap<InetAddress, String>();
 		rooms = new ArrayList<Room>();
 		groupsWithConversations = new HashMap<Group, ArrayList<String>>();
+		
+		
+		//create default room
 		defaultRoom = new Room("DefaultRoom");
+				
 		authList = new File(authListFileRelativeLocation);
 		if(authList == null || !authList.exists()){
 			System.out.println("Database file : " + authList.getAbsolutePath() + " does not exist. Creating empty DB file.");
@@ -200,5 +207,5 @@ public class Server {
 	public void setAuthenticatedIps(HashMap<InetAddress, String> authenticatedIps) {
 		this.authenticatedIps = authenticatedIps;
 	}
-
+	
 }

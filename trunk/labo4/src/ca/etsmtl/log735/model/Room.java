@@ -8,7 +8,7 @@ import java.util.Vector;
  * @author artom
  *
  */
-public class Room {
+public class Room implements Conversation{
 
 	/**
 	 * The name of the room.
