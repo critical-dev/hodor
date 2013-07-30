@@ -33,9 +33,9 @@ public class Client extends Observable {
 		return false;
 	}
 
-	public void connect(InetAddress serverIp, int port, String username, String password) throws IOException {
+	public void login(InetAddress serverIp, int port, String username, String password) throws IOException {
 		socket = new Socket(serverIp, port);
-		clientThread = new ClientThread(this, new ObjectInputStream(socket.getInputStream()));
+		clientThread = new ClientThread(this, socket);
 		clientThread.start();
 		oos = new ObjectOutputStream(socket.getOutputStream());
 		oos.writeObject(new LoginRequest(username, password));
@@ -43,9 +43,15 @@ public class Client extends Observable {
 
 	public void register(InetAddress serverIp, int port, String username, String password, String passwordConf) throws IOException {
 		socket = new Socket(serverIp, port);
-		clientThread = new ClientThread(this, new ObjectInputStream(socket.getInputStream()));
+		clientThread = new ClientThread(this, socket);
 		clientThread.start();
 		oos = new ObjectOutputStream(socket.getOutputStream());
 		oos.writeObject(new RegisterRequest(username, password, passwordConf));
+	}
+
+	public void loginRefused() throws IOException {
+		clientThread.disconnect();
+		oos.close();
+		socket.close();
 	}
 }

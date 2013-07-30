@@ -1,5 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.io.IOException;
+
 import ca.etsmtl.log735.client.Client;
 
 /**
@@ -9,10 +11,16 @@ import ca.etsmtl.log735.client.Client;
  */
 public class LoginRefused extends ClientMessage {
 
+	private static final long serialVersionUID = -3091621356771397016L;
+
 	@Override
 	public void process(Client client) {
-		// TODO Auto-generated method stub
-
+		try {
+			client.loginRefused();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

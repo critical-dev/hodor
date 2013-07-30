@@ -120,7 +120,7 @@ public class RegisterConnectPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		if (evt.getActionCommand().equals(COMMAND_CONNECT)) {
 			try {
-				client.connect(
+				client.login(
 						InetAddress.getByName(serverInfoPanel.serverField.getText()),
 						Integer.parseInt(serverInfoPanel.portField.getText()),
 						connectPanel.usernameField.getText(),
