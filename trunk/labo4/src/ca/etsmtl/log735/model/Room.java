@@ -1,15 +1,15 @@
 package ca.etsmtl.log735.model;
 
-import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Represents a room. Adds a room name to the Group class.
  * @author artom
  *
  */
-public class Room extends Conversation{
+public class Room extends Conversation {
 
+	private static final long serialVersionUID = 3861101023454396689L;
+	
 	/**
 	 * The name of the room.
 	 */
