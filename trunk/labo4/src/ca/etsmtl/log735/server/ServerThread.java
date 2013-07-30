@@ -29,8 +29,8 @@ public class ServerThread extends Thread{
 		try {
 			clientIp = incomingClient.getInetAddress();
 			System.out.println("Received client on : " + clientIp);
-			clientInputStream = new ObjectInputStream(incomingClient.getInputStream());
 			clientOutputStream = new ObjectOutputStream(incomingClient.getOutputStream());
+			clientInputStream = new ObjectInputStream(incomingClient.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

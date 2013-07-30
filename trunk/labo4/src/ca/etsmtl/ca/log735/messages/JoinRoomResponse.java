@@ -8,7 +8,7 @@ import ca.etsmtl.log735.model.Room;
  * Can be sent in response to a LoginRequest (to join the default room)
  * or in response to a JoinRoomRequest (to confirm joining the request room).
  * In either case, the provided server room is set to null if the join request failed
- * for any reason, otherwise it returns the room requested in a preivous request.
+ * for any reason, otherwise it returns the room requested in a previous request.
  * @author chrys, artom
  *
  */

@@ -1,5 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.io.Serializable;
+
 import ca.etsmtl.log735.server.Server;
 
 /**
@@ -7,7 +9,9 @@ import ca.etsmtl.log735.server.Server;
  * @author artom
  *
  */
-public abstract class ServerMessage {
+public abstract class ServerMessage implements Serializable {
+
+	private static final long serialVersionUID = 6553439491230586430L;
 
 	/**
 	 * Process the message server-side.

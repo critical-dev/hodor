@@ -8,24 +8,12 @@ import java.util.Vector;
  * @author artom
  *
  */
-public class Room implements Conversation{
+public class Room extends Conversation{
 
 	/**
 	 * The name of the room.
 	 */
 	private String name;
-	/**
-	 * The list of usernames in the Room.
-	 */
-	private Vector<String> userlist;
-	
-	/**
-	 * Returns the list of usernames in the Group.
-	 * @return The list of usernames in the Group.
-	 */
-	public Vector<String> getUserlist() {
-		return userlist;
-	}
 
 	/**
 	 * Constructs a room with the given name.
