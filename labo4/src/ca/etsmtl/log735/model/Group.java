@@ -7,7 +7,9 @@ import java.util.Vector;
  * @author artom
  *
  */
-public class Group extends Conversation{
+public class Group extends Conversation {
+
+	private static final long serialVersionUID = 5227407559040474829L;
 
 	/**
 	 * Constructs a new Group with the given list of usernames.

@@ -10,6 +10,8 @@ import ca.etsmtl.log735.client.Client;
  */
 public class RegisterResponse extends ClientMessage {
 
+	private static final long serialVersionUID = 8067584295435986724L;
+	
 	private String username;
 	
 	public RegisterResponse(String username){
@@ -18,8 +20,8 @@ public class RegisterResponse extends ClientMessage {
 	
 	@Override
 	public void process(Client client) {
-		// TODO Auto-generated method stub
-
+		if (username != null) {
+			client.login();
+		}
 	}
-
 }

@@ -2,7 +2,6 @@ package ca.etsmtl.log735.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Socket;
 
 import ca.etsmtl.ca.log735.messages.ClientMessage;
 
@@ -10,11 +9,11 @@ public class ClientThread extends Thread {
 	
 	private Client client;
 	private ObjectInputStream ois;
-	private boolean run = true;
+	private volatile boolean run = true;
 	
-	public ClientThread(Client client, Socket socket) throws IOException {
+	public ClientThread(Client client, ObjectInputStream ois) {
 		this.client = client;
-		this.ois = new ObjectInputStream(socket.getInputStream());
+		this.ois = ois;
 	}
 
 	@Override
@@ -31,11 +30,5 @@ public class ClientThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void disconnect() throws IOException {
-		run = false;
-		while (isAlive());
-		ois.close();
 	}
 }

@@ -46,13 +46,21 @@ public class ClientGUI extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (client.isConnected()) {
-			cardLayout.show(cards, CARD_CONVERSATIONS);
-			while (client.hasNewConversations()) {
-				// TODO
-			}
-		} else {
-			cardLayout.show(cards, CARD_REGISTER_CONNECT);
+		switch (client.getState()) {
+			case CONNECTED:
+				cardLayout.show(cards, CARD_CONVERSATIONS);
+				while (client.hasNewConversations()) {
+					// TODO
+				}
+				break;
+			case DISCONNECTED:
+				cardLayout.show(cards, CARD_REGISTER_CONNECT);
+				break;
+			case LOGIN_REFUSED:
+				error("Login refused");
+				break;
+			default:
+				break;
 		}
 	}
 }

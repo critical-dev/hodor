@@ -1,7 +1,5 @@
 package ca.etsmtl.ca.log735.messages;
 
-import java.io.IOException;
-
 import ca.etsmtl.log735.client.Client;
 
 /**
@@ -15,12 +13,6 @@ public class LoginRefused extends ClientMessage {
 
 	@Override
 	public void process(Client client) {
-		try {
-			client.loginRefused();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		client.loginRefused();
 	}
-
 }
