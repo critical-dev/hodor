@@ -7,14 +7,8 @@ import java.util.Vector;
  * @author artom
  *
  */
-public class Group implements Conversation{
-	
-	/**
-	 * The list of usernames in the Group.
-	 */
-	private Vector<String> userlist;
-	
-	
+public class Group extends Conversation{
+
 	/**
 	 * Constructs a new Group with the given list of usernames.
 	 * @param userlist
@@ -23,11 +17,5 @@ public class Group implements Conversation{
 		this.userlist = userlist;
 	}
 
-	/**
-	 * Returns the list of usernames in the Group.
-	 * @return The list of usernames in the Group.
-	 */
-	public Vector<String> getUserlist() {
-		return userlist;
-	}
+
 }

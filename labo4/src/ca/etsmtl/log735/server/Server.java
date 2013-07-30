@@ -97,6 +97,12 @@ public class Server {
 			e.printStackTrace();
 		}
 		System.out.println("Loaded : " + usersWithPasswords.size() + " valid users from database.");
+		try {
+			serverSocket = new ServerSocket(SERVER_CLIENT_LISTEN_PORT);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		init();
 	}
 	
@@ -104,7 +110,6 @@ public class Server {
 		System.out.println("Server now listening for client connexions.");
 		while(true){
 			try {
-				serverSocket = new ServerSocket(SERVER_CLIENT_LISTEN_PORT);
 				Socket incomingClient = serverSocket.accept();
 				new ServerThread(this, incomingClient).start();
 				System.out.println("***********************");

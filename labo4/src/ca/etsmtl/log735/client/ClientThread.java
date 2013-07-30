@@ -13,6 +13,7 @@ public class ClientThread extends Thread {
 	public ClientThread(Client client, ObjectInputStream ois) {
 		this.client = client;
 		this.ois = ois;
+		System.out.println("clientthread constructor done");
 	}
 
 	@Override
