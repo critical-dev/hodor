@@ -30,7 +30,7 @@ public class Client extends Observable {
 	
 	private InetAddress serverIp;
 	private int port;
-	private String username;
+	public String username;
 	private String password;
 	
 	private Socket socket = null;
