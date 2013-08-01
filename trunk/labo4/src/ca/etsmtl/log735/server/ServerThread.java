@@ -189,13 +189,21 @@ public class ServerThread extends Thread{
 					clientOutputStream.close();
 					clientInputStream.close();
 					String userToRemove = server.getAuthenticatedIps().get(clientIp);
+					if(server.getAuthenticatedUsers().contains(userToRemove.toLowerCase())){
+						System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
+						server.getAuthenticatedUsers().remove(userToRemove.toLowerCase());
+					}
+					else if(server.getAuthenticatedUsers().contains(userToRemove)){
+						System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
+						server.getAuthenticatedUsers().remove(userToRemove);
+					}
 					if(server.getClientsOutputStreams().containsKey(userToRemove)){
 						server.getClientsOutputStreams().remove(userToRemove);
 					}
 					if(server.getClientInputStreams().containsKey(userToRemove)){
 						server.getClientInputStreams().remove(userToRemove);
 					}
-					if(server.getAuthenticatedUsers().contains(userToRemove))server.getAuthenticatedUsers().remove(userToRemove);
+					
 				} catch (IOException e1) {
 				}
 				
