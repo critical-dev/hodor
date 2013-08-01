@@ -29,14 +29,15 @@ Laboratoire : Laboratoire #4
 Étudiants : Artom Lifshitz, Chrystophe Chabert
 Code(s) perm. : LIFA29108505, CHAC12098902
 Date création : 01/07/2013
-******************************************************/
+ ******************************************************/
 public class ServerThread extends Thread{
 
 	private Server server;
 	private ObjectInputStream clientInputStream;
 	private ObjectOutputStream clientOutputStream;
 	private InetAddress clientIp;
-	
+	private String thisUser;
+
 	public ServerThread(Server server, Socket incomingClient) {
 		this.server = server;
 		try {
@@ -48,32 +49,31 @@ public class ServerThread extends Thread{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run(){
 		System.out.println("Attempting to authenticate client... ");
 		while(true){
 			try {
 				Object clientRequest = clientInputStream.readObject();
-				if(!server.getAuthenticatedIps().containsKey(clientIp)){
+				if(clientRequest instanceof ServerMessage){
 					//if the client is not authenticated, we only answer to
 					//login or register requests
+					boolean requestProcessed = ((ServerMessage) clientRequest).process(server);
 					if(clientRequest instanceof LoginRequest){
-						boolean clientSuccessfullyAuthenticated = ((LoginRequest) clientRequest).process(server);
-						if(!clientSuccessfullyAuthenticated){
+						if(!requestProcessed){
 							clientOutputStream.writeObject(new LoginRefused());
 							System.out.println("ServerThread : client couldn't be authenticated, sent LoginRefused()");
 						}
 						else{
-							server.getAuthenticatedIps().put(clientIp, ((LoginRequest) clientRequest).getUsername());
-							System.out.println("ServerThread : authentication success adding IPs to authenticated IPs list. Sending DefaultRoom to client.");
+							thisUser = ((LoginRequest) clientRequest).getUsername();
 							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
 							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
-										System.out.println("ServerThread: Notified "+user+" that default room clients that this conversation user list has been updated.");
+										System.out.println("ServerThread: Notified "+user+" that default room clients user list has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
 										break;
 									}
@@ -87,8 +87,7 @@ public class ServerThread extends Thread{
 						}
 					}
 					else if(clientRequest instanceof RegisterRequest){
-						boolean clientSuccessfullyRegistered = ((RegisterRequest) clientRequest).process(server);
-						if(clientSuccessfullyRegistered){
+						if(requestProcessed){
 							//send back a RegisterAccepted message providing the input username.
 							System.out.println("ServerThread :  Registration successful, sending back confirmation.");
 							clientOutputStream.writeObject(new RegisterResponse(((RegisterRequest) clientRequest).getUsername()));
@@ -99,17 +98,8 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new RegisterResponse(null));
 						}
 					}
-					else{
-						System.err.println("ServerThread : refused "+clientRequest.getClass().getSimpleName() +" request, as client is not authenticated.");
-					}
-				}
-				else if(clientRequest instanceof ServerMessage){
-					boolean result = ((ServerMessage) clientRequest).process(server);
-					System.out.println("Request from authenticated client : " + server.getAuthenticatedIps().get(clientIp) + "@" + clientIp + " : " + clientRequest.getClass().getSimpleName());
-					//Note for leavegroup or leaveroom requests, we do nothing else than process the request.
-					if(result){
-						//in the case of successful scenarios we send back response messages with the proper info
-						if(clientRequest instanceof CreateRoomRequest){
+					else if(clientRequest instanceof CreateRoomRequest){
+						if(requestProcessed){
 							Room createRoomRequestedRoom = ((CreateRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new JoinConversationResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
@@ -119,7 +109,13 @@ public class ServerThread extends Thread{
 								server.getClientsOutputStreams().get(user).writeObject(new RoomListResponse(singleNewRoom));
 							}
 						}
-						else if(clientRequest instanceof CreateGroupRequest){
+						else {
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
+							System.err.println("ServerThread : create room request failed.");
+						}
+					}
+					else if(clientRequest instanceof CreateGroupRequest){
+						if(requestProcessed){
 							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
 							clientOutputStream.writeObject(new JoinConversationResponse(newGroup));
 							System.out.println("ServerThread : sending back new group " + newGroup.getName() + " to requester : " + ((CreateGroupRequest) clientRequest).getCreateGroupRequester());
@@ -133,12 +129,24 @@ public class ServerThread extends Thread{
 								}
 							}
 						}
-						else if(clientRequest instanceof RegisterRequest){
+						else {
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
+							System.out.println("ServerThread : create group request failed.");
+						}
+					}
+					else if(clientRequest instanceof RegisterRequest){
+						if(requestProcessed){
 							String newUser = ((RegisterRequest) clientRequest).getUsername();
 							clientOutputStream.writeObject(new RegisterResponse(newUser));
 							System.out.println("ServerThread :  Registration successful, sending back confirmation.");
 						}
-						else if(clientRequest instanceof JoinRoomRequest){
+						else{
+							clientOutputStream.writeObject(new RegisterResponse(null));
+							System.err.println("ServerThread :  registration failed.");
+						}
+					}
+					else if(clientRequest instanceof JoinRoomRequest){
+						if(requestProcessed){
 							Room joinedRoom = ((JoinRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new JoinConversationResponse(joinedRoom));
 							System.out.println("ServerThread :  join room successful, sending back confirmation.");
@@ -153,29 +161,17 @@ public class ServerThread extends Thread{
 								}
 							}
 						}
-					}
-					else{
-						//in the case of unsucessful scenarios we send back null response messages.
-						if(clientRequest instanceof CreateRoomRequest){
-							clientOutputStream.writeObject(new JoinConversationResponse(null));
-							System.err.println("ServerThread : create room request failed.");
-						}
-						else if(clientRequest instanceof CreateGroupRequest){
-							clientOutputStream.writeObject(new JoinConversationResponse(null));
-							System.out.println("ServerThread : create group request failed.");
-						}
-						else if(clientRequest instanceof RegisterRequest){
-							clientOutputStream.writeObject(new RegisterResponse(null));
-							System.err.println("ServerThread :  registration failed.");
-						}
-						else if(clientRequest instanceof JoinRoomRequest){
+						else{
 							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.out.println("ServerThread :  join room failed.");
 						}
 					}
+					else{
+						System.err.println("ServerThread : Unsupported ServerMessage request " + clientRequest.getClass().getSimpleName());
+					}
 				}
 				else{
-					System.out.println("Unsupported request from authenticated client : " + server.getAuthenticatedIps().get(clientIp) + "@" + clientIp + " : " + clientRequest.getClass().getSimpleName());
+					System.err.println("ServerThread : Unsupported request " + clientRequest.getClass().getSimpleName());
 				}
 			} catch (ClassNotFoundException e) {
 				System.err.println("ServerThread exception while reading object.");
@@ -183,34 +179,29 @@ public class ServerThread extends Thread{
 			} catch (IOException e) {
 				System.err.println("ServerThread exception while reading object.");
 				e.printStackTrace();
-				System.err.println(">> removing client " + clientIp);
-				String userToRemove = server.getAuthenticatedIps().get(clientIp);
-				server.getAuthenticatedIps().remove(clientIp);
-				System.out.println(">> user to remove :" + userToRemove);
-				if(server.getAuthenticatedUsers().contains(userToRemove.toLowerCase())){
-					System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
-					server.getAuthenticatedUsers().remove(userToRemove.toLowerCase());
+				System.err.println(">> removing client " + thisUser + "@" + clientIp);
+				if(server.getAuthenticatedUsers().contains(thisUser.toLowerCase())){
+					System.err.println(">> server, removed " + thisUser + " from authenticated users.");
+					server.getAuthenticatedUsers().remove(thisUser.toLowerCase());
 				}
-				else if(server.getAuthenticatedUsers().contains(userToRemove)){
-					System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
-					server.getAuthenticatedUsers().remove(userToRemove);
+				else if(server.getAuthenticatedUsers().contains(thisUser)){
+					System.err.println(">> server, removed " + thisUser + " from authenticated users.");
+					server.getAuthenticatedUsers().remove(thisUser);
 				}
 				try {
-					if(server.getClientsOutputStreams().containsKey(userToRemove)){
-						server.getClientsOutputStreams().remove(userToRemove);
+					if(server.getClientsOutputStreams().containsKey(thisUser)){
+						server.getClientsOutputStreams().remove(thisUser);
 					}
-					if(server.getClientInputStreams().containsKey(userToRemove)){
-						server.getClientInputStreams().remove(userToRemove);
+					if(server.getClientInputStreams().containsKey(thisUser)){
+						server.getClientInputStreams().remove(thisUser);
 					}
 					clientOutputStream.close();
 					clientInputStream.close();
 				} catch (IOException e1) {
 				}
-				
+
 				break;
 			}
 		}
 	}
-
-	
 }
