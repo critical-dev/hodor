@@ -14,6 +14,7 @@ import ca.etsmtl.ca.log735.messages.JoinConversationResponse;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
+import ca.etsmtl.ca.log735.messages.RefreshUserListResponse;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
 import ca.etsmtl.ca.log735.messages.RegisterResponse;
 import ca.etsmtl.ca.log735.messages.RoomListResponse;
@@ -68,6 +69,14 @@ public class ServerThread extends Thread{
 							System.out.println("ServerThread : authentication success adding IPs to authenticated IPs list. Sending DefaultRoom to client.");
 							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
 							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
+							Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
+							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
+								for(String user : server.getClientsOutputStreams().keySet()){
+									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
+									}
+								}
+							}
 							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
 							//for internal processing purposes we add the client output stream to the list
 							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
@@ -131,6 +140,14 @@ public class ServerThread extends Thread{
 							Room joinedRoom = ((JoinRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new JoinConversationResponse(joinedRoom));
 							System.out.println("ServerThread :  join room successful, sending back confirmation.");
+							Vector<String> usersToNotifyOfAdd = joinedRoom.getUserlist();
+							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
+								for(String user : server.getClientsOutputStreams().keySet()){
+									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom));
+									}
+								}
+							}
 						}
 					}
 					else{
