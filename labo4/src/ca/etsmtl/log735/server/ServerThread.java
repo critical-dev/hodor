@@ -6,9 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
-import ca.etsmtl.ca.log735.messages.CreateGroupResponse;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
 import ca.etsmtl.ca.log735.messages.JoinGroupRequest;
@@ -17,8 +17,8 @@ import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.JoinRoomResponse;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
-import ca.etsmtl.ca.log735.messages.RegisterResponse;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
+import ca.etsmtl.ca.log735.messages.RegisterResponse;
 import ca.etsmtl.ca.log735.messages.RoomListResponse;
 import ca.etsmtl.ca.log735.messages.ServerMessage;
 import ca.etsmtl.log735.model.Group;
@@ -118,8 +118,17 @@ public class ServerThread extends Thread{
 						}
 						else if(clientRequest instanceof CreateGroupRequest){
 							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
-							clientOutputStream.writeObject(new CreateGroupResponse(newGroup));
-							System.out.println("ServerThread : sending back new group " + newGroup.getName());
+							clientOutputStream.writeObject(new JoinGroupResponse(newGroup));
+							System.out.println("ServerThread : sending back new group " + newGroup.getName() + " to requester : " + ((CreateGroupRequest) clientRequest).getCreateGroupRequester());
+							Vector<String> newGroupMembersToNotify = ((CreateGroupRequest) clientRequest).getUsersAddedToGroup();
+							for(int i = 0; i < newGroupMembersToNotify.size(); i++){
+								for(String user : server.getClientsOutputStreams().keySet()){
+									if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
+										server.getClientsOutputStreams().get(user).writeObject(new JoinGroupResponse(newGroup));
+										break;
+									}
+								}
+							}
 						}
 						else if(clientRequest instanceof RegisterRequest){
 							String newUser = ((RegisterRequest) clientRequest).getUsername();
@@ -142,8 +151,8 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new CreateRoomResponse(null));
 							System.err.println("ServerThread : create room request failed.");
 						}
-						else if(clientRequest instanceof CreateGroupResponse){
-							clientOutputStream.writeObject(new CreateGroupResponse(null));
+						else if(clientRequest instanceof CreateGroupRequest){
+							clientOutputStream.writeObject(new JoinGroupResponse(null));
 							System.out.println("ServerThread : create group request failed.");
 						}
 						else if(clientRequest instanceof RegisterRequest){
