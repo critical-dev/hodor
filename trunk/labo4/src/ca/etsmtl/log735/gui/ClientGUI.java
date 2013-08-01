@@ -55,6 +55,15 @@ public class ClientGUI extends JFrame implements Observer {
 	public static void main(String[] args) {
 		new ClientGUI();
 	}
+	
+	private ConversationPanel findConvoPanel(String title) {
+		for (int i = 0; i < conversations.getTabCount(); i++) {
+			if (conversations.getTitleAt(i).equals(title)) {
+				return (ConversationPanel) conversations.getTabComponentAt(i);
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -66,7 +75,18 @@ public class ClientGUI extends JFrame implements Observer {
 			for (Room room = client.nextServerRoom(); room != null; room = client.nextServerRoom()) {
 				serverPanel.serverRoomAdd(room.getName());
 			}
+			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
+				ConversationPanel panel = findConvoPanel(room.getName());
+				if (panel != null) {
+					panel.refreshUserList(room);
+				} else {
+					System.err.println("Asked to refresh a userlist of a conversation that we don't have - something went horribly wrong.");
+				}
+			}
 		} else {
+			conversations.removeAll();
+			serverPanel = new ServerPanel(client);
+			conversations.add("Server Home", serverPanel);
 			cardLayout.show(cards, CARD_REGISTER_CONNECT);
 		}
 	}

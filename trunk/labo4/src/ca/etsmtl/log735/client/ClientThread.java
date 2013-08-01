@@ -31,8 +31,9 @@ public class ClientThread extends Thread {
 				ClientMessage message = (ClientMessage) ois.readObject();
 				message.process(client);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Server has gone away");
+				run = false;
+				client.disconnect();
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
