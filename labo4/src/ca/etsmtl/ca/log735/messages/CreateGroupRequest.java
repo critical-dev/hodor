@@ -32,7 +32,7 @@ public class CreateGroupRequest extends ServerMessage {
 	public CreateGroupRequest(String groupName, String username, Vector<String> usersToAddToGroup){
 		this.groupName = groupName;
 		this.username = username;
-		this.usersAddedToGroup = usersAddedToGroup;
+		this.usersAddedToGroup = usersToAddToGroup;
 		createdGroup = null;
 	}
 	
