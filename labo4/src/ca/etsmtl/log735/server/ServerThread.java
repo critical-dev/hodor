@@ -95,6 +95,7 @@ public class ServerThread extends Thread{
 				else if(clientRequest instanceof ServerMessage){
 					boolean result = ((ServerMessage) clientRequest).process(server);
 					System.out.println("Request from authenticated client : " + server.getAuthenticatedIps().get(clientIp) + "@" + clientIp + " : " + clientRequest.getClass().getSimpleName());
+					//Note for leavegroup or leaveroom requests, we do nothing else than process the request.
 					if(result){
 						//in the case of successful scenarios we send back response messages with the proper info
 						if(clientRequest instanceof JoinRoomRequest){

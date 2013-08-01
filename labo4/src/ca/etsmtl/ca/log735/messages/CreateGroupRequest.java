@@ -25,14 +25,7 @@ public class CreateGroupRequest extends ServerMessage {
 	private String groupName;
 	private String username = null;
 	private Group createdGroup;
-	
-	//use this constructor to create just a single group with no users in it
-	public CreateGroupRequest(String groupName){
-		this.groupName = groupName;
-		this.username = null;
-		createdGroup = null;
-	}
-	
+		
 	//use this constructor to create a single group with the requesting user
 	//as the default user for that group
 	public CreateGroupRequest(String groupName, String username){
@@ -52,7 +45,7 @@ public class CreateGroupRequest extends ServerMessage {
 		}
 		Vector<String> defaultUsersList = new Vector<String>();
 		//if a group with this name does not already exist then we create it.
-		if(username != null && !username.trim().isEmpty()){
+		if(username != null){
 			try{
 				String user = server.getAuthenticatedUsers().get(server.getAuthenticatedUsers().indexOf(username));
 				defaultUsersList.add(user);
@@ -61,6 +54,10 @@ public class CreateGroupRequest extends ServerMessage {
 				System.out.println("CreateGroupRequest: Unable to find authenticated user for username " + username + ", aborting whole request.");
 				return false;
 			}
+		}
+		else{
+			System.out.println("CreateGroupRequest: provided username cannot be null, aborting request.");
+			return false;
 		}
 		createdGroup = new Group(groupName, defaultUsersList);
 		server.getGroupsWithConversations().put(createdGroup, new ArrayList<String>());//create a new group with an empty conversation.
