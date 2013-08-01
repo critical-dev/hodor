@@ -28,12 +28,13 @@ public class LoginRequest extends ServerMessage {
 
 	@Override
 	public boolean process(Server server) {
-		if(server.authenticateUser(username, password)){
+		if(!server.getAuthenticatedUsers().contains(username) && server.authenticateUser(username, password)){
 			server.getAuthenticatedUsers().add(username);
 			System.out.println("LoginRequest : Adding " + username + " to authenticated users list.");
 			return true;
 		}
 		else{
+			System.out.println("LoginRequest : Authentication error, bad credentials or user already logged on from other machine.");
 			return false;
 		}
 	}
