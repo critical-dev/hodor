@@ -8,6 +8,8 @@ import java.net.Socket;
 
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
+import ca.etsmtl.ca.log735.messages.JoinGroupRequest;
+import ca.etsmtl.ca.log735.messages.JoinGroupResponse;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.JoinRoomResponse;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
@@ -15,6 +17,7 @@ import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterResponse;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
 import ca.etsmtl.ca.log735.messages.ServerMessage;
+import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
 
 public class ServerThread extends Thread{
@@ -99,6 +102,11 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new RegisterResponse(newUser));
 							System.out.println("ServerThread :  Registration successful, sending back confirmation.");
 						}
+						else if(clientRequest instanceof JoinGroupRequest){
+							Group joinedGroup = ((JoinGroupRequest) clientRequest).getGroup();
+							clientOutputStream.writeObject(new JoinGroupResponse(joinedGroup));
+							System.out.println("ServerThread : Join Group Request successful, sending back confirmation.");
+						}
 					}
 					else{
 						//in the case of unsucessful scenarios we send back null response messages.
@@ -113,6 +121,10 @@ public class ServerThread extends Thread{
 						else if(clientRequest instanceof RegisterRequest){
 							clientOutputStream.writeObject(new RegisterResponse(null));
 							System.err.println("ServerThread :  registration failed.");
+						}
+						else if(clientRequest instanceof JoinGroupRequest){
+							clientOutputStream.writeObject(new JoinGroupResponse(null));
+							System.err.println("ServerThread : Join Group Request failed.");
 						}
 					}
 				}
