@@ -183,7 +183,7 @@ public class Server {
 		return authenticatedUsers;
 	}
 
-	public synchronized File getAuthList() {
+	public File getAuthList() {
 		return authList;
 	}
 
