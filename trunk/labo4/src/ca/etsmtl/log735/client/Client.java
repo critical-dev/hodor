@@ -99,12 +99,12 @@ public class Client extends Observable {
 		for (Room room: rooms) {
 			serverRoomsQueue.add(room);
 		}
-		setChanged(); notifyObservers();
+		setChanged(); notifyObservers(); clearChanged();
 	}
 	
 	public void joinedConvAdd(Conversation convo) {
 		joinedConvsQueue.add(convo);
-		setChanged(); notifyObservers();
+		setChanged(); notifyObservers(); clearChanged();
 	}
 
 	public void sendJoinRoom(Room room) {
@@ -138,7 +138,7 @@ public class Client extends Observable {
 
 	public void refreshUserList(Conversation conversation) {
 		roomsWithNewUsers.add((Room) conversation);
-		setChanged(); notifyObservers();
+		setChanged(); notifyObservers(); clearChanged();
 	}
 
 	public void disconnect() {

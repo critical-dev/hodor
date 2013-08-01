@@ -161,9 +161,9 @@ public class Server {
 	}
 
 	public HashMap<String, ObjectOutputStream> getClientsOutputStreams() {
-		synchronized (clientOutputStreams) {
+		//synchronized (clientOutputStreams) {
 			return clientOutputStreams;
-		}
+		//}
 	}
 
 	public HashMap<String, ObjectInputStream> getClientInputStreams() {

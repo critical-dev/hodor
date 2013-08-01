@@ -18,13 +18,13 @@ public abstract class Conversation implements Serializable {
 	/**
 	 * The list of usernames in the Group.
 	 */
-	protected volatile Vector<String> userlist = new Vector<String>();
+	protected Vector<String> userlist = new Vector<String>();
 	
 	/**
 	 * Returns the list of usernames in the Group.
 	 * @return The list of usernames in the Group.
 	 */
-	public Vector<String> getUserlist() {
+	public synchronized Vector<String> getUserlist() {
 		return userlist;
 	}
 	

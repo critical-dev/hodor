@@ -69,6 +69,7 @@ public class ClientGUI extends JFrame implements Observer {
 			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
 				int i = conversations.indexOfTab(room.getName());
 				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(i);
+				System.out.println("refreshing room : " + room.getName());
 				if (panel != null) {
 					panel.refreshUserList(room);
 				} else {
