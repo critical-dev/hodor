@@ -75,6 +75,7 @@ public class ServerThread extends Thread{
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
 										System.out.println("ServerThread: Notified "+user+" that default room clients that this conversation user list has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
+										break;
 									}
 								}
 							}
@@ -147,6 +148,7 @@ public class ServerThread extends Thread{
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
 										System.out.println("ServerThread: Notified "+user+" that room "+joinedRoom.getName()+" clients that this conversation user list has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom));
+										break;
 									}
 								}
 							}
