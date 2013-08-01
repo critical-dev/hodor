@@ -22,21 +22,44 @@ public class JoinRoomRequest extends ServerMessage {
 	private String roomName;
 	private String username;
 	private Room room;
+	private String password;
 	
 	//the username is required so it can be added to the room's userlist.
 	public JoinRoomRequest(String roomName, String username){
 		this.roomName = roomName;
 		this.username = username.toLowerCase();
 		room = null;
+		password = null;
 	}
 	
+	//the username is required so it can be added to the room's userlist.
+	public JoinRoomRequest(String roomName, String username, String password){
+		this.roomName = roomName;
+		this.username = username.toLowerCase();
+		room = null;
+		this.password = password;
+	}
+		
 	@Override
 	public boolean process(Server server) {
 		for(int i = 0; i < server.getRooms().size(); i++){
 			if(server.getRooms().get(i).getName().equalsIgnoreCase(roomName)){
 				if(!server.getRooms().get(i).getUserlist().contains(username)){
 					room = server.getRooms().get(i);
-					room.getUserlist().add(username);
+					if(room.isPasswordProtected()){
+						if(password != null && password.equals(room.getRoomPassword())){
+							System.out.println("JoinRoomRequest : Password match, user added to room.");
+							room.getUserlist().add(username);
+						}
+						else{
+							System.err.println("JoinRoomRequest : user's password does not match, or no password provided, aborting request.");
+							return false;
+						}
+					}
+					else{
+						System.out.println("JoinRoomRequest : Added user to room.");
+						room.getUserlist().add(username);
+					}
 					return true;
 				}
 				else{

@@ -67,7 +67,7 @@ public class Server {
 		
 		//create default room
 		defaultRoom = new Room("DefaultRoom");
-				
+		rooms.add(defaultRoom);
 		authList = new File(authListFileRelativeLocation);
 		if(authList == null || !authList.exists()){
 			System.out.println("Database file : " + authList.getAbsolutePath() + " does not exist. Creating empty DB file.");
