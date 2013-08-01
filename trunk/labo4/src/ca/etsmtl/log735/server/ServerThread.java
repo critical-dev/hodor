@@ -11,7 +11,6 @@ import java.util.Vector;
 import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
-import ca.etsmtl.ca.log735.messages.JoinGroupRequest;
 import ca.etsmtl.ca.log735.messages.JoinConversationResponse;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
@@ -100,12 +99,7 @@ public class ServerThread extends Thread{
 					//Note for leavegroup or leaveroom requests, we do nothing else than process the request.
 					if(result){
 						//in the case of successful scenarios we send back response messages with the proper info
-						if(clientRequest instanceof JoinRoomRequest){
-							Room joinRequestRequestedRoom = ((JoinRoomRequest) clientRequest).getRoom();
-							clientOutputStream.writeObject(new JoinConversationResponse(joinRequestRequestedRoom));
-							System.out.println("ServerThread : sending room " + joinRequestRequestedRoom.getName() + " back to client.");
-						}
-						else if(clientRequest instanceof CreateRoomRequest){
+						if(clientRequest instanceof CreateRoomRequest){
 							Room createRoomRequestedRoom = ((CreateRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new CreateRoomResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
@@ -134,19 +128,10 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new RegisterResponse(newUser));
 							System.out.println("ServerThread :  Registration successful, sending back confirmation.");
 						}
-						else if(clientRequest instanceof JoinGroupRequest){
-							Group joinedGroup = ((JoinGroupRequest) clientRequest).getGroup();
-							clientOutputStream.writeObject(new JoinConversationResponse(joinedGroup));
-							System.out.println("ServerThread : Join Group Request successful, sending back confirmation.");
-						}
 					}
 					else{
 						//in the case of unsucessful scenarios we send back null response messages.
-						if(clientRequest instanceof JoinRoomRequest){
-							clientOutputStream.writeObject(new JoinConversationResponse(null));
-							System.err.println("ServerThread : join room request failed.");
-						}
-						else if(clientRequest instanceof CreateRoomRequest){
+						if(clientRequest instanceof CreateRoomRequest){
 							clientOutputStream.writeObject(new CreateRoomResponse(null));
 							System.err.println("ServerThread : create room request failed.");
 						}
@@ -157,10 +142,6 @@ public class ServerThread extends Thread{
 						else if(clientRequest instanceof RegisterRequest){
 							clientOutputStream.writeObject(new RegisterResponse(null));
 							System.err.println("ServerThread :  registration failed.");
-						}
-						else if(clientRequest instanceof JoinGroupRequest){
-							clientOutputStream.writeObject(new JoinConversationResponse(null));
-							System.err.println("ServerThread : Join Group Request failed.");
 						}
 					}
 				}
