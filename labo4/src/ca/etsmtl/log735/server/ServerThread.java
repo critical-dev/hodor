@@ -67,21 +67,23 @@ public class ServerThread extends Thread{
 						}
 						else{
 							thisUser = ((LoginRequest) clientRequest).getUsername();
-							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
-							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
-							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							//for internal processing purposes we add the client output stream to the list
 							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
 							System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
+							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
+							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
+							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
-								for(String user : server.getClientsOutputStreams().keySet()){
+								System.out.println("ServerThread: Notified "+usersToNotifyOfAdd.get(i)+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
+								server.getClientsOutputStreams().get(usersToNotifyOfAdd.get(i)).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
+								/*for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
 										System.out.println("ServerThread: Notified "+user+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
 										break;
 									}
-								}
+								}*/
 							}
 							clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 						}
@@ -165,9 +167,6 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.out.println("ServerThread :  join room failed.");
 						}
-					}
-					else{
-						System.err.println("ServerThread : Unsupported ServerMessage request " + clientRequest.getClass().getSimpleName());
 					}
 				}
 				else{

@@ -1,6 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Group;
@@ -37,13 +38,19 @@ public class SendMessageRequest extends ServerMessage {
 	public boolean process(Server server) {
 		if(conversation != null){
 			if(conversation instanceof Room){
-				if(!server.getRooms().contains((Room) conversation)){
+				ArrayList<String> roomNames = new ArrayList<String>();
+				for(int i = 0; i < server.getRooms().size(); i++)
+					roomNames.add(server.getRooms().get(i).getName().toLowerCase());
+				if(!roomNames.contains(((Room) conversation).getName().toLowerCase())){
 					System.out.println("SendMessageRequest : server is not aware that room " + ((Room) conversation).getName() + " exists. Aborting message send request.");
 					return false;
 				}
 			}
 			else if(conversation instanceof Group){
-				if(!server.getGroupsWithConversations().containsKey((Group)conversation)){
+				ArrayList<String> groupNames = new ArrayList<String>();
+				for(Group group : server.getGroupsWithConversations().keySet())
+					groupNames.add(group.getName().toLowerCase());
+				if(!groupNames.contains(((Group)conversation).getName().toLowerCase())){
 					System.out.println("SendMessageRequest : server is not aware that group " + ((Group) conversation).getName() + " exists. Aborting message send request.");
 					return false;
 				}
