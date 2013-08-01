@@ -25,12 +25,14 @@ public class CreateGroupRequest extends ServerMessage {
 	private String groupName;
 	private String username = null;
 	private Group createdGroup;
-		
+	private Vector<String> usersAddedToGroup;
+	
 	//use this constructor to create a single group with the requesting user
 	//as the default user for that group
-	public CreateGroupRequest(String groupName, String username){
+	public CreateGroupRequest(String groupName, String username, Vector<String> usersToAddToGroup){
 		this.groupName = groupName;
 		this.username = username;
+		this.usersAddedToGroup = usersAddedToGroup;
 		createdGroup = null;
 	}
 	
@@ -49,6 +51,7 @@ public class CreateGroupRequest extends ServerMessage {
 			try{
 				String user = server.getAuthenticatedUsers().get(server.getAuthenticatedUsers().indexOf(username));
 				defaultUsersList.add(user);
+				defaultUsersList.addAll(usersAddedToGroup);
 			}
 			catch (Exception e){
 				System.out.println("CreateGroupRequest: Unable to find authenticated user for username " + username + ", aborting whole request.");
@@ -65,6 +68,14 @@ public class CreateGroupRequest extends ServerMessage {
 		return true;
 	}
 	
+	public String getCreateGroupRequester() {
+		return username;
+	}
+
+	public Vector<String> getUsersAddedToGroup() {
+		return usersAddedToGroup;
+	}
+
 	public Group getGroup(){
 		return createdGroup;
 	}
