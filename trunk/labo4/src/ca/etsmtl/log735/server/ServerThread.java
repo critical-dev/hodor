@@ -12,9 +12,8 @@ import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
 import ca.etsmtl.ca.log735.messages.JoinGroupRequest;
-import ca.etsmtl.ca.log735.messages.JoinGroupResponse;
+import ca.etsmtl.ca.log735.messages.JoinConversationResponse;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
-import ca.etsmtl.ca.log735.messages.JoinRoomResponse;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
@@ -69,7 +68,7 @@ public class ServerThread extends Thread{
 						else{
 							server.getAuthenticatedIps().put(clientIp, ((LoginRequest) clientRequest).getUsername());
 							System.out.println("ServerThread : authentication success adding IPs to authenticated IPs list. Sending DefaultRoom to client.");
-							clientOutputStream.writeObject(new JoinRoomResponse(server.getDefaultRoom()));
+							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
 							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
 							//for internal processing purposes we add the client output stream to the list
@@ -103,7 +102,7 @@ public class ServerThread extends Thread{
 						//in the case of successful scenarios we send back response messages with the proper info
 						if(clientRequest instanceof JoinRoomRequest){
 							Room joinRequestRequestedRoom = ((JoinRoomRequest) clientRequest).getRoom();
-							clientOutputStream.writeObject(new JoinRoomResponse(joinRequestRequestedRoom));
+							clientOutputStream.writeObject(new JoinConversationResponse(joinRequestRequestedRoom));
 							System.out.println("ServerThread : sending room " + joinRequestRequestedRoom.getName() + " back to client.");
 						}
 						else if(clientRequest instanceof CreateRoomRequest){
@@ -118,13 +117,13 @@ public class ServerThread extends Thread{
 						}
 						else if(clientRequest instanceof CreateGroupRequest){
 							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
-							clientOutputStream.writeObject(new JoinGroupResponse(newGroup));
+							clientOutputStream.writeObject(new JoinConversationResponse(newGroup));
 							System.out.println("ServerThread : sending back new group " + newGroup.getName() + " to requester : " + ((CreateGroupRequest) clientRequest).getCreateGroupRequester());
 							Vector<String> newGroupMembersToNotify = ((CreateGroupRequest) clientRequest).getUsersAddedToGroup();
 							for(int i = 0; i < newGroupMembersToNotify.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
-										server.getClientsOutputStreams().get(user).writeObject(new JoinGroupResponse(newGroup));
+										server.getClientsOutputStreams().get(user).writeObject(new JoinConversationResponse(newGroup));
 										break;
 									}
 								}
@@ -137,14 +136,14 @@ public class ServerThread extends Thread{
 						}
 						else if(clientRequest instanceof JoinGroupRequest){
 							Group joinedGroup = ((JoinGroupRequest) clientRequest).getGroup();
-							clientOutputStream.writeObject(new JoinGroupResponse(joinedGroup));
+							clientOutputStream.writeObject(new JoinConversationResponse(joinedGroup));
 							System.out.println("ServerThread : Join Group Request successful, sending back confirmation.");
 						}
 					}
 					else{
 						//in the case of unsucessful scenarios we send back null response messages.
 						if(clientRequest instanceof JoinRoomRequest){
-							clientOutputStream.writeObject(new JoinRoomResponse(null));
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.err.println("ServerThread : join room request failed.");
 						}
 						else if(clientRequest instanceof CreateRoomRequest){
@@ -152,7 +151,7 @@ public class ServerThread extends Thread{
 							System.err.println("ServerThread : create room request failed.");
 						}
 						else if(clientRequest instanceof CreateGroupRequest){
-							clientOutputStream.writeObject(new JoinGroupResponse(null));
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.out.println("ServerThread : create group request failed.");
 						}
 						else if(clientRequest instanceof RegisterRequest){
@@ -160,7 +159,7 @@ public class ServerThread extends Thread{
 							System.err.println("ServerThread :  registration failed.");
 						}
 						else if(clientRequest instanceof JoinGroupRequest){
-							clientOutputStream.writeObject(new JoinGroupResponse(null));
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.err.println("ServerThread : Join Group Request failed.");
 						}
 					}
