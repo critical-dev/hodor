@@ -6,7 +6,7 @@ import ca.etsmtl.log735.server.Server;
 /**
  * With this message, the clients requests the creation of a room.
  * Expects a CreateRoomResponse in response.
- * @author artom
+ * @author chrys
  *
  */
 public class CreateRoomRequest extends ServerMessage {

@@ -7,7 +7,7 @@ import ca.etsmtl.log735.server.Server;
 /**
  * With this message, the client requests the server to join a room.
  * The client expects a JoinRoomResponse in response.
- * @author artom
+ * @author chrys
  *
  */
 public class JoinGroupRequest extends ServerMessage {
