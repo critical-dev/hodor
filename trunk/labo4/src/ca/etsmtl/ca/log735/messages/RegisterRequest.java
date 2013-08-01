@@ -54,7 +54,7 @@ public class RegisterRequest extends ServerMessage {
 			//add account to registered users database
 			File usersDatabase = server.getAuthList();
 			try {
-				FileWriter fw = new FileWriter(usersDatabase);
+				FileWriter fw = new FileWriter(usersDatabase.getAbsoluteFile());
 				BufferedWriter bw = new BufferedWriter(fw);
 				Scanner s = new Scanner(usersDatabase);
 				String previousUsers = s.useDelimiter("\\A").hasNext() ? s.useDelimiter("\\A").next() + "\n" : "";
