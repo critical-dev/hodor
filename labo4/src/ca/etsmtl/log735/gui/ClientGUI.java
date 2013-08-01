@@ -1,7 +1,6 @@
 package ca.etsmtl.log735.gui;
 
 import java.awt.CardLayout;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 

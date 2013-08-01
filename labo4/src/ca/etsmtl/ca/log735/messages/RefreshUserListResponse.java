@@ -1,5 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
 /******************************************************
@@ -29,6 +31,7 @@ public class RefreshUserListResponse extends ClientMessage {
 	@Override
 	public void process(Client client) {
 		client.refreshUserList(conversation);
-		System.out.println(client.username + ": Processed RefreshUserList");
+		System.out.println(client.username + ": Processed RefreshUserList: " + 
+				StringUtils.join(conversation.getUserlist(), ", "));
 	}
 }

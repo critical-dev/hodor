@@ -13,7 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
