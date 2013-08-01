@@ -1,5 +1,8 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.io.IOException;
+import java.util.Vector;
+
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
 import ca.etsmtl.log735.server.Server;
@@ -43,6 +46,23 @@ public class LeaveGroupRequest extends ServerMessage {
 						System.out.println("LeaveGroupRequest: no more users in group, removed it.");
 						server.getGroupsWithConversations().remove(group);
 					}
+					else{
+						Vector<String> newGroupMembersToNotify = group.getUserlist();
+						for(int i = 0; i < newGroupMembersToNotify.size(); i++){
+							for(String user : server.getClientsOutputStreams().keySet()){
+								if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
+									try {
+										System.out.println("LeaveGroupRequest: Notified "+user+" that group has one less member.");
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(group));
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+									break;
+								}
+							}
+						}
+					}
+					
 				}
 				else{
 					System.out.println("LeaveGroupRequest: user " + username + " not part of that group. No effect.");

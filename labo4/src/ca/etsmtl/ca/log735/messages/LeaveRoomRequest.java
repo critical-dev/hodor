@@ -1,5 +1,8 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.io.IOException;
+import java.util.Vector;
+
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
 import ca.etsmtl.log735.server.Server;
@@ -42,6 +45,22 @@ public class LeaveRoomRequest extends ServerMessage {
 				if(server.getRooms().get(indexOfRoom) != server.getDefaultRoom() && server.getRooms().get(indexOfRoom).getUserlist().size() == 0){
 					System.out.println("LeaveRoomRequest: No more users in that room, removed it. ");
 					server.getRooms().remove(indexOfRoom);
+				}
+				else{
+					Vector<String> newGroupMembersToNotify = server.getRooms().get(indexOfRoom).getUserlist();
+					for(int i = 0; i < newGroupMembersToNotify.size(); i++){
+						for(String user : server.getClientsOutputStreams().keySet()){
+							if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
+								try {
+									System.out.println("LeaveGroupRequest: Notified "+user+" that room has one less member.");
+									server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getRooms().get(indexOfRoom)));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								break;
+							}
+						}
+					}
 				}
 			}
 			else{
