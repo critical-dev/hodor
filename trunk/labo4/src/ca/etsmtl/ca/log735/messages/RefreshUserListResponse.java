@@ -12,16 +12,14 @@ Code(s) perm. : LIFA29108505, CHAC12098902
 Date création : 01/07/2013
 ******************************************************/
 /**
- * With this message, the server tells the client that this conversation's users lsit has been updated.
+ * With this message, the server tells the client that this conversation's users list has been updated.
  * @author chrys, artom
  *
  */
 public class RefreshUserListResponse extends ClientMessage {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3917870958088407622L;
+	
 	private Conversation conversation;
 	
 	public RefreshUserListResponse(Conversation conversation){

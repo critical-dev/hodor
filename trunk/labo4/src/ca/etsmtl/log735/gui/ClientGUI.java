@@ -1,6 +1,7 @@
 package ca.etsmtl.log735.gui;
 
 import java.awt.CardLayout;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -56,15 +57,6 @@ public class ClientGUI extends JFrame implements Observer {
 		new ClientGUI();
 	}
 	
-	private ConversationPanel findConvoPanel(String title) {
-		for (int i = 0; i < conversations.getTabCount(); i++) {
-			if (conversations.getTitleAt(i).equals(title)) {
-				return (ConversationPanel) conversations.getTabComponentAt(i);
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public void update(Observable o, Object arg) {
 		if (client.isConnected()) {
@@ -76,7 +68,8 @@ public class ClientGUI extends JFrame implements Observer {
 				serverPanel.serverRoomAdd(room.getName());
 			}
 			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
-				ConversationPanel panel = findConvoPanel(room.getName());
+				int i = conversations.indexOfTab(room.getName());
+				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(i);
 				if (panel != null) {
 					panel.refreshUserList(room);
 				} else {
