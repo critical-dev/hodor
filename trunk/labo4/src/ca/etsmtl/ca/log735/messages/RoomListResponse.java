@@ -2,6 +2,8 @@ package ca.etsmtl.ca.log735.messages;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Room;
 /******************************************************
@@ -33,6 +35,7 @@ public class RoomListResponse extends ClientMessage {
 	@Override
 	public void process(Client client) {
 		client.serverRoomsAdd(serverRooms);
+		System.out.println(client.username + " Processed RoomListResponse with rooms: " + StringUtils.join(serverRooms, ", "));
 	}
 
 }
