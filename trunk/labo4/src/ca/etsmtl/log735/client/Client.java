@@ -138,6 +138,7 @@ public class Client extends Observable {
 
 	public void refreshUserList(Conversation conversation) {
 		roomsWithNewUsers.add((Room) conversation);
+		setChanged(); notifyObservers();
 	}
 
 	public void disconnect() {

@@ -1,10 +1,9 @@
 package ca.etsmtl.ca.log735.messages;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.PrintWriter;
 
 import ca.etsmtl.log735.server.Server;
 /******************************************************
@@ -54,15 +53,9 @@ public class RegisterRequest extends ServerMessage {
 			//add account to registered users database
 			File usersDatabase = server.getAuthList();
 			try {
-				FileWriter fw = new FileWriter(usersDatabase.getAbsoluteFile());
-				BufferedWriter bw = new BufferedWriter(fw);
-				Scanner s = new Scanner(usersDatabase);
-				String previousUsers = s.useDelimiter("\\A").hasNext() ? s.useDelimiter("\\A").next() + "\n" : "";
-				System.out.println("Previous DB users: " + previousUsers);
-				bw.write(previousUsers + username+":"+password);
-				bw.close();
-				fw.close();
-				s.close();
+				PrintWriter out = new PrintWriter(new FileWriter(usersDatabase.getAbsoluteFile(), true));
+				out.println(username+":"+password);
+				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
