@@ -21,17 +21,28 @@ public class CreateRoomRequest extends ServerMessage {
 
 	private String roomName;
 	private Room createdRoom;
-	
-	public CreateRoomRequest(String roomName){
+	private String username;//the username who initiated the request.
+	public CreateRoomRequest(String roomName, String username){
 		this.roomName = roomName;
+		this.username = username;
 		createdRoom = null;
 	}
 	
 	@Override
 	public boolean process(Server server) {
 		if(!server.getRooms().contains(roomName)){
+			int userIndex = server.getAuthenticatedUsers().indexOf(username);
+			String user = null;
+			if(userIndex != -1){
+				user = server.getAuthenticatedUsers().get(userIndex);
+			}
+			else{
+				return false;
+			}
 			createdRoom = new Room(roomName);
+			createdRoom.getUserlist().add(user);
 			server.getRooms().add(createdRoom);
+			System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user].");
 			return true;
 		}
 		else{
