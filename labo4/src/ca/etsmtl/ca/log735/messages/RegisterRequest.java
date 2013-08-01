@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import ca.etsmtl.log735.server.Server;
 /******************************************************
@@ -55,9 +56,13 @@ public class RegisterRequest extends ServerMessage {
 			try {
 				FileWriter fw = new FileWriter(usersDatabase);
 				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(username+":"+password+"\n");
+				Scanner s = new Scanner(usersDatabase);
+				String previousUsers = s.useDelimiter("\\A").hasNext() ? s.useDelimiter("\\A").next() + "\n" : "";
+				System.out.println("Previous DB users: " + previousUsers);
+				bw.write(previousUsers + username+":"+password);
 				bw.close();
 				fw.close();
+				s.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

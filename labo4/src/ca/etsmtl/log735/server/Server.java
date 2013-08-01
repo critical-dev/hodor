@@ -46,8 +46,8 @@ public class Server {
 	
 	private ServerSocket serverSocket;
 	private File authList;
-	private static String authListDirLoccation = "data";
-	private static String authListFileRelativeLocation = authListDirLoccation + File.separator + "authList.txt";
+	private String authListDirLoccation = "data";
+	private String authListFileRelativeLocation = authListDirLoccation + File.separator + "authList.txt";
 	
 	public static void main(String[] args) {
 		new Server();
@@ -183,7 +183,7 @@ public class Server {
 		return authenticatedUsers;
 	}
 
-	public File getAuthList() {
+	public synchronized File getAuthList() {
 		return authList;
 	}
 
