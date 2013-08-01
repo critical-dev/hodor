@@ -4,7 +4,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import ca.etsmtl.ca.log735.messages.ClientMessage;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class ClientThread extends Thread {
 	
 	private Client client;

@@ -16,7 +16,15 @@ import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
 import ca.etsmtl.log735.client.Client;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class ServerPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -735104005540609924L;
