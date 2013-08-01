@@ -68,7 +68,11 @@ public class ServerThread extends Thread{
 						else{
 							thisUser = ((LoginRequest) clientRequest).getUsername();
 							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
+							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
 							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
+							//for internal processing purposes we add the client output stream to the list
+							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
+							System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
 							Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
@@ -79,10 +83,6 @@ public class ServerThread extends Thread{
 									}
 								}
 							}
-							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
-							//for internal processing purposes we add the client output stream to the list
-							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
-							System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
 							clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 						}
 					}
