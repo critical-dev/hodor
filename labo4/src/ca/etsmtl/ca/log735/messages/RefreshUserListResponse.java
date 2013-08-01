@@ -30,7 +30,6 @@ public class RefreshUserListResponse extends ClientMessage {
 	
 	@Override
 	public void process(Client client) {
-		
+		client.refreshUserList(conversation);
 	}
-
 }

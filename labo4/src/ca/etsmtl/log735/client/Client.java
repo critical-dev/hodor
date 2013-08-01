@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
-import java.util.Vector;
 
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
+import ca.etsmtl.ca.log735.messages.SendMessageRequest;
 import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Room;
 /******************************************************
@@ -41,15 +41,14 @@ public class Client extends Observable {
 	private boolean connected = false;
 	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
 	private Queue<Room> serverRoomsQueue = new LinkedList<Room>();
+	private Queue<Room> roomsWithNewUsers = new LinkedList<Room>();
 	
 	private void connect(InetAddress serverIp, int port) throws IOException {
-		if (socket == null && clientThread == null && ois == null && oos == null) {
-			socket = new Socket(serverIp, port);
-			ois = new ObjectInputStream(socket.getInputStream());
-			clientThread = new ClientThread(this, ois);
-			clientThread.start();
-			oos = new ObjectOutputStream(socket.getOutputStream());
-		}
+		socket = new Socket(serverIp, port);
+		ois = new ObjectInputStream(socket.getInputStream());
+		clientThread = new ClientThread(this, ois);
+		clientThread.start();
+		oos = new ObjectOutputStream(socket.getOutputStream());
 	}
 
 	public void login(InetAddress serverIp, int port, String username, String password) throws IOException {
@@ -91,6 +90,10 @@ public class Client extends Observable {
 	public Room nextServerRoom() {
 		return serverRoomsQueue.poll();
 	}
+	
+	public Room nextRoomWithNewUsers() {
+		return roomsWithNewUsers.poll();
+	}
 
 	public void serverRoomsAdd(List<Room> rooms) {
 		for (Room room: rooms) {
@@ -122,5 +125,30 @@ public class Client extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void sendMessage(String text, Conversation conv) {
+		try {
+			oos.writeObject(new SendMessageRequest(text, conv, username));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void refreshUserList(Conversation conversation) {
+		roomsWithNewUsers.add((Room) conversation);
+	}
+
+	public void disconnect() {
+		try {
+			oos.close();
+			ois.close();
+			socket.close();
+		} catch (IOException e) {
+			System.out.println("Exception while closing streams/socket - this is expected if we're being to disconnect because the server died.");
+		}
+		connected = false;
+		setChanged(); notifyObservers();
 	}
 }
