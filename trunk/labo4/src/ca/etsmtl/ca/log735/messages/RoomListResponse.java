@@ -1,7 +1,6 @@
 package ca.etsmtl.ca.log735.messages;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Room;
@@ -33,8 +32,7 @@ public class RoomListResponse extends ClientMessage {
 	
 	@Override
 	public void process(Client client) {
-		// TODO Auto-generated method stub
-
+		client.serverRoomsAdd(serverRooms);
 	}
 
 }
