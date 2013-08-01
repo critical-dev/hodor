@@ -59,7 +59,7 @@ public class ClientGUI extends JFrame implements Observer {
 		if (client.isConnected()) {
 			cardLayout.show(cards, CARD_CONVERSATIONS);
 			for (Conversation conv = client.nextConversation(); conv != null; conv = client.nextConversation()) {
-				conversations.addTab(conv.toString(), new )
+				conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
 			}
 		} else {
 			cardLayout.show(cards, CARD_REGISTER_CONNECT);
