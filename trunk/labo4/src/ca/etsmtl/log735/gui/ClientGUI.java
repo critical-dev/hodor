@@ -41,7 +41,7 @@ public class ClientGUI extends JFrame implements Observer {
 		cards.add(new RegisterConnectPanel(client), CARD_REGISTER_CONNECT);
 		cards.add(conversations, CARD_CONVERSATIONS);
 		serverPanel = new ServerPanel(client);
-		conversations.add(serverPanel);
+		conversations.add("Server Home", serverPanel);
 		getContentPane().add(cards);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
