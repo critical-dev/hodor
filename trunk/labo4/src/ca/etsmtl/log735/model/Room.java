@@ -22,6 +22,8 @@ public class Room extends Conversation {
 	 * The name of the room.
 	 */
 	private String name;
+	private String roomPassword;
+	private boolean isPasswordProtected;
 
 	/**
 	 * Constructs a room with the given name.
@@ -29,6 +31,12 @@ public class Room extends Conversation {
 	 */
 	public Room(String name) {
 		this.name = name;
+		isPasswordProtected = false;
+	}
+	
+	public Room(String name, String roomPassword){
+		isPasswordProtected = true;
+		this.roomPassword = roomPassword;
 	}
 
 	/**
@@ -46,5 +54,13 @@ public class Room extends Conversation {
 	 */
 	public String toString() {
 		return name;
+	}
+	
+	public String getRoomPassword(){
+		return roomPassword;
+	}
+	
+	public boolean isPasswordProtected(){
+		return isPasswordProtected;
 	}
 }

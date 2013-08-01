@@ -38,12 +38,15 @@ public class SendMessageRequest extends ServerMessage {
 				try {
 					server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation));
 				} catch (IOException e) {
-					System.out.println("Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
+					System.out.println("SendMessageRequest : Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
 					e.printStackTrace();
 				}
 			}
 		}
-		else System.out.println("Received null conversaiton, nothing to do here.");
+		else{
+			System.out.println("SendMessageRequest : Received null conversation, nothing to do here.");
+			return false;
+		}
 		return true;
 	}
 	

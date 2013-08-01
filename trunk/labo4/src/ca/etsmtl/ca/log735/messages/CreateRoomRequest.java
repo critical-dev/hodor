@@ -22,10 +22,21 @@ public class CreateRoomRequest extends ServerMessage {
 	private String roomName;
 	private Room createdRoom;
 	private String username;//the username who initiated the request.
+	private String roomPassword;
+	
+	//crée une salle sans mot de passe
 	public CreateRoomRequest(String roomName, String username){
 		this.roomName = roomName;
 		this.username = username;
 		createdRoom = null;
+		roomPassword = null;
+	}
+	
+	public CreateRoomRequest(String roomName, String username, String roomPassword){
+		this.roomName = roomName;
+		this.username = username;
+		createdRoom = null;
+		this.roomPassword = roomPassword;
 	}
 	
 	@Override
@@ -39,7 +50,10 @@ public class CreateRoomRequest extends ServerMessage {
 			else{
 				return false;
 			}
-			createdRoom = new Room(roomName);
+			if(roomPassword == null || roomPassword.trim().isEmpty())
+				createdRoom = new Room(roomName);
+			else
+				createdRoom = new Room(roomName, roomPassword);
 			createdRoom.getUserlist().add(user);
 			server.getRooms().add(createdRoom);
 			System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user].");
