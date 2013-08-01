@@ -54,5 +54,9 @@ public class CreateRoomRequest extends ServerMessage {
 	public Room getRoom(){
 		return createdRoom;
 	}
+	
+	public String getRoomCreateRequester(){
+		return username;
+	}
 
 }

@@ -190,15 +190,21 @@ public class Server {
 	}
 
 	public Room getDefaultRoom() {
-		return defaultRoom;
+		synchronized (defaultRoom) {
+			return defaultRoom;
+		}
 	}
 
 	public void setDefaultRoom(Room defaultRoom) {
-		this.defaultRoom = defaultRoom;
+		synchronized (defaultRoom) {
+			this.defaultRoom = defaultRoom;
+		}
 	}
 
 	public ArrayList<Room> getRooms() {
-		return rooms;
+		synchronized (rooms) {
+			return rooms;
+		}
 	}
 
 	public void setRoomsWithConversations(ArrayList<Room> rooms) {

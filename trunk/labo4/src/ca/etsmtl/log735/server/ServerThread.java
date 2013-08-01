@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
 import ca.etsmtl.ca.log735.messages.CreateGroupResponse;
@@ -18,6 +19,7 @@ import ca.etsmtl.ca.log735.messages.LoginRefused;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterResponse;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
+import ca.etsmtl.ca.log735.messages.RoomListResponse;
 import ca.etsmtl.ca.log735.messages.ServerMessage;
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
@@ -73,6 +75,7 @@ public class ServerThread extends Thread{
 							//for internal processing purposes we add the client output stream to the list
 							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
 							System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
+							clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 						}
 					}
 					else if(clientRequest instanceof RegisterRequest){
@@ -107,6 +110,11 @@ public class ServerThread extends Thread{
 							Room createRoomRequestedRoom = ((CreateRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new CreateRoomResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
+							ArrayList<Room> singleNewRoom = new ArrayList<Room>();
+							singleNewRoom.add(createRoomRequestedRoom);
+							for(String user: server.getClientsOutputStreams().keySet()){
+								server.getClientsOutputStreams().get(user).writeObject(new RoomListResponse(singleNewRoom));
+							}
 						}
 						else if(clientRequest instanceof CreateGroupRequest){
 							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
