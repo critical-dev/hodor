@@ -1,5 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.util.Vector;
+
 import org.apache.commons.lang3.StringUtils;
 
 import ca.etsmtl.log735.client.Client;
@@ -23,15 +25,17 @@ public class RefreshUserListResponse extends ClientMessage {
 	private static final long serialVersionUID = -3917870958088407622L;
 	
 	private Conversation conversation;
+	private Vector<String> newUsers;
 	
-	public RefreshUserListResponse(Conversation conversation){
+	public RefreshUserListResponse(Conversation conversation, Vector<String> newUsers){
 		this.conversation = conversation;
+		this.newUsers = newUsers;
 	}
 	
 	@Override
 	public void process(Client client) {
 		client.refreshUserList(conversation);
 		System.out.println(client.username + ": Processed RefreshUserList: " + 
-				StringUtils.join(conversation.getUserlist(), ", "));
+				StringUtils.join(conversation.getUserlist(), ", ") + " [Vector:" + StringUtils.join(newUsers,"; ") + "]");
 	}
 }

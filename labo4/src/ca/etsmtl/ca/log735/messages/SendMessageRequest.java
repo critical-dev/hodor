@@ -32,6 +32,7 @@ public class SendMessageRequest extends ServerMessage {
 	public SendMessageRequest(String msg, Conversation conversation, String fromUser){
 		this.conversation = conversation;
 		this.msg = msg;
+		this.fromUser = fromUser;
 	}
 	
 	@Override
@@ -58,6 +59,7 @@ public class SendMessageRequest extends ServerMessage {
 			if(server.getAuthenticatedUsers().contains(fromUser)){
 				for(int i = 0 ; i < conversation.getUserlist().size(); i++){
 					try {
+						System.out.println("SendMessageRequest : sending message to conversation "+conversation.getName()+", user " + conversation.getUserlist().get(i));
 						server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation));
 					} catch (IOException e) {
 						System.out.println("SendMessageRequest : Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
@@ -66,7 +68,7 @@ public class SendMessageRequest extends ServerMessage {
 				}
 			}
 			else{
-				System.out.println("SendMessageRequest : user is not authenticated, aborting request.");
+				System.out.println("SendMessageRequest : user "+fromUser+" is not authenticated, aborting request.");
 				return false;
 			}
 		}

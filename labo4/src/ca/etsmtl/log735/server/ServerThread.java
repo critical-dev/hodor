@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.Vector;
 
 import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
@@ -56,6 +57,7 @@ public class ServerThread extends Thread{
 		while(true){
 			try {
 				Object clientRequest = clientInputStream.readObject();
+				resetStreamCaches();
 				if(clientRequest instanceof ServerMessage){
 					//if the client is not authenticated, we only answer to
 					//login or register requests
@@ -66,26 +68,21 @@ public class ServerThread extends Thread{
 							System.out.println("ServerThread : client couldn't be authenticated, sent LoginRefused()");
 						}
 						else{
-							thisUser = ((LoginRequest) clientRequest).getUsername();
-							//for internal processing purposes we add the client output stream to the list
-							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
-							System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
-							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
-							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
-							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
-							Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
-							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
-								System.out.println("ServerThread: Notified "+usersToNotifyOfAdd.get(i)+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
-								server.getClientsOutputStreams().get(usersToNotifyOfAdd.get(i)).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
-								/*for(String user : server.getClientsOutputStreams().keySet()){
-									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
-										System.out.println("ServerThread: Notified "+user+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
-										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
-										break;
-									}
-								}*/
+							synchronized(server){
+								thisUser = ((LoginRequest) clientRequest).getUsername();
+								//for internal processing purposes we add the client output stream to the list
+								server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
+								System.out.println("ServerThread (internal) : added client's outputstream to global list of outputstreams.");
+								server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
+								System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
+								clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
+								Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
+								for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
+									System.out.println("ServerThread: Notified "+usersToNotifyOfAdd.get(i)+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
+									server.getClientsOutputStreams().get(usersToNotifyOfAdd.get(i)).writeObject(new RefreshUserListResponse(server.getDefaultRoom(),server.getDefaultRoom().getUserlist()));
+								}
+								clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 							}
-							clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 						}
 					}
 					else if(clientRequest instanceof RegisterRequest){
@@ -156,8 +153,9 @@ public class ServerThread extends Thread{
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
-										System.out.println("ServerThread: Notified "+user+" that room "+joinedRoom.getName()+" clients that this conversation user list has been updated.");
-										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom));
+										UUID randomUUID = UUID.randomUUID();
+										System.out.println("ServerThread: Notified "+user+" that room "+joinedRoom.getName()+" clients that this conversation user list has been updated. [UUID:"+randomUUID+"]");
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom,joinedRoom.getUserlist()));
 										break;
 									}
 								}
@@ -201,6 +199,17 @@ public class ServerThread extends Thread{
 
 				break;
 			}
+		}
+	}
+	//for reset to the streams because otherwise the defualt java behavior for
+	//object output streams is to resend a POINTER to that object instead
+	//of the actual object, to save on bandwidth, but the receiver never knows
+	//the object actually changed...
+	//thanks to the internet...
+	//ref : http://www.javaspecialists.eu/archive/Issue088.html
+	public void resetStreamCaches() throws IOException{
+		for(String user : server.getClientsOutputStreams().keySet()){
+			server.getClientsOutputStreams().get(user).reset();
 		}
 	}
 }

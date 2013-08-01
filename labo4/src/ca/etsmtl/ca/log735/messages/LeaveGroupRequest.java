@@ -1,6 +1,8 @@
 package ca.etsmtl.ca.log735.messages;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.UUID;
 import java.util.Vector;
 
 import ca.etsmtl.log735.model.Group;
@@ -52,7 +54,7 @@ public class LeaveGroupRequest extends ServerMessage {
 								if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
 									try {
 										System.out.println("LeaveGroupRequest: Notified "+user+" that group has one less member.");
-										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(group));
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(group,group.getUserlist()));
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
