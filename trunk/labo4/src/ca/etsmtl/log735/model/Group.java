@@ -11,13 +11,19 @@ public class Group extends Conversation {
 
 	private static final long serialVersionUID = 5227407559040474829L;
 
+	private String groupName;
+	
 	/**
 	 * Constructs a new Group with the given list of usernames.
 	 * @param userlist
 	 */
-	public Group(Vector<String> userlist) {
+	public Group(String groupName, Vector<String> userlist) {
+		this.groupName = groupName;
 		this.userlist = userlist;
 	}
 
+	public String getGroupName(){
+		return groupName;
+	}
 
 }
