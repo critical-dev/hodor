@@ -41,28 +41,29 @@ public class CreateRoomRequest extends ServerMessage {
 	
 	@Override
 	public boolean process(Server server) {
-		if(!server.getRooms().contains(roomName)){
-			int userIndex = server.getAuthenticatedUsers().indexOf(username);
-			String user = null;
-			if(userIndex != -1){
-				user = server.getAuthenticatedUsers().get(userIndex);
-			}
-			else{
+		for(int i =0 ; i < server.getRooms().size(); i++){
+			if(roomName == null || server.getRooms().get(i).getName().equalsIgnoreCase(roomName.trim())){
+				System.out.println("CreateRoomRequest : Room " + roomName + " already exists. Aborting.");
 				return false;
 			}
-			if(roomPassword == null || roomPassword.trim().isEmpty())
-				createdRoom = new Room(roomName);
-			else
-				createdRoom = new Room(roomName, roomPassword);
-			createdRoom.getUserlist().add(user);
-			server.getRooms().add(createdRoom);
-			System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user].");
-			return true;
+		}
+		int userIndex = server.getAuthenticatedUsers().indexOf(username);
+		String user = null;
+		if(userIndex != -1){
+			user = server.getAuthenticatedUsers().get(userIndex);
 		}
 		else{
-			System.out.println("CreateRoomRequest : Room " + roomName + " already exists.");
 			return false;
 		}
+		if(roomPassword == null || roomPassword.trim().isEmpty())
+			createdRoom = new Room(roomName);
+		else
+			createdRoom = new Room(roomName, roomPassword);
+		createdRoom.getUserlist().add(user);
+		server.getRooms().add(createdRoom);
+		System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user], password? " + (createdRoom.isPasswordProtected()?"yes":"no"));
+		return true;
+		
 	}
 	
 	public Room getRoom(){
