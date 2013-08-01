@@ -75,7 +75,7 @@ public class Server {
 				new File(authListDirLoccation).mkdirs();
 				authList.createNewFile();//create empty file if it does not exist.
 				FileWriter fw = new FileWriter(authList.getAbsoluteFile());
-				fw.write("Auth Users List");
+				fw.write("Auth Users List\n");
 				fw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
