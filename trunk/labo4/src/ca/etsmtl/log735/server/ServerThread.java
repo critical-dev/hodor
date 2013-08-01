@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
+import ca.etsmtl.ca.log735.messages.CreateGroupResponse;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
 import ca.etsmtl.ca.log735.messages.JoinGroupRequest;
@@ -97,6 +99,11 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new CreateRoomResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
 						}
+						else if(clientRequest instanceof CreateGroupRequest){
+							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
+							clientOutputStream.writeObject(new CreateGroupResponse(newGroup));
+							System.out.println("ServerThread : sending back new group " + newGroup.getGroupName());
+						}
 						else if(clientRequest instanceof RegisterRequest){
 							String newUser = ((RegisterRequest) clientRequest).getUsername();
 							clientOutputStream.writeObject(new RegisterResponse(newUser));
@@ -117,6 +124,10 @@ public class ServerThread extends Thread{
 						else if(clientRequest instanceof CreateRoomRequest){
 							clientOutputStream.writeObject(new CreateRoomResponse(null));
 							System.err.println("ServerThread : create room request failed.");
+						}
+						else if(clientRequest instanceof CreateGroupResponse){
+							clientOutputStream.writeObject(new CreateGroupResponse(null));
+							System.out.println("ServerThread : create group request failed.");
 						}
 						else if(clientRequest instanceof RegisterRequest){
 							clientOutputStream.writeObject(new RegisterResponse(null));

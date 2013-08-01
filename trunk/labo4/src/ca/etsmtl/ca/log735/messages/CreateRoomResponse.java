@@ -6,7 +6,7 @@ import ca.etsmtl.log735.model.Room;
 /**
  * With this message, the server confirms to the client that a room has been created.
  * Sent in response to a CreateRoomRequest.
- * @author artom
+ * @author chrys
  *
  */
 public class CreateRoomResponse extends ClientMessage {
