@@ -11,6 +11,7 @@ import javax.swing.JTabbedPane;
 
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
+import ca.etsmtl.log735.model.Room;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -31,15 +32,16 @@ public class ClientGUI extends JFrame implements Observer {
 
 	private CardLayout cardLayout = new CardLayout();
 	private JPanel cards = new JPanel(cardLayout);
-	
 	private JTabbedPane conversations = new JTabbedPane();
+	private ServerPanel serverPanel;
 	
 	public ClientGUI() {
 		super();
 		client.addObserver(this);
 		cards.add(new RegisterConnectPanel(client), CARD_REGISTER_CONNECT);
 		cards.add(conversations, CARD_CONVERSATIONS);
-		conversations.add(new ServerPanel(client));
+		serverPanel = new ServerPanel(client);
+		conversations.add(serverPanel);
 		getContentPane().add(cards);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
@@ -58,8 +60,11 @@ public class ClientGUI extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 		if (client.isConnected()) {
 			cardLayout.show(cards, CARD_CONVERSATIONS);
-			for (Conversation conv = client.nextConversation(); conv != null; conv = client.nextConversation()) {
+			for (Conversation conv = client.nextJoinedConv(); conv != null; conv = client.nextJoinedConv()) {
 				conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
+			}
+			for (Room room = client.nextServerRoom(); room != null; room = client.nextServerRoom()) {
+				serverPanel.serverRoomAdd(room.getName());
 			}
 		} else {
 			cardLayout.show(cards, CARD_REGISTER_CONNECT);

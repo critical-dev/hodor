@@ -1,5 +1,6 @@
 package ca.etsmtl.log735.gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,6 +17,7 @@ import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
 import ca.etsmtl.log735.client.Client;
+import ca.etsmtl.log735.model.Room;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -29,8 +31,12 @@ public class ServerPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -735104005540609924L;
 	
+	private final String COMMAND_CREATE = "COMMAND_CREATE";
+	private final String COMMAND_JOIN = "COMMAND_JOIN";
+	
 	private DefaultListModel roomListModel = new DefaultListModel();
-	public JList roomList = new JList(roomListModel);
+	private JList roomList = new JList(roomListModel);
+	private CreateRoomPanel createRoomPanel; 
 	
 	private class RoomListPanel extends JPanel {
 		
@@ -44,6 +50,7 @@ public class ServerPanel extends JPanel implements ActionListener {
 			add(roomList);
 			JButton joinButton = new JButton("Join room");
 			joinButton.addActionListener(listener);
+			joinButton.setActionCommand(COMMAND_JOIN);
 			add(joinButton);
 		}
 	}
@@ -56,14 +63,15 @@ public class ServerPanel extends JPanel implements ActionListener {
 		public JPasswordField roomPasswordField = new JPasswordField();
 		
 		public CreateRoomPanel(ActionListener listener) {
-			super(new MigLayout("wrap 2"));
-			add(new JLabel("Create room"), "span 2");
-			add(new JLabel("Room name"));
-			add(roomNameField);
-			add(new JLabel("Room password (optional)"));
-			add(roomPasswordField);
+			super(new MigLayout("fillx, wrap 2"));
+			add(new JLabel("Create room"), "growx, span 2");
+			add(new JLabel("Room name"), "shrink");
+			add(roomNameField, "pushx, growx");
+			add(new JLabel("Room password (optional)"), "shrink");
+			add(roomPasswordField, "pushx, growx");
 			JButton createButton = new JButton("Create room");
 			createButton.addActionListener(listener);
+			createButton.setActionCommand(COMMAND_CREATE);
 			add(createButton);
 		}
 	}
@@ -71,15 +79,30 @@ public class ServerPanel extends JPanel implements ActionListener {
 	private Client client;
 	
 	public ServerPanel(Client client) {
-		super();
+		super(new BorderLayout());
 		this.client = client;
 		RoomListPanel roomListPanel = new RoomListPanel(this);
-		CreateRoomPanel createRoomPanel = new CreateRoomPanel(this);
-		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, roomListPanel, createRoomPanel));
+		createRoomPanel = new CreateRoomPanel(this);
+		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, roomListPanel, createRoomPanel), BorderLayout.CENTER);
+	}
+	
+	public void serverRoomAdd(String roomName) {
+		roomListModel.addElement(roomName);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO
+		if (e.getActionCommand().equals(COMMAND_JOIN)) {
+			if (roomList.getSelectedValue() != null) {
+				client.sendJoinRoom(new Room((String) roomList.getSelectedValue()));
+			}
+		}
+		if (e.getActionCommand().equals(COMMAND_CREATE)) {
+			String roomName = createRoomPanel.roomNameField.getText();
+			String roomPassword = new String(createRoomPanel.roomPasswordField.getPassword());
+			if (!roomName.isEmpty()) {
+				client.sendCreateRoom(createRoomPanel.roomNameField.getText());
+			}
+		}
 	}
 }

@@ -6,9 +6,13 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
+import java.util.Vector;
 
+import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
+import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
 import ca.etsmtl.log735.model.Conversation;
@@ -35,7 +39,8 @@ public class Client extends Observable {
 	private ObjectOutputStream oos = null;
 	
 	private boolean connected = false;
-	private Queue<Conversation> newConversations = new LinkedList<Conversation>();
+	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
+	private Queue<Room> serverRoomsQueue = new LinkedList<Room>();
 	
 	private void connect(InetAddress serverIp, int port) throws IOException {
 		if (socket == null && clientThread == null && ois == null && oos == null) {
@@ -48,6 +53,10 @@ public class Client extends Observable {
 	}
 
 	public void login(InetAddress serverIp, int port, String username, String password) throws IOException {
+		this.serverIp = serverIp;
+		this.port = port;
+		this.username = username;
+		this.password = password;
 		connect(serverIp, port);
 		oos.writeObject(new LoginRequest(username, password));
 		connected = true;
@@ -70,16 +79,48 @@ public class Client extends Observable {
 		connect(serverIp, port);
 		oos.writeObject(new RegisterRequest(username, password, passwordConf));
 	}
-
-	public Conversation nextConversation() {
-		return newConversations.poll();
-	}
-
+	
 	public boolean isConnected() {
 		return connected;
 	}
 
-	public void joinRoom(Room serverRoom) {
-		newConversations.add(serverRoom);
+	public Conversation nextJoinedConv() {
+		return joinedConvsQueue.poll();
+	}
+	
+	public Room nextServerRoom() {
+		return serverRoomsQueue.poll();
+	}
+
+	public void serverRoomsAdd(List<Room> rooms) {
+		for (Room room: rooms) {
+			serverRoomsQueue.add(room);
+		}
+		setChanged(); notifyObservers();
+	}
+	
+	public void joinedConvAdd(Conversation convo) {
+		joinedConvsQueue.add(convo);
+		setChanged(); notifyObservers();
+	}
+
+	public void sendJoinRoom(Room room) {
+		try {
+			oos.writeObject(new JoinRoomRequest(room.getName(), username));
+			System.out.println("Sent JoinRoomRequest for " + room.getName());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void sendCreateRoom(String roomName) {
+		try {
+			oos.writeObject(new CreateRoomRequest(roomName, username));
+			System.out.println("Sent CreateRoomRequest for " + roomName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
