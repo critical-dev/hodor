@@ -40,6 +40,7 @@ public class LeaveGroupRequest extends ServerMessage {
 					System.out.println("LeaveGroupRequest: user " + username + " removed from group.");
 					//we also destroy the group if there's nobody left in it.
 					if(group.getUserlist().size() == 0){
+						System.out.println("LeaveGroupRequest: no more users in group, removed it.");
 						server.getGroupsWithConversations().remove(group);
 					}
 				}
