@@ -66,8 +66,8 @@ public class ServerThread extends Thread{
 						else{
 							server.getAuthenticatedIps().put(clientIp, ((LoginRequest) clientRequest).getUsername());
 							System.out.println("ServerThread : authentication success adding IPs to authenticated IPs list. Sending DefaultRoom to client.");
-							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							server.getDefaultRoom().getUserlist().add(((LoginRequest) clientRequest).getUsername());
+							clientOutputStream.writeObject(new JoinConversationResponse(server.getDefaultRoom()));
 							System.out.println("ServerThread : added " + ((LoginRequest) clientRequest).getUsername() + " to default room.");
 							//for internal processing purposes we add the client output stream to the list
 							server.addClientOutputStream(((LoginRequest) clientRequest).getUsername(), clientOutputStream);
