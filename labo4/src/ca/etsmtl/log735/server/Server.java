@@ -162,7 +162,9 @@ public class Server {
 	}
 
 	public HashMap<String, ObjectOutputStream> getClientsOutputStreams() {
-		return clientOutputStreams;
+		synchronized (clientOutputStreams) {
+			return clientOutputStreams;
+		}
 	}
 
 	public HashMap<String, ObjectInputStream> getClientInputStreams() {
@@ -212,7 +214,9 @@ public class Server {
 	}
 
 	public HashMap<Group, ArrayList<String>> getGroupsWithConversations() {
-		return groupsWithConversations;
+		synchronized (groupsWithConversations) {
+			return groupsWithConversations;			
+		}
 	}
 
 	public void setGroupsWithConversations(HashMap<Group, ArrayList<String>> groupsWithConversations) {
