@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
-import ca.etsmtl.ca.log735.messages.CreateRoomResponse;
 import ca.etsmtl.ca.log735.messages.JoinConversationResponse;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
 import ca.etsmtl.ca.log735.messages.LoginRefused;
@@ -101,7 +100,7 @@ public class ServerThread extends Thread{
 						//in the case of successful scenarios we send back response messages with the proper info
 						if(clientRequest instanceof CreateRoomRequest){
 							Room createRoomRequestedRoom = ((CreateRoomRequest) clientRequest).getRoom();
-							clientOutputStream.writeObject(new CreateRoomResponse(createRoomRequestedRoom));
+							clientOutputStream.writeObject(new JoinConversationResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
 							ArrayList<Room> singleNewRoom = new ArrayList<Room>();
 							singleNewRoom.add(createRoomRequestedRoom);
@@ -137,7 +136,7 @@ public class ServerThread extends Thread{
 					else{
 						//in the case of unsucessful scenarios we send back null response messages.
 						if(clientRequest instanceof CreateRoomRequest){
-							clientOutputStream.writeObject(new CreateRoomResponse(null));
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
 							System.err.println("ServerThread : create room request failed.");
 						}
 						else if(clientRequest instanceof CreateGroupRequest){
