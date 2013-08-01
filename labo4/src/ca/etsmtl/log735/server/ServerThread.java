@@ -128,6 +128,11 @@ public class ServerThread extends Thread{
 							clientOutputStream.writeObject(new RegisterResponse(newUser));
 							System.out.println("ServerThread :  Registration successful, sending back confirmation.");
 						}
+						else if(clientRequest instanceof JoinRoomRequest){
+							Room joinedRoom = ((JoinRoomRequest) clientRequest).getRoom();
+							clientOutputStream.writeObject(new JoinConversationResponse(joinedRoom));
+							System.out.println("ServerThread :  join room successful, sending back confirmation.");
+						}
 					}
 					else{
 						//in the case of unsucessful scenarios we send back null response messages.
@@ -142,6 +147,10 @@ public class ServerThread extends Thread{
 						else if(clientRequest instanceof RegisterRequest){
 							clientOutputStream.writeObject(new RegisterResponse(null));
 							System.err.println("ServerThread :  registration failed.");
+						}
+						else if(clientRequest instanceof JoinRoomRequest){
+							clientOutputStream.writeObject(new JoinConversationResponse(null));
+							System.out.println("ServerThread :  join room failed.");
 						}
 					}
 				}
