@@ -184,26 +184,26 @@ public class ServerThread extends Thread{
 				System.err.println("ServerThread exception while reading object.");
 				e.printStackTrace();
 				System.err.println(">> removing client " + clientIp);
+				String userToRemove = server.getAuthenticatedIps().get(clientIp);
 				server.getAuthenticatedIps().remove(clientIp);
+				System.out.println(">> user to remove :" + userToRemove);
+				if(server.getAuthenticatedUsers().contains(userToRemove.toLowerCase())){
+					System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
+					server.getAuthenticatedUsers().remove(userToRemove.toLowerCase());
+				}
+				else if(server.getAuthenticatedUsers().contains(userToRemove)){
+					System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
+					server.getAuthenticatedUsers().remove(userToRemove);
+				}
 				try {
-					clientOutputStream.close();
-					clientInputStream.close();
-					String userToRemove = server.getAuthenticatedIps().get(clientIp);
-					if(server.getAuthenticatedUsers().contains(userToRemove.toLowerCase())){
-						System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
-						server.getAuthenticatedUsers().remove(userToRemove.toLowerCase());
-					}
-					else if(server.getAuthenticatedUsers().contains(userToRemove)){
-						System.err.println(">> server, removed " + userToRemove + " from authenticated users.");
-						server.getAuthenticatedUsers().remove(userToRemove);
-					}
 					if(server.getClientsOutputStreams().containsKey(userToRemove)){
 						server.getClientsOutputStreams().remove(userToRemove);
 					}
 					if(server.getClientInputStreams().containsKey(userToRemove)){
 						server.getClientInputStreams().remove(userToRemove);
 					}
-					
+					clientOutputStream.close();
+					clientInputStream.close();
 				} catch (IOException e1) {
 				}
 				
