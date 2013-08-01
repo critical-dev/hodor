@@ -17,7 +17,15 @@ import java.util.Vector;
 
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.model.Room;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class Server {
 	
 	public static int SERVER_CLIENT_LISTEN_PORT = 1142;

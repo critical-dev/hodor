@@ -12,7 +12,15 @@ import javax.swing.JTextArea;
 
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Group;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class GroupPanel extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 1343800150279499040L;

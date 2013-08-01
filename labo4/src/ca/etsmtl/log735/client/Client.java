@@ -10,7 +10,15 @@ import java.util.Vector;
 
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class Client extends Observable {
 	
 	private InetAddress serverIp;

@@ -4,7 +4,15 @@ import java.io.IOException;
 
 import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.server.Server;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 /**
  * With this message, the client requests the server to join a room.
  * The client expects a JoinRoomResponse in response.

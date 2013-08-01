@@ -1,7 +1,15 @@
 package ca.etsmtl.log735.model;
 
 import java.util.Vector;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 /**
  * Represents a conversation with one or more participants.
  * @author artom

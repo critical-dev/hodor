@@ -10,7 +10,15 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import ca.etsmtl.log735.client.Client;
-
+/******************************************************
+Cours : LOG735
+Session : Été 2013
+Groupe : 01
+Laboratoire : Laboratoire #4
+Étudiants : Artom Lifshitz, Chrystophe Chabert
+Code(s) perm. : LIFA29108505, CHAC12098902
+Date création : 01/07/2013
+******************************************************/
 public class ClientGUI extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 3971414849894418778L;
