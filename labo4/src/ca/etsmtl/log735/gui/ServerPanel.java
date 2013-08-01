@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -47,7 +48,7 @@ public class ServerPanel extends JPanel implements ActionListener {
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			roomList = new JList(roomListModel);
 			roomList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			add(roomList);
+			add(new JScrollPane(roomList));
 			JButton joinButton = new JButton("Join room");
 			joinButton.addActionListener(listener);
 			joinButton.setActionCommand(COMMAND_JOIN);
