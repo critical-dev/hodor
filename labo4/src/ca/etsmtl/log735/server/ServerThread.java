@@ -77,7 +77,7 @@ public class ServerThread extends Thread{
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
-										System.out.println("ServerThread: Notified "+user+" that default room clients user list has been updated.");
+										System.out.println("ServerThread: Notified "+user+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
 										break;
 									}
