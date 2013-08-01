@@ -111,7 +111,7 @@ public class ServerThread extends Thread{
 						else if(clientRequest instanceof CreateGroupRequest){
 							Group newGroup = ((CreateGroupRequest) clientRequest).getGroup();
 							clientOutputStream.writeObject(new CreateGroupResponse(newGroup));
-							System.out.println("ServerThread : sending back new group " + newGroup.getGroupName());
+							System.out.println("ServerThread : sending back new group " + newGroup.getName());
 						}
 						else if(clientRequest instanceof RegisterRequest){
 							String newUser = ((RegisterRequest) clientRequest).getUsername();

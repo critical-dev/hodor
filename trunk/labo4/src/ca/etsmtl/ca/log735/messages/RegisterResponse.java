@@ -1,6 +1,7 @@
 package ca.etsmtl.ca.log735.messages;
 
 import ca.etsmtl.log735.client.Client;
+import ca.etsmtl.log735.gui.ClientGUI;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -30,6 +31,8 @@ public class RegisterResponse extends ClientMessage {
 	public void process(Client client) {
 		if (username != null) {
 			client.login();
+		} else {
+			ClientGUI.error("Registration refused");
 		}
 	}
 }

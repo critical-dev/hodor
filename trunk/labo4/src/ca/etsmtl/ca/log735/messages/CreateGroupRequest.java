@@ -37,7 +37,7 @@ public class CreateGroupRequest extends ServerMessage {
 	@Override
 	public boolean process(Server server) {
 		for(Group group : server.getGroupsWithConversations().keySet()){
-			if(group.getGroupName().equalsIgnoreCase(groupName)){
+			if(group.getName().equalsIgnoreCase(groupName)){
 				System.out.println("CreateGroupRequest: Group "+groupName+" already exists !! Choose a different group name. Aborting.");
 				createdGroup = null;
 				return false;

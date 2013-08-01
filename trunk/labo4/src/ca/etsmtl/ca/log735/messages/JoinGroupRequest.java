@@ -38,7 +38,7 @@ public class JoinGroupRequest extends ServerMessage {
 	@Override
 	public boolean process(Server server) {
 		for(Group group: server.getGroupsWithConversations().keySet()){
-			if(group.getGroupName().equalsIgnoreCase(groupName)){
+			if(group.getName().equalsIgnoreCase(groupName)){
 				if(!group.getUserlist().contains(username)){
 					try{
 						String user = server.getAuthenticatedUsers().get(server.getAuthenticatedUsers().indexOf(username));

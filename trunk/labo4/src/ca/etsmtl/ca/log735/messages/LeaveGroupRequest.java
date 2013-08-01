@@ -34,7 +34,7 @@ public class LeaveGroupRequest extends ServerMessage {
 	@Override
 	public boolean process(Server server) {
 		for(Group group: server.getGroupsWithConversations().keySet()){
-			if(group.getGroupName().equalsIgnoreCase(groupName)){
+			if(group.getName().equalsIgnoreCase(groupName)){
 				if(group.getUserlist().contains(username)){
 					group.getUserlist().remove(username);
 					System.out.println("LeaveGroupRequest: user " + username + " removed from group.");
