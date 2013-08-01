@@ -34,13 +34,19 @@ public class SendMessageRequest extends ServerMessage {
 	@Override
 	public boolean process(Server server) {
 		if(conversation != null){
-			for(int i = 0 ; i < conversation.getUserlist().size(); i++){
-				try {
-					server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation));
-				} catch (IOException e) {
-					System.out.println("SendMessageRequest : Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
-					e.printStackTrace();
+			if(server.getAuthenticatedUsers().contains(fromUser)){
+				for(int i = 0 ; i < conversation.getUserlist().size(); i++){
+					try {
+						server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation));
+					} catch (IOException e) {
+						System.out.println("SendMessageRequest : Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
+						e.printStackTrace();
+					}
 				}
+			}
+			else{
+				System.out.println("SendMessageRequest : user is not authenticated, aborting request.");
+				return false;
 			}
 		}
 		else{
