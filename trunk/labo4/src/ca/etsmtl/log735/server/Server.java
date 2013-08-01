@@ -179,7 +179,7 @@ public class Server {
 		this.usersWithPasswords = usersWithPasswords;
 	}
 
-	public ArrayList<String> getAuthenticatedUsers() {
+	public synchronized ArrayList<String> getAuthenticatedUsers() {
 		return authenticatedUsers;
 	}
 
