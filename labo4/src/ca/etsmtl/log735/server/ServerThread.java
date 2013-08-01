@@ -187,8 +187,13 @@ public class ServerThread extends Thread{
 					clientOutputStream.close();
 					clientInputStream.close();
 					String userToRemove = server.getAuthenticatedIps().get(clientIp);
-					server.getClientsOutputStreams().get(userToRemove).close();
-					server.getClientsOutputStreams().remove(userToRemove);
+					if(server.getClientsOutputStreams().containsKey(userToRemove)){
+						server.getClientsOutputStreams().remove(userToRemove);
+					}
+					if(server.getClientInputStreams().containsKey(userToRemove)){
+						server.getClientInputStreams().remove(userToRemove);
+					}
+					if(server.getAuthenticatedUsers().contains(userToRemove))server.getAuthenticatedUsers().remove(userToRemove);
 				} catch (IOException e1) {
 				}
 				
