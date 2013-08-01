@@ -73,6 +73,7 @@ public class ServerThread extends Thread{
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
+										System.out.println("ServerThread: Notified "+user+" that default room clients that this conversation user list has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
 									}
 								}
@@ -144,6 +145,7 @@ public class ServerThread extends Thread{
 							for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 								for(String user : server.getClientsOutputStreams().keySet()){
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
+										System.out.println("ServerThread: Notified "+user+" that room "+joinedRoom.getName()+" clients that this conversation user list has been updated.");
 										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom));
 									}
 								}
@@ -181,6 +183,15 @@ public class ServerThread extends Thread{
 				e.printStackTrace();
 				System.err.println(">> removing client " + clientIp);
 				server.getAuthenticatedIps().remove(clientIp);
+				try {
+					clientOutputStream.close();
+					clientInputStream.close();
+					String userToRemove = server.getAuthenticatedIps().get(clientIp);
+					server.getClientsOutputStreams().get(userToRemove).close();
+					server.getClientsOutputStreams().remove(userToRemove);
+				} catch (IOException e1) {
+				}
+				
 				break;
 			}
 		}
