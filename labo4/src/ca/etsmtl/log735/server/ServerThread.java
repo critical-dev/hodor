@@ -162,6 +162,9 @@ public class ServerThread extends Thread{
 			} catch (IOException e) {
 				System.err.println("ServerThread exception while reading object.");
 				e.printStackTrace();
+				System.err.println(">> removing client " + clientIp);
+				server.getAuthenticatedIps().remove(clientIp);
+				break;
 			}
 		}
 	}
