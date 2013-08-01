@@ -2,9 +2,9 @@ package ca.etsmtl.log735.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -29,13 +29,14 @@ public class ServerPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -735104005540609924L;
 	
+	private DefaultListModel roomListModel = new DefaultListModel();
+	public JList roomList = new JList(roomListModel);
+	
 	private class RoomListPanel extends JPanel {
 		
 		private static final long serialVersionUID = -114536750269650523L;
 		
-		public JList roomList;
-		
-		public RoomListPanel(Vector<String> roomListModel, ActionListener listener) {
+		public RoomListPanel(ActionListener listener) {
 			super();
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			roomList = new JList(roomListModel);
@@ -72,7 +73,7 @@ public class ServerPanel extends JPanel implements ActionListener {
 	public ServerPanel(Client client) {
 		super();
 		this.client = client;
-		RoomListPanel roomListPanel = new RoomListPanel(client.getRoomList(), this);
+		RoomListPanel roomListPanel = new RoomListPanel(this);
 		CreateRoomPanel createRoomPanel = new CreateRoomPanel(this);
 		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, roomListPanel, createRoomPanel));
 	}

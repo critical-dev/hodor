@@ -30,7 +30,8 @@ public class Group extends Conversation {
 		this.userlist = userlist;
 	}
 
-	public String getGroupName(){
+	@Override
+	public String getName(){
 		return groupName;
 	}
 

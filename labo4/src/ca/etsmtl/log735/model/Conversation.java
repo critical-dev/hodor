@@ -18,7 +18,7 @@ public abstract class Conversation implements Serializable {
 	/**
 	 * The list of usernames in the Group.
 	 */
-	protected Vector<String> userlist;
+	protected Vector<String> userlist = new Vector<String>();
 	
 	/**
 	 * Returns the list of usernames in the Group.
@@ -27,4 +27,6 @@ public abstract class Conversation implements Serializable {
 	public Vector<String> getUserlist() {
 		return userlist;
 	}
+	
+	public abstract String getName();
 }

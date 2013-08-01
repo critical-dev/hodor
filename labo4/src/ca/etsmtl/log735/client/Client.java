@@ -5,11 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.Observable;
-import java.util.Vector;
+import java.util.Queue;
 
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
+import ca.etsmtl.log735.model.Conversation;
+import ca.etsmtl.log735.model.Room;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -31,27 +34,8 @@ public class Client extends Observable {
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
 	
-	private State state = State.DISCONNECTED;
-	
-	public enum State {
-		CONNECTED,
-		DISCONNECTED,
-		LOGIN_REFUSED
-	}
-	
-	public State getState() {
-		return state;
-	}
-
-	public Vector<String> getRoomList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean hasNewConversations() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	private boolean connected = false;
+	private Queue<Conversation> newConversations = new LinkedList<Conversation>();
 	
 	private void connect(InetAddress serverIp, int port) throws IOException {
 		if (socket == null && clientThread == null && ois == null && oos == null) {
@@ -66,6 +50,7 @@ public class Client extends Observable {
 	public void login(InetAddress serverIp, int port, String username, String password) throws IOException {
 		connect(serverIp, port);
 		oos.writeObject(new LoginRequest(username, password));
+		connected = true;
 	}
 	
 	public void login() {
@@ -86,8 +71,15 @@ public class Client extends Observable {
 		oos.writeObject(new RegisterRequest(username, password, passwordConf));
 	}
 
-	public void loginRefused() {
-		state = State.LOGIN_REFUSED;
-		setChanged(); notifyObservers();
+	public Conversation nextConversation() {
+		return newConversations.poll();
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void joinRoom(Room serverRoom) {
+		newConversations.add(serverRoom);
 	}
 }

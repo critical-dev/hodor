@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import ca.etsmtl.log735.client.Client;
+import ca.etsmtl.log735.model.Conversation;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -38,6 +39,7 @@ public class ClientGUI extends JFrame implements Observer {
 		client.addObserver(this);
 		cards.add(new RegisterConnectPanel(client), CARD_REGISTER_CONNECT);
 		cards.add(conversations, CARD_CONVERSATIONS);
+		conversations.add(new ServerPanel(client));
 		getContentPane().add(cards);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
@@ -54,21 +56,13 @@ public class ClientGUI extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		switch (client.getState()) {
-			case CONNECTED:
-				cardLayout.show(cards, CARD_CONVERSATIONS);
-				while (client.hasNewConversations()) {
-					// TODO
-				}
-				break;
-			case DISCONNECTED:
-				cardLayout.show(cards, CARD_REGISTER_CONNECT);
-				break;
-			case LOGIN_REFUSED:
-				error("Login refused");
-				break;
-			default:
-				break;
+		if (client.isConnected()) {
+			cardLayout.show(cards, CARD_CONVERSATIONS);
+			for (Conversation conv = client.nextConversation(); conv != null; conv = client.nextConversation()) {
+				conversations.addTab(conv.toString(), new )
+			}
+		} else {
+			cardLayout.show(cards, CARD_REGISTER_CONNECT);
 		}
 	}
 }

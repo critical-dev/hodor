@@ -22,6 +22,8 @@ Date création : 01/07/2013
  */
 public class JoinRoomResponse extends ClientMessage {
 
+	private static final long serialVersionUID = 1274786739208726564L;
+	
 	private Room serverRoom;
 	
 	public JoinRoomResponse(Room serverRoom){
@@ -30,8 +32,7 @@ public class JoinRoomResponse extends ClientMessage {
 	
 	@Override
 	public void process(Client client) {
-		// TODO Auto-generated method stub
-
+		client.joinRoom(serverRoom);
 	}
 
 }
