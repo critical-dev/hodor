@@ -47,22 +47,20 @@ public class CreateRoomRequest extends ServerMessage {
 				return false;
 			}
 		}
-		int userIndex = server.getAuthenticatedUsers().indexOf(username);
-		String user = null;
-		if(userIndex != -1){
-			user = server.getAuthenticatedUsers().get(userIndex);
+		if(server.getAuthenticatedUsers().contains(username)){
+			if(roomPassword == null || roomPassword.trim().isEmpty())
+				createdRoom = new Room(roomName);
+			else
+				createdRoom = new Room(roomName, roomPassword);
+			createdRoom.getUserlist().add(username);
+			server.getRooms().add(createdRoom);
+			System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user], password? " + (createdRoom.isPasswordProtected()?"yes":"no"));
+			return true;
 		}
 		else{
+			System.out.println("CreateRoomRequest : User " + username + " not authenticated, aborting.");
 			return false;
 		}
-		if(roomPassword == null || roomPassword.trim().isEmpty())
-			createdRoom = new Room(roomName);
-		else
-			createdRoom = new Room(roomName, roomPassword);
-		createdRoom.getUserlist().add(user);
-		server.getRooms().add(createdRoom);
-		System.out.println("CreateRoomRequest : Room " + roomName + " created with [" + createdRoom.getUserlist().size() + " user], password? " + (createdRoom.isPasswordProtected()?"yes":"no"));
-		return true;
 		
 	}
 	
