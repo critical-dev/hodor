@@ -18,14 +18,18 @@ Date création : 01/07/2013
  */
 public class MessageArrived extends ClientMessage {
 
+	private String message;
+	private Conversation conv;
+	
 	public MessageArrived(String message, Conversation conv) {
-		
+		this.message = message;
+		this.conv = conv;
 	}
 	
 	@Override
 	public void process(Client client) {
-		// TODO Auto-generated method stub
-
+		client.refreshMsg(message, conv);
+		System.out.println("client " + client.username + " must refresh conversation : " + conv.getName() + " with text : " + message);
 	}
 
 }

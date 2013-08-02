@@ -25,17 +25,15 @@ public class RefreshUserListResponse extends ClientMessage {
 	private static final long serialVersionUID = -3917870958088407622L;
 	
 	private Conversation conversation;
-	private Vector<String> newUsers;
 	
-	public RefreshUserListResponse(Conversation conversation, Vector<String> newUsers){
+	public RefreshUserListResponse(Conversation conversation){
 		this.conversation = conversation;
-		this.newUsers = newUsers;
 	}
 	
 	@Override
 	public void process(Client client) {
 		client.refreshUserList(conversation);
 		System.out.println(client.username + ": Processed RefreshUserList: " + 
-				StringUtils.join(conversation.getUserlist(), ", ") + " [Vector:" + StringUtils.join(newUsers,"; ") + "]");
+				StringUtils.join(conversation.getUserlist(), ", "));
 	}
 }
