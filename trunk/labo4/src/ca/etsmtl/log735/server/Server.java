@@ -27,6 +27,7 @@ Date création : 01/07/2013
 ******************************************************/
 public class Server {
 	
+	public static String DEFAULT_ROOM_NAME = "Default Room";
 	public static int SERVER_CLIENT_LISTEN_PORT = 1142;
 	//username outputstream list
 	private HashMap<String, ObjectOutputStream> clientOutputStreams;
@@ -65,7 +66,7 @@ public class Server {
 		
 		
 		//create default room
-		defaultRoom = new Room("DefaultRoom");
+		defaultRoom = new Room(DEFAULT_ROOM_NAME);
 		rooms.add(defaultRoom);
 		authList = new File(authListFileRelativeLocation);
 		if(authList == null || !authList.exists()){
