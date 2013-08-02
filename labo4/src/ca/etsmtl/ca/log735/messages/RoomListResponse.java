@@ -32,7 +32,7 @@ public class RoomListResponse extends ClientMessage {
 	
 	@Override
 	public void process(Client client) {
-		client.serverRoomsAdd(serverRooms);
+		client.serverRoomsSet(serverRooms);
 		System.out.println(client.username + " Processed RoomListResponse with rooms: " + StringUtils.join(serverRooms, ", "));
 	}
 

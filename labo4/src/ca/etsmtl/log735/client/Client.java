@@ -46,7 +46,7 @@ public class Client extends Observable {
 	
 	private boolean connected = false;
 	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
-	private Queue<Room> serverRoomsQueue = new LinkedList<Room>();
+	private List<Room> serverRoomsList = new LinkedList<Room>();
 	private Queue<Room> roomsWithNewUsers = new LinkedList<Room>();
 	private Queue<Conversation> convsToLeaveQueue = new LinkedList<Conversation>();
 	private Queue<Message> newMessagesQueue = new LinkedList<Message>();
@@ -95,10 +95,6 @@ public class Client extends Observable {
 		return joinedConvsQueue.poll();
 	}
 	
-	public Room nextServerRoom() {
-		return serverRoomsQueue.poll();
-	}
-	
 	public Room nextRoomWithNewUsers() {
 		return roomsWithNewUsers.poll();
 	}
@@ -107,16 +103,14 @@ public class Client extends Observable {
 		return newMessagesQueue.poll();
 	}
 
-	public void serverRoomsAdd(List<Room> rooms) {
-		for (Room room: rooms) {
-			serverRoomsQueue.add(room);
-		}
-		setChanged(); notifyObservers(); clearChanged();
+	public void serverRoomsSet(List<Room> rooms) {
+		serverRoomsList = rooms;
+		setChanged(); notifyObservers();
 	}
 	
 	public void joinedConvAdd(Conversation convo) {
 		joinedConvsQueue.add(convo);
-		setChanged(); notifyObservers(); clearChanged();
+		setChanged(); notifyObservers();
 	}
 
 	public void sendJoinRoom(Room room) {
@@ -169,7 +163,7 @@ public class Client extends Observable {
 
 	public void refreshUserList(Conversation conversation) {
 		roomsWithNewUsers.add((Room) conversation);
-		setChanged(); notifyObservers(); clearChanged();
+		setChanged(); notifyObservers();
 	}
 
 	public void disconnect() {
@@ -213,5 +207,9 @@ public class Client extends Observable {
 	public void messageArrived(Conversation conv, String fromUser, String message) {
 		newMessagesQueue.add(new Message(conv, fromUser, message));
 		setChanged(); notifyObservers();
+	}
+
+	public List<Room> getServerRooms() {
+		return serverRoomsList;
 	}
 }
