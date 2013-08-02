@@ -109,12 +109,14 @@ public class ServerPanel extends JPanel implements ActionListener {
 			String roomName = createRoomPanel.roomNameField.getText();
 			String roomPassword = null;
 			if(createRoomPanel.roomPasswordField.getPassword().length > 0){
-				roomPassword = createRoomPanel.roomPasswordField.getPassword().toString();
+				roomPassword = "";
+				for(int i = 0; i < createRoomPanel.roomPasswordField.getPassword().length; i++)
+				roomPassword += createRoomPanel.roomPasswordField.getPassword()[i];
 			}
 			
 			if (!roomName.isEmpty()) {
 				if(roomPassword != null && !roomPassword.isEmpty()){
-					System.out.println("Client sending request to create room with password");
+					System.out.println("Client sending request to create room with password " + roomPassword);
 					client.sendCreateRoom(createRoomPanel.roomNameField.getText(), roomPassword);
 				}
 				else
