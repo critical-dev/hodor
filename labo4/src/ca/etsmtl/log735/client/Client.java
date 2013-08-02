@@ -119,6 +119,16 @@ public class Client extends Observable {
 		}
 	}
 
+	public void sendJoinRoom(Room room, String input) {
+		try {
+			oos.writeObject(new JoinRoomRequest(room.getName(), username, input));
+			System.out.println("Sent JoinRoomRequest for " + room.getName());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void sendCreateRoom(String roomName) {
 		try {
 			oos.writeObject(new CreateRoomRequest(roomName, username));
@@ -132,6 +142,15 @@ public class Client extends Observable {
 	public void sendMessage(String text, Conversation conv) {
 		try {
 			oos.writeObject(new SendMessageRequest(text, conv, username));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void sendCreateRoom(String roomName, String roomPassword) {
+		try {
+			oos.writeObject(new CreateRoomRequest(roomName, username, roomPassword));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,4 +188,5 @@ public class Client extends Observable {
 			String lastConversationMessageToUpdate) {
 		this.lastConversationMessageToUpdate = lastConversationMessageToUpdate;
 	}
+
 }

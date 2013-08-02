@@ -1,6 +1,7 @@
 package ca.etsmtl.log735.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,6 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -95,14 +97,28 @@ public class ServerPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(COMMAND_JOIN)) {
 			if (roomList.getSelectedValue() != null) {
-				client.sendJoinRoom(new Room((String) roomList.getSelectedValue()));
+				String input = JOptionPane.showInputDialog((Component) e.getSource(), "Password :", "");
+				if(!input.isEmpty()){
+					client.sendJoinRoom(new Room((String) roomList.getSelectedValue()), input);
+				}
+				else
+					client.sendJoinRoom(new Room((String) roomList.getSelectedValue()));
 			}
 		}
 		if (e.getActionCommand().equals(COMMAND_CREATE)) {
 			String roomName = createRoomPanel.roomNameField.getText();
-			String roomPassword = new String(createRoomPanel.roomPasswordField.getPassword());
+			String roomPassword = null;
+			if(createRoomPanel.roomPasswordField.getPassword().length > 0){
+				roomPassword = createRoomPanel.roomPasswordField.getPassword().toString();
+			}
+			
 			if (!roomName.isEmpty()) {
-				client.sendCreateRoom(createRoomPanel.roomNameField.getText());
+				if(roomPassword != null && !roomPassword.isEmpty()){
+					System.out.println("Client sending request to create room with password");
+					client.sendCreateRoom(createRoomPanel.roomNameField.getText(), roomPassword);
+				}
+				else
+					client.sendCreateRoom(createRoomPanel.roomNameField.getText());
 			}
 		}
 	}

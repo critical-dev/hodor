@@ -35,6 +35,7 @@ public class Room extends Conversation {
 	}
 	
 	public Room(String name, String roomPassword){
+		this.name = name;
 		isPasswordProtected = true;
 		this.roomPassword = roomPassword;
 	}
