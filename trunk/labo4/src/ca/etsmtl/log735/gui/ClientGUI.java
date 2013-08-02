@@ -65,9 +65,7 @@ public class ClientGUI extends JFrame implements Observer {
 			for (Conversation conv = client.nextJoinedConv(); conv != null; conv = client.nextJoinedConv()) {
 				conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
 			}
-			for (Room room = client.nextServerRoom(); room != null; room = client.nextServerRoom()) {
-				serverPanel.serverRoomAdd(room.getName());
-			}
+			serverPanel.setRooms(client.getServerRooms());
 			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
 				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(conversations.indexOfTab(room.getName()));
 				System.out.println("refreshing room : " + room.getName());

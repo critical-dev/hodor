@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -88,10 +89,6 @@ public class ServerPanel extends JPanel implements ActionListener {
 		createRoomPanel = new CreateRoomPanel(this);
 		add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, roomListPanel, createRoomPanel), BorderLayout.CENTER);
 	}
-	
-	public void serverRoomAdd(String roomName) {
-		roomListModel.addElement(roomName);
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -122,6 +119,13 @@ public class ServerPanel extends JPanel implements ActionListener {
 				else
 					client.sendCreateRoom(createRoomPanel.roomNameField.getText());
 			}
+		}
+	}
+
+	public void setRooms(List<Room> serverRooms) {
+		roomListModel.clear();
+		for (Room room: serverRooms) {
+			roomListModel.addElement(room.getName());
 		}
 	}
 }
