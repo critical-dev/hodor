@@ -1,5 +1,8 @@
 package ca.etsmtl.ca.log735.messages;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
 /******************************************************
@@ -20,10 +23,14 @@ public class MessageArrived extends ClientMessage {
 
 	private String message;
 	private Conversation conv;
-	
-	public MessageArrived(String message, Conversation conv) {
-		this.message = message;
+	private String fromUser;
+	private SimpleDateFormat sdf;
+	public MessageArrived(String message, Conversation conv, String fromUser) {
 		this.conv = conv;
+		this.fromUser = fromUser;
+		sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		String currentTime = sdf.format(new Date());
+		this.message = fromUser + "@" + currentTime + " :" + message;
 	}
 	
 	@Override

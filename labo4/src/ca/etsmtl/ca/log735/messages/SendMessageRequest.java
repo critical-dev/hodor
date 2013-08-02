@@ -60,7 +60,7 @@ public class SendMessageRequest extends ServerMessage {
 				for(int i = 0 ; i < conversation.getUserlist().size(); i++){
 					try {
 						System.out.println("SendMessageRequest : sending message to conversation "+conversation.getName()+", user " + conversation.getUserlist().get(i));
-						server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation));
+						server.getClientsOutputStreams().get(conversation.getUserlist().get(i)).writeObject(new MessageArrived(msg, conversation, fromUser));
 					} catch (IOException e) {
 						System.out.println("SendMessageRequest : Error occured sending to user : " + conversation.getUserlist().get(i) + " from user : " + fromUser);
 						e.printStackTrace();
