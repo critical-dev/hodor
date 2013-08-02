@@ -19,6 +19,8 @@ Date création : 01/07/2013
  */
 public class CreateRoomRequest extends ServerMessage {
 
+	private static final long serialVersionUID = -7588400464326709032L;
+	
 	private String roomName;
 	private Room createdRoom;
 	private String username;//the username who initiated the request.

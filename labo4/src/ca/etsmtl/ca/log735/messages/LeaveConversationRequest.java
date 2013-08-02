@@ -3,7 +3,6 @@ package ca.etsmtl.ca.log735.messages;
 import java.io.IOException;
 import java.util.Vector;
 
-import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Group;
 import ca.etsmtl.log735.server.Server;
 /******************************************************
@@ -22,10 +21,8 @@ Date création : 01/07/2013
  */
 public class LeaveConversationRequest extends ServerMessage {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2521285633403217157L;
+	
 	private String conversation;
 	private String username;
 	

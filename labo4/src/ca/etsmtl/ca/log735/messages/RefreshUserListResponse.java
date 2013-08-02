@@ -1,7 +1,5 @@
 package ca.etsmtl.ca.log735.messages;
 
-import java.util.Vector;
-
 import org.apache.commons.lang3.StringUtils;
 
 import ca.etsmtl.log735.client.Client;

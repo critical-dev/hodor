@@ -19,6 +19,8 @@ Date création : 01/07/2013
  */
 public class LoginRequest extends ServerMessage {
 	
+	private static final long serialVersionUID = 5845907960676484528L;
+	
 	private String username, password;
 	
 	public LoginRequest(String username, String password) {

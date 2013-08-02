@@ -22,6 +22,8 @@ Date création : 01/07/2013
  */
 public class CreateGroupRequest extends ServerMessage {
 
+	private static final long serialVersionUID = 3299836141471650730L;
+	
 	private String groupName;
 	private String username = null;
 	private Group createdGroup;
