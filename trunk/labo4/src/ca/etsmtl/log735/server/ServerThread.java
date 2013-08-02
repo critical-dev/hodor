@@ -57,7 +57,7 @@ public class ServerThread extends Thread{
 		while(true){
 			try {
 				Object clientRequest = clientInputStream.readObject();
-				resetStreamCaches();
+				resetStreamCaches();//SUPER IMPORTANT
 				if(clientRequest instanceof ServerMessage){
 					//if the client is not authenticated, we only answer to
 					//login or register requests
@@ -79,7 +79,7 @@ public class ServerThread extends Thread{
 								Vector<String> usersToNotifyOfAdd = server.getDefaultRoom().getUserlist();
 								for(int i = 0 ; i< usersToNotifyOfAdd.size(); i++){
 									System.out.println("ServerThread: Notified "+usersToNotifyOfAdd.get(i)+" that default room clients user list ("+server.getDefaultRoom().getUserlist().size()+") has been updated.");
-									server.getClientsOutputStreams().get(usersToNotifyOfAdd.get(i)).writeObject(new RefreshUserListResponse(server.getDefaultRoom(),server.getDefaultRoom().getUserlist()));
+									server.getClientsOutputStreams().get(usersToNotifyOfAdd.get(i)).writeObject(new RefreshUserListResponse(server.getDefaultRoom()));
 								}
 								clientOutputStream.writeObject(new RoomListResponse(server.getRooms()));
 							}
@@ -155,7 +155,7 @@ public class ServerThread extends Thread{
 									if(usersToNotifyOfAdd.get(i).equalsIgnoreCase(user)){
 										UUID randomUUID = UUID.randomUUID();
 										System.out.println("ServerThread: Notified "+user+" that room "+joinedRoom.getName()+" clients that this conversation user list has been updated. [UUID:"+randomUUID+"]");
-										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom,joinedRoom.getUserlist()));
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(joinedRoom));
 										break;
 									}
 								}

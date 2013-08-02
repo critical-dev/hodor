@@ -27,6 +27,7 @@ public class ClientGUI extends JFrame implements Observer {
 	
 	private static final String CARD_REGISTER_CONNECT = "CARD_REGISTER_CONNECT";
 	private static final String CARD_CONVERSATIONS = "CARD_CONVERSATIONS";
+	public static final Integer UPDATE_PANEL_CONVERSATION_ACTION = 0;
 
 	private Client client = new Client();
 
@@ -59,21 +60,39 @@ public class ClientGUI extends JFrame implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (client.isConnected()) {
-			cardLayout.show(cards, CARD_CONVERSATIONS);
-			for (Conversation conv = client.nextJoinedConv(); conv != null; conv = client.nextJoinedConv()) {
-				conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
+			if(arg != null && arg instanceof Conversation){
+				if(arg instanceof Room){
+					//update the msg for that room
+					Room roomToUpdate = ((Room) arg);
+					System.out.println("GUI attempting to find matching panel room");
+					System.out.println("Found match !");
+					int i = conversations.indexOfTab(roomToUpdate.getName());
+					if(i != -1){
+						ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(i);
+						String panelText = panel.getConversationArea().getText();
+						panel.getConversationArea().setText(panelText + "\n" + client.getLastConversationMessageToUpdate());
+						panel.updateUI();
+					}
+					else System.out.println("Client GUI was unable to find tab for room");
+				}
 			}
-			for (Room room = client.nextServerRoom(); room != null; room = client.nextServerRoom()) {
-				serverPanel.serverRoomAdd(room.getName());
-			}
-			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
-				int i = conversations.indexOfTab(room.getName());
-				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(i);
-				System.out.println("refreshing room : " + room.getName());
-				if (panel != null) {
-					panel.refreshUserList(room);
-				} else {
-					System.err.println("Asked to refresh a userlist of a conversation that we don't have - something went horribly wrong.");
+			else{
+				cardLayout.show(cards, CARD_CONVERSATIONS);
+				for (Conversation conv = client.nextJoinedConv(); conv != null; conv = client.nextJoinedConv()) {
+					conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
+				}
+				for (Room room = client.nextServerRoom(); room != null; room = client.nextServerRoom()) {
+					serverPanel.serverRoomAdd(room.getName());
+				}
+				for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
+					int i = conversations.indexOfTab(room.getName());
+					ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(i);
+					System.out.println("refreshing room : " + room.getName());
+					if (panel != null) {
+						panel.refreshUserList(room);
+					} else {
+						System.err.println("Asked to refresh a userlist of a conversation that we don't have - something went horribly wrong.");
+					}
 				}
 			}
 		} else {

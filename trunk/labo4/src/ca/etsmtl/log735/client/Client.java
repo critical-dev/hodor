@@ -42,6 +42,8 @@ public class Client extends Observable {
 	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
 	private Queue<Room> serverRoomsQueue = new LinkedList<Room>();
 	private Queue<Room> roomsWithNewUsers = new LinkedList<Room>();
+
+	private String lastConversationMessageToUpdate;
 	
 	private void connect(InetAddress serverIp, int port) throws IOException {
 		socket = new Socket(serverIp, port);
@@ -140,6 +142,11 @@ public class Client extends Observable {
 		roomsWithNewUsers.add((Room) conversation);
 		setChanged(); notifyObservers(); clearChanged();
 	}
+	
+	public void refreshMsg(String msg, Conversation conversation) {
+		lastConversationMessageToUpdate = msg;
+		setChanged(); notifyObservers(conversation); clearChanged();
+	}
 
 	public void disconnect() {
 		try {
@@ -151,5 +158,15 @@ public class Client extends Observable {
 		}
 		connected = false;
 		setChanged(); notifyObservers();
+	}
+
+
+	public String getLastConversationMessageToUpdate() {
+		return lastConversationMessageToUpdate;
+	}
+
+	public void setLastConversationMessageToUpdate(
+			String lastConversationMessageToUpdate) {
+		this.lastConversationMessageToUpdate = lastConversationMessageToUpdate;
 	}
 }

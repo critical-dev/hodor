@@ -54,7 +54,7 @@ public class LeaveGroupRequest extends ServerMessage {
 								if(newGroupMembersToNotify.get(i).equalsIgnoreCase(user)){
 									try {
 										System.out.println("LeaveGroupRequest: Notified "+user+" that group has one less member.");
-										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(group,group.getUserlist()));
+										server.getClientsOutputStreams().get(user).writeObject(new RefreshUserListResponse(group));
 									} catch (IOException e) {
 										e.printStackTrace();
 									}

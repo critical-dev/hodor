@@ -65,4 +65,12 @@ public class ConversationPanel extends JPanel implements ActionListener {
 			userListModel.addElement(user);
 		}
 	}
+
+	public JTextArea getConversationArea() {
+		return conversationArea;
+	}
+
+	public void setConversationArea(JTextArea conversationArea) {
+		this.conversationArea = conversationArea;
+	}
 }
