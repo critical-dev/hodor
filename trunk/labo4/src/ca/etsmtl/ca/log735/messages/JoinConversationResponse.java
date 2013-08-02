@@ -22,7 +22,7 @@ public class JoinConversationResponse extends ClientMessage {
 	private static final long serialVersionUID = 506021475855849415L;
 	private Conversation convo;
 	
-	public JoinConversationResponse(Conversation convo){
+	public JoinConversationResponse(Conversation convo) {
 		this.convo = convo;
 	}
 	
