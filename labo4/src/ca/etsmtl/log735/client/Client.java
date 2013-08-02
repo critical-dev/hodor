@@ -47,7 +47,7 @@ public class Client extends Observable {
 	private boolean connected = false;
 	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
 	private List<Room> serverRoomsList = new LinkedList<Room>();
-	private Queue<Room> roomsWithNewUsers = new LinkedList<Room>();
+	private Queue<Conversation> convsWithNewUsers = new LinkedList<Conversation>();
 	private Queue<Conversation> convsToLeaveQueue = new LinkedList<Conversation>();
 	private Queue<Message> newMessagesQueue = new LinkedList<Message>();
 	
@@ -95,8 +95,8 @@ public class Client extends Observable {
 		return joinedConvsQueue.poll();
 	}
 	
-	public Room nextRoomWithNewUsers() {
-		return roomsWithNewUsers.poll();
+	public Conversation nextRoomWithNewUsers() {
+		return convsWithNewUsers.poll();
 	}
 	
 	public Message nextNewMessage() {
@@ -162,7 +162,7 @@ public class Client extends Observable {
 	}
 
 	public void refreshUserList(Conversation conversation) {
-		roomsWithNewUsers.add((Room) conversation);
+		convsWithNewUsers.add(conversation);
 		setChanged(); notifyObservers();
 	}
 

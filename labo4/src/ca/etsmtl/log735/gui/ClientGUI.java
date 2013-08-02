@@ -63,14 +63,14 @@ public class ClientGUI extends JFrame implements Observer {
 		if (client.isConnected()) {
 			cardLayout.show(cards, CARD_CONVERSATIONS);
 			for (Conversation conv = client.nextJoinedConv(); conv != null; conv = client.nextJoinedConv()) {
-				conversations.addTab(conv.toString(), new ConversationPanel(conv, client));
+				conversations.addTab(conv.getName(), new ConversationPanel(conv, client));
 			}
 			serverPanel.setRooms(client.getServerRooms());
-			for (Room room = client.nextRoomWithNewUsers(); room != null; room = client.nextRoomWithNewUsers()) {
-				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(conversations.indexOfTab(room.getName()));
-				System.out.println("refreshing room : " + room.getName());
+			for (Conversation conv = client.nextRoomWithNewUsers(); conv != null; conv = client.nextRoomWithNewUsers()) {
+				ConversationPanel panel = (ConversationPanel) conversations.getComponentAt(conversations.indexOfTab(conv.getName()));
+				System.out.println("refreshing room : " + conv.getName());
 				if (panel != null) {
-					panel.refreshUserList(room);
+					panel.refreshUserList(conv);
 				} else {
 					System.err.println("Asked to refresh a userlist of a conversation that we don't have - something went horribly wrong.");
 				}
