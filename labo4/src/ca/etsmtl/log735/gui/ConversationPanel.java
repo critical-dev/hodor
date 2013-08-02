@@ -50,7 +50,7 @@ public class ConversationPanel extends JPanel implements ActionListener {
 		add(bottomPanel, BorderLayout.SOUTH);
 		add(new JScrollPane(userlist), BorderLayout.EAST);
 		conversationArea.setEditable(false);
-		add(conversationArea, BorderLayout.CENTER);
+		add(new JScrollPane(conversationArea), BorderLayout.CENTER);
 		refreshUserList(conv);
 	}
 
@@ -61,6 +61,7 @@ public class ConversationPanel extends JPanel implements ActionListener {
 
 	public void refreshUserList(Conversation conv) {
 		userListModel.clear();
+		this.conv = conv;
 		for (String user: conv.getUserlist()) {
 			userListModel.addElement(user);
 		}
