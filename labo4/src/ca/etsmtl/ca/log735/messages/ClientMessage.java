@@ -14,6 +14,7 @@ Date création : 01/07/2013
 ******************************************************/
 /**
  * A message from the server to the client.
+ * Message Client.
  * @author artom
  *
  */
