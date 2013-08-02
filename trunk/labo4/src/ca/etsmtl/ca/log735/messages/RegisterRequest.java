@@ -25,6 +25,8 @@ Date création : 01/07/2013
  */
 public class RegisterRequest extends ServerMessage {
 	
+	private static final long serialVersionUID = 1326374921750712370L;
+	
 	private String username, password, passwordConf;
 	
 	/**

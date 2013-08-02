@@ -19,6 +19,8 @@ Date création : 01/07/2013
  */
 public class JoinRoomRequest extends ServerMessage {
 
+	private static final long serialVersionUID = 7911453088379513854L;
+	
 	private String roomName;
 	private String username;
 	private Room room;

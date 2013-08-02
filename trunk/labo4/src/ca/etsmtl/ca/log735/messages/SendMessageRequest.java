@@ -24,6 +24,8 @@ Date création : 01/07/2013
  */
 public class SendMessageRequest extends ServerMessage {
 
+	private static final long serialVersionUID = -5576031693205955402L;
+	
 	private Conversation conversation;
 	private String fromUser;
 	private String msg;

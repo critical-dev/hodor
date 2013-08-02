@@ -3,7 +3,6 @@ package ca.etsmtl.log735.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
