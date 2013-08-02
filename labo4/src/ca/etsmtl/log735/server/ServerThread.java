@@ -102,10 +102,8 @@ public class ServerThread extends Thread{
 							Room createRoomRequestedRoom = ((CreateRoomRequest) clientRequest).getRoom();
 							clientOutputStream.writeObject(new JoinConversationResponse(createRoomRequestedRoom));
 							System.out.println("ServerThread : sending back new room " + createRoomRequestedRoom.getName());
-							ArrayList<Room> singleNewRoom = new ArrayList<Room>();
-							singleNewRoom.add(createRoomRequestedRoom);
 							for(String user: server.getClientsOutputStreams().keySet()){
-								server.getClientsOutputStreams().get(user).writeObject(new RoomListResponse(singleNewRoom));
+								server.getClientsOutputStreams().get(user).writeObject(new RoomListResponse(server.getRooms()));
 							}
 						}
 						else {
