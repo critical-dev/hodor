@@ -102,6 +102,7 @@ public class LeaveConversationRequest extends ServerMessage {
 						}
 					}
 				}
+				return true;
 			}
 			else{
 				System.out.println("LeaveConversationRequest: user "+username+" not in that room. No effect.");
