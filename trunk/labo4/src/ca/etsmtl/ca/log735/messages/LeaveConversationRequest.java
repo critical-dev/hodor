@@ -13,7 +13,7 @@ Laboratoire : Laboratoire #4
 Étudiants : Artom Lifshitz, Chrystophe Chabert
 Code(s) perm. : LIFA29108505, CHAC12098902
 Date création : 01/07/2013
-******************************************************/
+ ******************************************************/
 /**
  * Removes a user from a group
  * @author chrys
@@ -22,15 +22,15 @@ Date création : 01/07/2013
 public class LeaveConversationRequest extends ServerMessage {
 
 	private static final long serialVersionUID = 2521285633403217157L;
-	
+
 	private String conversation;
 	private String username;
-	
+
 	public LeaveConversationRequest(String conversation, String username){
 		this.conversation = conversation;
 		this.username = username.toLowerCase();
 	}
-	
+
 	@Override
 	public boolean process(Server server) {
 		for(Group group: server.getGroupsWithConversations().keySet()){
@@ -60,7 +60,7 @@ public class LeaveConversationRequest extends ServerMessage {
 							}
 						}
 					}
-					
+
 				}
 				else{
 					System.out.println("LeaveConversationRequest: user " + username + " not part of that group. No effect.");
@@ -68,8 +68,14 @@ public class LeaveConversationRequest extends ServerMessage {
 				return true;
 			}
 		}
+		int indexOfRoom  = -1;
 		//if it wasn't a group try rooms
-		int indexOfRoom = server.getRooms().indexOf(conversation);
+		for(int i = 0; i < server.getRooms().size(); i++){
+			if(server.getRooms().get(i).getName().equals(conversation)){
+				indexOfRoom = i;
+				break;
+			}
+		}
 		if(indexOfRoom != -1){
 			if(server.getRooms().get(indexOfRoom).getUserlist().contains(username)){
 				server.getRooms().get(indexOfRoom).getUserlist().remove(username);

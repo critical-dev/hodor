@@ -196,6 +196,23 @@ public class ServerThread extends Thread{
 					clientInputStream.close();
 				} catch (IOException e1) {
 				}
+				//on enleve le client des salles / groupes.
+				for(int i = 0; i < server.getRooms().size(); i++){
+					if(server.getRooms().get(i).getUserlist().contains(thisUser)){
+						server.getRooms().get(i).getUserlist().remove(thisUser);
+						if(server.getRooms().get(i).getUserlist().size() == 0){
+							server.getRooms().remove(i);
+						}
+					}
+				}
+				for(Group group : server.getGroupsWithConversations().keySet()){
+					if(group.getUserlist().contains(thisUser)){
+						group.getUserlist().remove(thisUser);
+						if(group.getUserlist().size() == 0){
+							server.getGroupsWithConversations().remove(group);
+						}
+					}
+				}
 
 				break;
 			}
