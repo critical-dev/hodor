@@ -21,6 +21,7 @@ import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
 import ca.etsmtl.ca.log735.messages.SendMessageRequest;
 import ca.etsmtl.log735.model.Conversation;
+import ca.etsmtl.log735.model.Message;
 import ca.etsmtl.log735.model.Room;
 /******************************************************
 Cours : LOG735
@@ -47,8 +48,8 @@ public class Client extends Observable {
 	private Queue<Conversation> joinedConvsQueue = new LinkedList<Conversation>();
 	private Queue<Room> serverRoomsQueue = new LinkedList<Room>();
 	private Queue<Room> roomsWithNewUsers = new LinkedList<Room>();
-
-	private String lastConversationMessageToUpdate;
+	private Queue<Conversation> convsToLeaveQueue = new LinkedList<Conversation>();
+	private Queue<Message> newMessagesQueue = new LinkedList<Message>();
 	
 	private void connect(InetAddress serverIp, int port) throws IOException {
 		socket = new Socket(serverIp, port);
@@ -100,6 +101,10 @@ public class Client extends Observable {
 	
 	public Room nextRoomWithNewUsers() {
 		return roomsWithNewUsers.poll();
+	}
+	
+	public Message nextNewMessage() {
+		return newMessagesQueue.poll();
 	}
 
 	public void serverRoomsAdd(List<Room> rooms) {
@@ -166,11 +171,6 @@ public class Client extends Observable {
 		roomsWithNewUsers.add((Room) conversation);
 		setChanged(); notifyObservers(); clearChanged();
 	}
-	
-	public void refreshMsg(String msg, Conversation conversation) {
-		lastConversationMessageToUpdate = msg;
-		setChanged(); notifyObservers(conversation); clearChanged();
-	}
 
 	public void disconnect() {
 		try {
@@ -184,19 +184,11 @@ public class Client extends Observable {
 		setChanged(); notifyObservers();
 	}
 
-
-	public String getLastConversationMessageToUpdate() {
-		return lastConversationMessageToUpdate;
-	}
-
-	public void setLastConversationMessageToUpdate(
-			String lastConversationMessageToUpdate) {
-		this.lastConversationMessageToUpdate = lastConversationMessageToUpdate;
-	}
-
-	public void sendLeaveConversation(Conversation conv) {
+	public void leaveConversation(Conversation conv) {
 		try {
 			oos.writeObject(new LeaveConversationRequest(conv.getName(), username));
+			convsToLeaveQueue.add(conv);
+			setChanged(); notifyObservers();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -212,5 +204,14 @@ public class Client extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public Conversation nextConvToLeave() {
+		return convsToLeaveQueue.poll();
+	}
+
+	public void messageArrived(Conversation conv, String fromUser, String message) {
+		newMessagesQueue.add(new Message(conv, fromUser, message));
+		setChanged(); notifyObservers();
 	}
 }

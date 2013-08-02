@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
+import ca.etsmtl.log735.model.Message;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -65,6 +66,7 @@ public class ConversationPanel extends JPanel implements ActionListener {
 		JToolBar toolbar = new JToolBar();
 		JButton leaveButton = new JButton("Leave");
 		leaveButton.setActionCommand(COMMAND_LEAVE);
+		leaveButton.addActionListener(this);
 		toolbar.add(leaveButton);
 		toolbar.setFloatable(false);
 		add(toolbar, BorderLayout.NORTH);
@@ -86,9 +88,10 @@ public class ConversationPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(COMMAND_SEND)) {
 			client.sendMessage(inputArea.getText(), conv);
+			inputArea.setText("");
 		}
 		if (e.getActionCommand().equals(COMMAND_LEAVE)) {
-			client.sendLeaveConversation(conv);
+			client.leaveConversation(conv);
 		}
 		if (e.getActionCommand().equals(COMMAND_CREATE_GROUP)) {
 			Vector<String> usersInGroup = new Vector<String>();
@@ -108,11 +111,7 @@ public class ConversationPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public JTextArea getConversationArea() {
-		return conversationArea;
-	}
-
-	public void setConversationArea(JTextArea conversationArea) {
-		this.conversationArea = conversationArea;
+	public void newMessage(Message msg) {
+		conversationArea.append(msg.getMessage());
 	}
 }

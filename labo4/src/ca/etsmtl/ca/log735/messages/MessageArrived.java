@@ -21,21 +21,24 @@ Date création : 01/07/2013
  */
 public class MessageArrived extends ClientMessage {
 
+	private static final long serialVersionUID = -4912633349753510560L;
+	
 	private String message;
 	private Conversation conv;
 	private String fromUser;
 	private SimpleDateFormat sdf;
+	
 	public MessageArrived(String message, Conversation conv, String fromUser) {
 		this.conv = conv;
 		this.fromUser = fromUser;
 		sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String currentTime = sdf.format(new Date());
-		this.message = fromUser + "@" + currentTime + " :" + message;
+		this.message = "<" + fromUser + " " + currentTime + "> " + message + "\n";
 	}
 	
 	@Override
 	public void process(Client client) {
-		client.refreshMsg(message, conv);
+		client.messageArrived(conv, fromUser, message);
 		System.out.println("client " + client.username + " must refresh conversation : " + conv.getName() + " with text : " + message);
 	}
 
