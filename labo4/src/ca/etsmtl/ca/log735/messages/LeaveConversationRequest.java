@@ -84,6 +84,13 @@ public class LeaveConversationRequest extends ServerMessage {
 				if(server.getRooms().get(indexOfRoom) != server.getDefaultRoom() && server.getRooms().get(indexOfRoom).getUserlist().size() == 0){
 					System.out.println("LeaveConversationRequest: No more users in that room, removed it. ");
 					server.getRooms().remove(indexOfRoom);
+					for(String user : server.getClientsOutputStreams().keySet()){
+						try {
+							server.getClientsOutputStreams().get(user).reset();
+							server.getClientsOutputStreams().get(user).writeObject(new RoomListResponse(server.getRooms()));
+						} catch (IOException e) {System.err.println("Error while notifying clients that room no longer exists.");
+						}
+					}
 				}
 				else{
 					Vector<String> newGroupMembersToNotify = server.getRooms().get(indexOfRoom).getUserlist();
