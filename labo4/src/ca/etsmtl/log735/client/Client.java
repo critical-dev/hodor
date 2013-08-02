@@ -9,9 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
+import java.util.Vector;
 
+import org.apache.commons.lang3.StringUtils;
+
+import ca.etsmtl.ca.log735.messages.CreateGroupRequest;
 import ca.etsmtl.ca.log735.messages.CreateRoomRequest;
 import ca.etsmtl.ca.log735.messages.JoinRoomRequest;
+import ca.etsmtl.ca.log735.messages.LeaveConversationRequest;
 import ca.etsmtl.ca.log735.messages.LoginRequest;
 import ca.etsmtl.ca.log735.messages.RegisterRequest;
 import ca.etsmtl.ca.log735.messages.SendMessageRequest;
@@ -189,4 +194,23 @@ public class Client extends Observable {
 		this.lastConversationMessageToUpdate = lastConversationMessageToUpdate;
 	}
 
+	public void sendLeaveConversation(Conversation conv) {
+		try {
+			oos.writeObject(new LeaveConversationRequest(conv.getName(), username));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void sendCreateGroup(List<String> usersInGroup) {
+		Vector<String> userlist = new Vector<String>();
+		userlist.addAll(usersInGroup);
+		try {
+			oos.writeObject(new CreateGroupRequest("Conversation with " + StringUtils.join(usersInGroup, ", "), username, userlist));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
