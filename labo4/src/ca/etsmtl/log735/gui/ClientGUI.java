@@ -12,7 +12,6 @@ import javax.swing.JTabbedPane;
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Message;
-import ca.etsmtl.log735.model.Room;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
