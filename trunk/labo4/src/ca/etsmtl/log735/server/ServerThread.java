@@ -198,7 +198,8 @@ public class ServerThread extends Thread{
 				}
 				//on enleve le client des salles / groupes.
 				for(int i = 0; i < server.getRooms().size(); i++){
-					if(server.getRooms().get(i).getUserlist().contains(thisUser)){
+					if(server.getRooms().get(i) != server.getDefaultRoom() &&
+							server.getRooms().get(i).getUserlist().contains(thisUser)){
 						server.getRooms().get(i).getUserlist().remove(thisUser);
 						if(server.getRooms().get(i).getUserlist().size() == 0){
 							server.getRooms().remove(i);
