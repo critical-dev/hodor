@@ -16,9 +16,11 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
+import net.miginfocom.swing.MigLayout;
 import ca.etsmtl.log735.client.Client;
 import ca.etsmtl.log735.model.Conversation;
 import ca.etsmtl.log735.model.Message;
+import ca.etsmtl.log735.server.Server;
 /******************************************************
 Cours : LOG735
 Session : Été 2013
@@ -36,7 +38,7 @@ public class ConversationPanel extends JPanel implements ActionListener {
 	private final String COMMAND_SEND = "COMMAND_SEND";
 	private final String COMMAND_CREATE_GROUP = "COMMAND_CREATE_GROUP";
 	
-	private JTextArea inputArea = new JTextArea(5, 40);
+	private JTextArea inputArea = new JTextArea();
 	private JTextArea conversationArea = new JTextArea();
 	
 	private Conversation conv;
@@ -58,23 +60,25 @@ public class ConversationPanel extends JPanel implements ActionListener {
 	}
 
 	public ConversationPanel(Conversation conv, Client client) {
-		super(new BorderLayout());
+		super(new BorderLayout(5, 5));
 		this.client = client;
 		this.conv = conv;
+		inputArea.setRows(5);
 		userlist.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JToolBar toolbar = new JToolBar();
 		JButton leaveButton = new JButton("Leave");
 		leaveButton.setActionCommand(COMMAND_LEAVE);
 		leaveButton.addActionListener(this);
+		leaveButton.setEnabled(!conv.getName().equals(Server.DEFAULT_ROOM_NAME));
 		toolbar.add(leaveButton);
 		toolbar.setFloatable(false);
 		add(toolbar, BorderLayout.NORTH);
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.add(inputArea);
+		JPanel bottomPanel = new JPanel(new MigLayout("wrap 2, fillx"));
+		bottomPanel.add(new JScrollPane(inputArea), "growx, pushx");
 		JButton sendButton = new JButton("Send");
 		sendButton.setActionCommand(COMMAND_SEND);
 		sendButton.addActionListener(this);
-		bottomPanel.add(sendButton);
+		bottomPanel.add(sendButton, "shrinkx");
 		add(bottomPanel, BorderLayout.SOUTH);
 		add(new JScrollPane(userlist), BorderLayout.EAST);
 		conversationArea.setEditable(false);

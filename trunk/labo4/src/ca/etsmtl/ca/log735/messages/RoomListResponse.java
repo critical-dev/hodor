@@ -22,10 +22,8 @@ Date création : 01/07/2013
  */
 public class RoomListResponse extends ClientMessage {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3917870958088407622L;
+	
 	private ArrayList<Room> serverRooms;
 	
 	public RoomListResponse(ArrayList<Room> serverRooms){
